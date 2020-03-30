@@ -14,7 +14,8 @@ class GameMangerImpl: GameManager {
     if (isFull()) {
       throw IllegalStateException("Room $this full")
     }
-    val player = Player(nextInt().toString(), context)
+    val player = if (players.size == 0) Player(nextInt().toString(), context, isHost = true)
+                 else Player(nextInt().toString(), context)
     players.add(player)
   }
 
