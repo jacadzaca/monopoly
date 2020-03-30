@@ -14,7 +14,12 @@ class MainVerticle : AbstractVerticle() {
     if (gameRoom == null) {
       context.writeFinalTextFrame("Not such room").reject(404)
     }
-    gameRoom!!.newPlayer("guest", context)
+    if (gameRoom!!.isFull()) {
+      context
+        .writeFinalTextFrame("Rooms $gameRoom full")
+        .reject(400)
+    }
+    gameRoom.newPlayer(context)
   }
 
   override fun start(startPromise: Promise<Void>) {

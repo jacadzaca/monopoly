@@ -2,21 +2,25 @@ package com.jacadzaca.monopoly
 
 import io.vertx.core.http.ServerWebSocket
 import io.vertx.core.http.WebSocketFrame
+import java.lang.IllegalArgumentException
+import java.lang.IllegalStateException
+import java.util.*
+import kotlin.random.Random.Default.nextInt
 
 class GameMangerImpl: GameManager {
-  private val players = mutableListOf<Player>()
-  override fun newPlayer(name: String, context: ServerWebSocket) {
-    context.writeTextMessage("choose username")
-    context.frameHandler { handler ->
-      val player = Player(handler.textData(), context)
-      players.add(player)
-      context.writeTextMessage(handler.textData())
+  private val players: Deque<Player> = LinkedList()
+
+  override fun newPlayer(context: ServerWebSocket) {
+    if (isFull()) {
+      throw IllegalStateException("Room $this full")
     }
+    val player = Player(nextInt().toString(), context)
+    players.add(player)
   }
 
 
   override fun players(): List<Player> {
-    return players
+    return ArrayList(players)
   }
 
   override fun isFull(): Boolean {
