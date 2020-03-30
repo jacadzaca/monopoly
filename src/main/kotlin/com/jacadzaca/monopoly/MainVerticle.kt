@@ -32,7 +32,7 @@ class MainVerticle : AbstractVerticle() {
         .end()
     }
     router.route("/room/:roomName").handler { request ->
-      val response = rooms[request.request().getParam("roomName")]?.players().toString() ?: "No such room"
+      val response = rooms[request.request().getParam("roomName")]?.players()?.toString() ?: "No such room"
       request
         .response()
         .putHeader("content-type", "text/plain")
