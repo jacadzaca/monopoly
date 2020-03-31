@@ -12,12 +12,14 @@ class MainVerticle : AbstractVerticle() {
     val roomName: String = context.path().substring(1)
     val gameRoom: GameManager? = rooms[roomName]
     if (gameRoom == null) {
-      context.writeFinalTextFrame("Not such room").reject(404)
+      context
+        .writeFinalTextFrame("Not such room")
+        .end()
     }
     if (gameRoom!!.isFull()) {
       context
         .writeFinalTextFrame("Rooms $gameRoom full")
-        .reject(400)
+        .end()
     }
     gameRoom.newPlayer(context)
   }
