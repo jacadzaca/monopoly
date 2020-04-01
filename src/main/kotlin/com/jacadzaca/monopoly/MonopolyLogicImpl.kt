@@ -1,7 +1,7 @@
 package com.jacadzaca.monopoly
 
-class MonopolyLogicImpl() {
-  fun movePiece(tilesCount: Int, piece: Piece): Piece {
+class MonopolyLogicImpl : MonopolyLogic {
+  override fun movePiece(tilesCount: Int, piece: Piece): Piece {
     return piece.copy(position = piece.position + tilesCount)
   }
 }

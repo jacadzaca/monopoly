@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-class MonopolyLogicTest {
+class MonopolyLogicImplTest {
   private val gameBoard = MonopolyLogicImpl()
 
 
