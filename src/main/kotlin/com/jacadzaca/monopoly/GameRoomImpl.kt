@@ -16,6 +16,10 @@ class GameRoomImpl(private val players: Queue<Player>, private val game: Monopol
     return "Wrong input"
   }
 
+  override fun addPlayer(player: Player) {
+    players.add(player)
+  }
+
   private fun nextTurn(currentPlayer: Player) {
     players.remove()
     players.add(currentPlayer)
