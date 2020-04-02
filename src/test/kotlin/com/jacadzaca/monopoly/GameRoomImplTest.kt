@@ -19,6 +19,7 @@ class GameRoomImplTest {
 
   @BeforeEach
   fun init() {
+    players.clear()
     players.addAll(listOf(player, otherPlayer))
     gameRoom = GameRoomImpl(players, gameLogic)
     every { player.piece } returns Piece()
