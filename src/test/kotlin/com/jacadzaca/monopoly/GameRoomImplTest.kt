@@ -5,44 +5,46 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.spyk
 import io.mockk.verify
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.function.Executable
 import java.util.*
 
 @ExtendWith(MockKExtension::class)
 class GameRoomImplTest {
-  private val player = mockk<Player>(relaxed = true)
-  private val otherPlayer = mockk<Player>(relaxed = true)
-  private val gameLogic = mockk<MonopolyLogic>(relaxed = true)
+  private val gameLogic = mockk<MonopolyLogic>()
+  private lateinit var player: Player
   private lateinit var players: LinkedList<Player>
   private lateinit var gameRoom: GameRoomImpl
 
   @BeforeEach
   fun init() {
     players = spyk()
-    players.addAll(listOf(player, otherPlayer))
+    player = TestPlayer()
+    players.addAll(listOf(player, TestPlayer()))
     gameRoom = GameRoomImpl(players, gameLogic)
-    every { player.piece } returns Piece()
   }
 
   @Test
   fun addPlayerAppendsToPlayers() {
-    gameRoom.addPlayer(player)
+    val somePlayer = TestPlayer()
+    gameRoom.addPlayer(somePlayer)
     verify { players.add(any()) }
   }
 
   @Test
   fun executeActionMoveInputExecuteMove() {
     val moveAction = "move 1"
-    assertEquals(Piece(1).toString(), gameRoom.executeAction(moveAction))
+    val moveSize = moveAction.split(" ")[1].toInt()
+    every { gameLogic.movePiece(moveSize, player.piece) } returns Piece(position = player.piece.position + moveSize)
+    assertEquals(Piece(moveSize).toString(), gameRoom.executeAction(moveAction))
   }
 
   @Test
   fun executeActionWrongInputReturnError() {
     val wrongInput = "asfg"
-    assertEquals("Wrong input", gameRoom.executeAction(wrongInput))
+    val expectedError = "Wrong input"
+    assertEquals(expectedError, gameRoom.executeAction(wrongInput))
   }
 }
