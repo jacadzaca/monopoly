@@ -2,25 +2,25 @@ package com.jacadzaca.monopoly
 
 import java.util.Queue
 
-class GameRoomImpl(private val players: Queue<Player>, private val game: MonopolyLogic) : GameRoom {
+class GameRoomImpl(private val players: Queue<NetworkPlayer>, private val game: MonopolyLogic) : GameRoom<NetworkPlayer> {
   override fun executeAction(action: String): String {
     val parsedAction = action.split(" ")
     val currentPlayer = players.peek()
-    val report: Player;
+    val report: NetworkPlayer;
     if (parsedAction[0] == "move") {
       val moveSize = parsedAction[1].toInt()
-      report = currentPlayer.copyPlayer(piece = game.movePiece(moveSize, currentPlayer.piece))
+      report = currentPlayer.copy(piece = game.movePiece(moveSize, currentPlayer.piece))
       nextTurn(report)
       return report.piece.toString()
     }
     return "Wrong input"
   }
 
-  override fun addPlayer(player: Player) {
+  override fun addPlayer(player: NetworkPlayer) {
     players.add(player)
   }
 
-  private fun nextTurn(currentPlayer: Player) {
+  private fun nextTurn(currentPlayer: NetworkPlayer) {
     players.remove()
     players.add(currentPlayer)
   }

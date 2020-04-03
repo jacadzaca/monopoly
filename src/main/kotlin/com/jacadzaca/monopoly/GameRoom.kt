@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly
 
-interface GameRoom {
+interface GameRoom<T : Player> {
   fun executeAction(action: String): String
-  fun addPlayer(player: Player)
+  fun addPlayer(player: T)
 }
