@@ -7,12 +7,10 @@ import io.vertx.ext.web.Router
 import java.util.LinkedList
 
 class MainVerticle : AbstractVerticle() {
-  private val gameRoom = GameRoomImpl(LinkedList(listOf(NetworkPlayer(null, Piece()))), MonopolyLogicImpl())
+  private val gameRoom = GameRoomImpl(LinkedList(), MonopolyLogicImpl())
 
   private fun handle(connection: ServerWebSocket) {
-    connection.textMessageHandler {
-      connection.writeTextMessage(gameRoom.executeAction(it))
-    }
+    gameRoom.addPlayer(NetworkPlayer(connection, Piece()))
   }
 
   override fun start(startPromise: Promise<Void>) {
