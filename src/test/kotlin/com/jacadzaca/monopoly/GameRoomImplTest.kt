@@ -14,23 +14,22 @@ import java.util.*
 @ExtendWith(MockKExtension::class)
 class GameRoomImplTest {
   private val gameLogic = mockk<MonopolyLogic>()
-  private lateinit var player: Player
-  private lateinit var players: LinkedList<Player>
+  private lateinit var player: NetworkPlayer
+  private lateinit var players: LinkedList<NetworkPlayer>
   private lateinit var gameRoom: GameRoomImpl
 
   @BeforeEach
   fun init() {
     players = spyk()
-    player = TestPlayer()
-    players.addAll(listOf(player, TestPlayer()))
+    player = NetworkPlayer(mockk(), Piece())
+    players.addAll(listOf(player))
     gameRoom = GameRoomImpl(players, gameLogic)
   }
 
   @Test
   fun addPlayerAppendsToPlayers() {
-    val somePlayer = TestPlayer()
-    gameRoom.addPlayer(somePlayer)
-    verify { players.add(any()) }
+    gameRoom.addPlayer(player)
+    verify { players.add(player) }
   }
 
   @Test
