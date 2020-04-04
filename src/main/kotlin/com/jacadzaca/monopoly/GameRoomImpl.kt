@@ -2,7 +2,9 @@ package com.jacadzaca.monopoly
 
 import java.util.Queue
 
-class GameRoomImpl(private val players: Queue<NetworkPlayer>, private val game: MonopolyLogic) : GameRoom<NetworkPlayer> {
+class GameRoomImpl(private val players: Queue<NetworkPlayer>,
+                   private val game: MonopolyLogic,
+                   private val inputAllower: InputAllowerImpl) : GameRoom<NetworkPlayer> {
   override fun executeAction(action: String): String {
     val parsedAction = action.split(" ")
     val currentPlayer = players.peek()
@@ -16,7 +18,16 @@ class GameRoomImpl(private val players: Queue<NetworkPlayer>, private val game: 
     return "Wrong input"
   }
 
+  internal fun notYourTurnSupplier(): String {
+    return "not your turn"
+  }
+
   override fun addPlayer(player: NetworkPlayer) {
+    if (players.isEmpty()) {
+      inputAllower.allowInput(player, this::executeAction)
+    } else {
+      inputAllower.disallowInput(player, this::notYourTurnSupplier)
+    }
     players.add(player)
   }
 

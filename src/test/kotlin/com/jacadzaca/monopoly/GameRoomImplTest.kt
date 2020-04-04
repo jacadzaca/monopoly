@@ -16,6 +16,7 @@ class GameRoomImplTest {
   private val gameLogic = mockk<MonopolyLogic>()
   private lateinit var player: NetworkPlayer
   private lateinit var players: LinkedList<NetworkPlayer>
+  private lateinit var inputAllower: InputAllowerImpl
   private lateinit var gameRoom: GameRoomImpl
 
   @BeforeEach
@@ -23,7 +24,8 @@ class GameRoomImplTest {
     players = spyk()
     player = NetworkPlayer(mockk(), Piece())
     players.addAll(listOf(player))
-    gameRoom = GameRoomImpl(players, gameLogic)
+    inputAllower = mockk(relaxed = true)
+    gameRoom = GameRoomImpl(players, gameLogic, inputAllower)
   }
 
   @Test
@@ -45,5 +47,31 @@ class GameRoomImplTest {
     val wrongInput = "asfg"
     val expectedError = "Wrong input"
     assertEquals(expectedError, gameRoom.executeAction(wrongInput))
+  }
+
+  @Test
+  fun `if game room has no players, addPlayer allows input from added player`() {
+    players.clear()
+    gameRoom.addPlayer(player)
+    verify { inputAllower.allowInput(player, any()) }
+  }
+
+  @Test
+  fun `if game room has players, addPlayer disallows input from added player`() {
+    gameRoom.addPlayer(player)
+    verify { inputAllower.disallowInput(player, any()) }
+  }
+
+  @Test
+  fun `input allowed with executeAction as handler`() {
+    players.clear()
+    gameRoom.addPlayer(player)
+    verify { inputAllower.allowInput(any(), gameRoom::executeAction) }
+  }
+
+  @Test
+  fun `input disallowed with notYourTurnSupplier as handler`() {
+    gameRoom.addPlayer(player)
+    verify { inputAllower.disallowInput(any(), gameRoom::notYourTurnSupplier) }
   }
 }
