@@ -29,13 +29,13 @@ class GameRoomImplTest {
   }
 
   @Test
-  fun addPlayerAppendsToPlayers() {
+  fun `addPlayer adds to players`() {
     gameRoom.addPlayer(player)
     verify { players.add(player) }
   }
 
   @Test
-  fun executeActionMoveInputExecuteMove() {
+  fun `if executeAction is given move, increase active player's piece position`() {
     val moveAction = "move 1"
     val moveSize = moveAction.split(" ")[1].toInt()
     every { gameLogic.movePiece(moveSize, player.piece) } returns Piece(position = player.piece.position + moveSize)
@@ -43,7 +43,7 @@ class GameRoomImplTest {
   }
 
   @Test
-  fun executeActionWrongInputReturnError() {
+  fun `if executeAction is given wrong input, return error `() {
     val wrongInput = "asfg"
     val expectedError = "Wrong input"
     assertEquals(expectedError, gameRoom.executeAction(wrongInput))

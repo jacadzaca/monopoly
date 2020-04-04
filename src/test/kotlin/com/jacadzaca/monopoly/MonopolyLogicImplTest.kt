@@ -11,7 +11,7 @@ class MonopolyLogicImplTest {
 
 
   @Test
-  fun movePieceShouldIncreasePosition() {
+  fun `movePiece increases position`() {
     val tilesCount = 1
     val startingPosition = 0
     val pieceToMove = Piece(startingPosition)
