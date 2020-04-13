@@ -59,20 +59,6 @@ compileTestKotlin {
   kotlinOptions.jvmTarget = '1.8'
 }
 
-// https://stackoverflow.com/questions/44781041/vert-x-service-proxies-from-kotlin-with-vertx-codegen
-task generateProxies(type: JavaCompile, group: "build",
-  description: "Generates the Vert.x proxies") { // codegen
-  source = sourceSets.main.java
-  source += sourceSets.main.kotlin
-  classpath = configurations.compile + configurations.compileOnly
-  destinationDir = project.file("${projectDir}/src/main/generated")
-  options.compilerArgs = [
-    "-proc:only",
-    "-processor", "io.vertx.codegen.CodeGenProcessor",
-    "-Acodegen.output=${project.projectDir}/src/main"
-  ]
-}
-
 shadowJar {
   classifier = 'fat'
   manifest {
