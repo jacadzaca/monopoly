@@ -1,43 +1,32 @@
 package com.jacadzaca.monopoly
 
-import io.vertx.core.AbstractVerticle
 import io.vertx.core.Promise
-import io.vertx.core.http.ServerWebSocket
-import io.vertx.ext.web.Router
-import java.util.LinkedList
+import io.vertx.reactivex.core.AbstractVerticle
+import io.vertx.reactivex.ext.web.Router
 
 class MainVerticle : AbstractVerticle() {
-  private val gameRoom = GameRoomImpl(LinkedList(), MonopolyLogicImpl(), InputAllowerImpl())
-
-  private fun handle(connection: ServerWebSocket) {
-    gameRoom.addPlayer(NetworkPlayer(connection, Piece()))
-  }
 
   override fun start(startPromise: Promise<Void>) {
-    val router : Router = Router.router(vertx)
-    router.route("/").handler { request ->
+    val router = Router.router(vertx)
+    router.get("/").handler { request ->
       request
         .response()
-        .sendFile("welcome.html")
-        .end()
-    }
-    router.route("/websocket.js").handler { request ->
-      request
-        .response()
-        .sendFile("websocket.js")
-        .end()
+        .rxSendFile("welcome.html")
+        .subscribe()
     }
     vertx
       .createHttpServer()
       .requestHandler(router)
-      .webSocketHandler(::handle)
-      .listen(8080) { http ->
-        if (http.succeeded()) {
-          startPromise.complete()
-          println("HTTP server started on port 8080")
-        } else {
-          startPromise.fail(http.cause());
-        }
+      .rxListen(8080)
+      .doOnError {error ->
+        error.printStackTrace()
+        startPromise.fail(error)
       }
+      .doOnSuccess {
+        println("Listening on port 8080")
+        startPromise.complete()
+      }
+      .subscribe()
   }
+
 }
