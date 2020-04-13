@@ -1,5 +1,3 @@
 package com.jacadzaca.monopoly
 
-interface Player {
-  val piece: Piece
-}
+data class Player(val piece: Piece)
