@@ -16,6 +16,6 @@ data class Player(val id: UUID, val piece: Piece) {
   }
 
   fun toRedisString(): String {
-    return "player:$id:piece:position ${piece.position}"
+    return "player:$id piece:position ${piece.position}"
   }
 }
