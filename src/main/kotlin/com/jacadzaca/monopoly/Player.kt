@@ -14,4 +14,8 @@ data class Player(val id: UUID, val piece: Piece) {
     return JsonObject()
       .put("position", piece.position)
   }
+
+  fun toRedisString(): String {
+    return "player:$id:piece:position ${piece.position}"
+  }
 }
