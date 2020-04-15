@@ -15,7 +15,10 @@ data class Player(val id: UUID, val piece: Piece) {
       .put("position", piece.position)
   }
 
-  fun toRedisString(): String {
+  /**
+   * @return a string that can be used to create a hash in Redis
+   */
+  fun redisHashDescription(): String {
     return "player:$id piece:position ${piece.position}"
   }
 }
