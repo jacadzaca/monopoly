@@ -44,7 +44,6 @@ dependencies {
   implementation "io.vertx:vertx-service-proxy:$vertxVersion"
   kapt "io.vertx:vertx-codegen:$vertxVersion:processor"
   compileOnly "io.vertx:vertx-codegen:$vertxVersion"
-  implementation "io.vertx:vertx-rx-java:$vertxVersion"
 
   testImplementation "io.vertx:vertx-junit5:$vertxVersion"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion"
