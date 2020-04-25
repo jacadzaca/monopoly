@@ -1,6 +1,7 @@
 package com.jacadzaca.monopoly
 
 import io.vertx.core.Promise
+import io.vertx.core.logging.LoggerFactory
 import io.vertx.kotlin.core.eventbus.deliveryOptionsOf
 import io.vertx.reactivex.core.AbstractVerticle
 import io.vertx.reactivex.core.buffer.Buffer
@@ -8,6 +9,9 @@ import io.vertx.reactivex.core.http.ServerWebSocket
 import io.vertx.reactivex.ext.web.Router
 
 class MainVerticle : AbstractVerticle() {
+  private companion object {
+    private val logger = LoggerFactory.getLogger(this::class.java)
+  }
   override fun start(startPromise: Promise<Void>) {
     val router = Router.router(vertx)
     router.get("/").handler { request ->
@@ -50,7 +54,7 @@ class MainVerticle : AbstractVerticle() {
   }
 
   private fun handleWrongIncomingAction(error: Throwable, connection: ServerWebSocket) {
-    error.printStackTrace()
+    logger.info("Invalid input to WebsSocket", error)
     connection.writeTextMessage("Invalid input")
   }
 
@@ -69,7 +73,7 @@ class MainVerticle : AbstractVerticle() {
   }
 
   private fun failStart(error: Throwable, startPromise: Promise<Void>) {
-    error.printStackTrace()
+    logger.error("Failed to start MainVerticle", error)
     startPromise.fail(error)
   }
 }
