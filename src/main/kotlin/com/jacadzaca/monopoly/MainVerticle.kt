@@ -1,16 +1,14 @@
 package com.jacadzaca.monopoly
 
 import io.vertx.core.Promise
-import io.vertx.core.eventbus.DeliveryOptions
+import io.vertx.kotlin.core.eventbus.deliveryOptionsOf
 import io.vertx.reactivex.core.AbstractVerticle
-import io.vertx.reactivex.core.RxHelper
 import io.vertx.reactivex.core.buffer.Buffer
+import io.vertx.reactivex.core.http.ServerWebSocket
 import io.vertx.reactivex.ext.web.Router
 
 class MainVerticle : AbstractVerticle() {
-
   override fun start(startPromise: Promise<Void>) {
-
     val router = Router.router(vertx)
     router.get("/").handler { request ->
       request
@@ -20,46 +18,58 @@ class MainVerticle : AbstractVerticle() {
     }
     val server = vertx.createHttpServer()
 
+    val gameActionCodec = GameActionCodec()
+    vertx
+      .eventBus()
+      .registerCodec(gameActionCodec)
+
     server
       .webSocketStream()
       .toFlowable()
-      .doOnNext { connection ->
-        connection
-          .toFlowable()
-          .map(Buffer::toJsonObject)
-          .filter { GameAction.isValidJson(it) }
-          .doOnNext { action ->
-            vertx
-              .eventBus()
-              .rxRequest<String>(connection.path(), action)
-              .map { it.body() }
-              .doOnSuccess { connection.writeTextMessage(it) }
-              .subscribe()
-          }
-          .subscribe()
-      }
-      .doOnError { error ->
-        error.printStackTrace()
-        startPromise.fail(error)
-      }
-      .subscribe()
-
-    RxHelper
-      .deployVerticle(vertx, GameActionsVerticle())
-      .subscribe()
+      .subscribe(
+        { handleWebSocketConnection(it, gameActionCodec) },
+        { failStart(it, startPromise) })
 
     server
       .requestHandler(router)
       .rxListen(8080)
-      .doOnError {error ->
-        error.printStackTrace()
-        startPromise.fail(error)
-      }
-      .doOnSuccess {
-        println("Listening on port 8080")
-        startPromise.complete()
-      }
+      .subscribe(
+        { successfulStart(startPromise) },
+        { failStart(it, startPromise) })
+  }
+
+  private fun handleWebSocketConnection(connection: ServerWebSocket, gameActionCodec: GameActionCodec) {
+    connection
+      .toFlowable()
+      .map(Buffer::toJsonObject)
+      .filter { GameAction.isValidJson(it) }
+      .map(::GameAction)
+      .subscribe(
+        { handleIncomingAction(it, connection, gameActionCodec) },
+        { handleWrongIncomingAction(it, connection) })
+  }
+
+  private fun handleWrongIncomingAction(error: Throwable, connection: ServerWebSocket) {
+    error.printStackTrace()
+    connection.writeTextMessage("Invalid input")
+  }
+
+  private fun handleIncomingAction(action: GameAction, connection: ServerWebSocket, gameActionCodec: GameActionCodec) {
+    vertx
+      .eventBus()
+      .rxRequest<String>("/", action, deliveryOptionsOf(codecName = gameActionCodec.name()))
+      .map { it.body() }
+      .doOnSuccess { connection.writeTextMessage(it) }
       .subscribe()
   }
 
+  private fun successfulStart(startPromise: Promise<Void>) {
+    println("Listening on port 8080")
+    startPromise.complete()
+  }
+
+  private fun failStart(error: Throwable, startPromise: Promise<Void>) {
+    error.printStackTrace()
+    startPromise.fail(error)
+  }
 }
