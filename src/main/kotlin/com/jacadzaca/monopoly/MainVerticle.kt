@@ -34,6 +34,7 @@ class MainVerticle : AbstractVerticle() {
         { handleWebSocketConnection(it, gameActionCodec) },
         { failStart(it, startPromise) })
 
+
     server
       .requestHandler(router)
       .rxListen(8080)
@@ -61,7 +62,10 @@ class MainVerticle : AbstractVerticle() {
   private fun handleIncomingAction(action: GameAction, connection: ServerWebSocket, gameActionCodec: GameActionCodec) {
     vertx
       .eventBus()
-      .rxRequest<String>("/", action, deliveryOptionsOf(codecName = gameActionCodec.name()))
+      .rxRequest<String>(
+        GameActionsVerticle.ADDRESS,
+        action,
+        deliveryOptionsOf(codecName = gameActionCodec.name(), headers = mapOf("room-id" to connection.path())))
       .map { it.body() }
       .doOnSuccess { connection.writeTextMessage(it) }
       .subscribe()
