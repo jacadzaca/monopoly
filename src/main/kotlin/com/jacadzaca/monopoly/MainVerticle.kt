@@ -67,8 +67,7 @@ class MainVerticle : AbstractVerticle() {
         action,
         deliveryOptionsOf(codecName = gameActionCodec.name(), headers = mapOf("room-id" to connection.path())))
       .map { it.body() }
-      .doOnSuccess { connection.writeTextMessage(it) }
-      .subscribe()
+      .subscribe({ connection.writeTextMessage(it) }, logger::error)
   }
 
   private fun successfulStart(startPromise: Promise<Void>) {
