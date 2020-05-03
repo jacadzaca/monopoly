@@ -1,6 +1,7 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.GameAction
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.vertx.reactivex.redis.client.RedisAPI
@@ -15,10 +16,10 @@ class RoomManagerImpl(private val database: RedisAPI) : RoomManager {
       .contains(playerId)
   }
 
-  override fun publishAction(roomId: UUID, action: GameAction) {
-    database
+  override fun publishAction(roomId: UUID, action: GameAction): Completable {
+    return database
       .rxPublish(roomId.toString(), action.toString())
-      .subscribe()
+      .flatMapCompletable { Completable.complete() }
   }
 
   /**
