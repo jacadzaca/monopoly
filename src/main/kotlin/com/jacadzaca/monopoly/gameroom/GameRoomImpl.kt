@@ -8,15 +8,15 @@ import io.vertx.reactivex.redis.client.RedisAPI
 import java.nio.charset.Charset
 import java.util.*
 
-class RoomManagerImpl(private val database: RedisAPI) : RoomManager {
-  override fun isPlayersTurn(playerId: UUID, roomId: UUID): Single<Boolean> {
+class GameRoomImpl(private val database: RedisAPI, private val roomId: UUID) : GameRoom {
+  override fun isPlayersTurn(playerId: UUID): Single<Boolean> {
     return database
       .rxLindex("$roomId:players", 0.toString())
       .map { UUID.fromString(it.toString(Charset.defaultCharset())) }
       .contains(playerId)
   }
 
-  override fun publishAction(roomId: UUID, action: GameAction): Completable {
+  override fun publishAction(action: GameAction): Completable {
     return database
       .rxPublish(roomId.toString(), action.toString())
       .flatMapCompletable { Completable.complete() }
@@ -25,7 +25,7 @@ class RoomManagerImpl(private val database: RedisAPI) : RoomManager {
   /**
    * TODO: what happens if roomID is invalid?
    */
-  override fun listenToRoom(roomId: UUID): Flowable<GameAction> {
+  override fun listenToRoom(): Flowable<GameAction> {
     return database
       .rxSubscribe(listOf(roomId.toString()))
       .map { it.toList() }

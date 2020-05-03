@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.gameroom.RoomManagerImpl
+import com.jacadzaca.monopoly.gameroom.GameRoomImpl
 import io.mockk.junit5.MockKExtension
 import io.mockk.spyk
 import io.mockk.verify
@@ -24,15 +24,15 @@ import java.util.concurrent.TimeUnit
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 class RoomMangerImplIntegrationTest {
   private val database = RedisAPI.api(Redis.createClient(Vertx.vertx()))
-  private val roomManger = RoomManagerImpl(database)
   private val roomId = UUID.randomUUID()
+  private val roomManger = GameRoomImpl(database, roomId)
 
   @Test
   fun `isPlayerTurn should return true if it is the player's turn`(testContext: VertxTestContext) {
     val player = Player()
     makePlayersTurnCurrent(player)
     roomManger
-      .isPlayersTurn(player.id, roomId)
+      .isPlayersTurn(player.id)
       .doOnError(testContext::failNow)
       .doOnSuccess { testContext.completeNow() }
       .test()
@@ -46,7 +46,7 @@ class RoomMangerImplIntegrationTest {
     val otherPlayer = Player()
     makePlayersTurnCurrent(otherPlayer)
     roomManger
-      .isPlayersTurn(player.id, roomId)
+      .isPlayersTurn(player.id)
       .doOnError(testContext::failNow)
       .doOnSuccess { testContext.completeNow() }
       .test()
@@ -58,7 +58,7 @@ class RoomMangerImplIntegrationTest {
   fun `isPlayersTurn should return false if room dose not exist`(testContext: VertxTestContext) {
     val player = Player()
     roomManger
-      .isPlayersTurn(player.id, roomId)
+      .isPlayersTurn(player.id)
       .doOnError(testContext::failNow)
       .doOnSuccess { testContext.completeNow() }
       .test()
