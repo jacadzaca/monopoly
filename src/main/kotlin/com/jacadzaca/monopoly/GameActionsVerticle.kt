@@ -31,7 +31,7 @@ class GameActionsVerticle : AbstractVerticle() {
           .map { updatePlayerPosition(it, action.moveSize) }
           .flatMapCompletable { playerManger.savePlayer(it) }
           .andThen(gameRoom.publishAction(action))
-          .subscribe({ message.reply(action.toJson().toString()) }, logger::error)
+          .subscribe({}, logger::error)
       }
     return Completable.complete()
   }
