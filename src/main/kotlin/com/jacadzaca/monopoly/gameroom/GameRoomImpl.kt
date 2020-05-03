@@ -9,11 +9,11 @@ import java.nio.charset.Charset
 import java.util.*
 
 class GameRoomImpl(private val database: RedisAPI, private val roomId: UUID) : GameRoom {
-  override fun isPlayersTurn(playerId: UUID): Single<Boolean> {
+  override fun getCurrentPlayersId(): Single<UUID> {
     return database
       .rxLindex("$roomId:players", 0.toString())
       .map { UUID.fromString(it.toString(Charset.defaultCharset())) }
-      .contains(playerId)
+      .toSingle()
   }
 
   override fun publishAction(action: GameAction): Completable {
