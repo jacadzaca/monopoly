@@ -1,7 +1,7 @@
 package com.jacadzaca.monopoly
 
 import io.vertx.core.Promise
-import io.vertx.core.logging.LoggerFactory
+import io.vertx.core.impl.logging.LoggerFactory
 import io.vertx.kotlin.core.eventbus.deliveryOptionsOf
 import io.vertx.reactivex.core.AbstractVerticle
 import io.vertx.reactivex.core.buffer.Buffer

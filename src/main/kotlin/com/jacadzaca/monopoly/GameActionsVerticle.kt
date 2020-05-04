@@ -1,9 +1,9 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.gameroom.PlayerManagerImpl
 import com.jacadzaca.monopoly.gameroom.GameRoomImpl
+import com.jacadzaca.monopoly.gameroom.PlayerManagerImpl
 import io.reactivex.Completable
-import io.vertx.core.logging.LoggerFactory
+import io.vertx.core.impl.logging.LoggerFactory
 import io.vertx.reactivex.core.AbstractVerticle
 import io.vertx.reactivex.redis.client.Redis
 import io.vertx.reactivex.redis.client.RedisAPI
