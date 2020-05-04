@@ -12,6 +12,7 @@ import java.util.*
 class GameActionsVerticle : AbstractVerticle() {
   companion object {
     const val ADDRESS = "game-actions"
+    const val ROOM_ID = "roomId"
     private val logger = LoggerFactory.getLogger(this::class.java)
   }
 
@@ -22,7 +23,7 @@ class GameActionsVerticle : AbstractVerticle() {
       .eventBus()
       .consumer<GameAction>(ADDRESS) { message ->
         val action = message.body()
-        val roomId = UUID.fromString(message.headers()["roomId"])
+        val roomId = UUID.fromString(message.headers()[ROOM_ID])
         val gameRoom = GameRoomImpl(redisConnection, roomId)
         gameRoom
           .getCurrentPlayersId()

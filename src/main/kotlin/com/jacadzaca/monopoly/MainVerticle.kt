@@ -28,7 +28,7 @@ class MainVerticle : AbstractVerticle() {
       .registerCodec(gameActionCodec)
 
     server
-      .webSocketStream()
+      .websocketStream()
       .toFlowable()
       .subscribe(
         { handleWebSocketConnection(it, gameActionCodec) },
@@ -62,12 +62,10 @@ class MainVerticle : AbstractVerticle() {
   private fun handleIncomingAction(action: GameAction, connection: ServerWebSocket, gameActionCodec: GameActionCodec) {
     vertx
       .eventBus()
-      .rxRequest<String>(
+      .publish(
         GameActionsVerticle.ADDRESS,
         action,
-        deliveryOptionsOf(codecName = gameActionCodec.name(), headers = mapOf("room-id" to connection.path())))
-      .map { it.body() }
-      .subscribe({ connection.writeTextMessage(it) }, logger::error)
+        deliveryOptionsOf(codecName = gameActionCodec.name(), headers = mapOf(GameActionsVerticle.ROOM_ID to connection.path())))
   }
 
   private fun successfulStart(startPromise: Promise<Void>) {
