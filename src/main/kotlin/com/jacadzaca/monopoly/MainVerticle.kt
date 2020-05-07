@@ -32,7 +32,7 @@ class MainVerticle : AbstractVerticle() {
       .toFlowable()
       .subscribe(
         { handleWebSocketConnection(it, gameActionCodec) },
-        { failStart(it, startPromise) })
+        logger::error)
 
 
     server
