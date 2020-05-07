@@ -1,36 +1,45 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.GameAction
+import com.jacadzaca.monopoly.GameActionCodec
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import io.vertx.kotlin.core.eventbus.deliveryOptionsOf
+import io.vertx.reactivex.core.Vertx
+import io.vertx.reactivex.redis.client.Redis
 import io.vertx.reactivex.redis.client.RedisAPI
 import java.nio.charset.Charset
 import java.util.*
 
-class GameRoomImpl(private val database: RedisAPI, private val roomId: UUID) : GameRoom {
+class GameRoomImpl(private val vertx: Vertx,
+                   roomId: UUID)
+  : GameRoom {
+  private val database: RedisAPI = RedisAPI.api(Redis.createClient(vertx))
+  private val roomInputAddress = "$roomId:input"
+  private val playersListId = "$roomId:players"
+
   override fun getCurrentPlayersId(): Single<UUID> {
     return database
-      .rxLindex("$roomId:players", 0.toString())
+      .rxLindex(playersListId, 0.toString())
       .map { UUID.fromString(it.toString(Charset.defaultCharset())) }
       .toSingle()
   }
 
   override fun publishAction(action: GameAction): Completable {
-    return database
-      .rxPublish(roomId.toString(), action.toString())
-      .flatMapCompletable { Completable.complete() }
+    val gameActionCodecName = GameActionCodec().name()
+    return Completable.fromAction {
+      vertx
+        .eventBus()
+        .publish(roomInputAddress, action, deliveryOptionsOf(codecName = gameActionCodecName))
+    }
   }
 
-  /**
-   * TODO: what happens if roomID is invalid?
-   */
   override fun listenToRoom(): Flowable<GameAction> {
-    return database
-      .rxSubscribe(listOf(roomId.toString()))
-      .map { it.toList() }
-      .map { responses -> responses.map { it.toString(Charset.defaultCharset()) } }
-      .map { GameAction.creteFromList(it) }
+    return vertx
+      .eventBus()
+      .consumer<GameAction>(roomInputAddress)
       .toFlowable()
+      .map { it.body() }
   }
 }

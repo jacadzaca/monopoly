@@ -24,7 +24,7 @@ class GameActionsVerticle : AbstractVerticle() {
       .consumer<GameAction>(ADDRESS) { message ->
         val action = message.body()
         val roomId = UUID.fromString(message.headers()[ROOM_ID])
-        val gameRoom = GameRoomImpl(redisConnection, roomId)
+        val gameRoom = GameRoomImpl(vertx, roomId)
         gameRoom
           .getCurrentPlayersId()
           .filter { it == action.committerId }
