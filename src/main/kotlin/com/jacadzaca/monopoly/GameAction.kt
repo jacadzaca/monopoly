@@ -24,7 +24,7 @@ data class GameAction(val committerId: UUID, val moveSize: Int) {
 
   fun toJson(): JsonObject {
     return JsonObject()
-      .put("committerId", committerId)
+      .put("committerId", committerId.toString())
       .put("moveSize", moveSize)
   }
 }
