@@ -11,11 +11,6 @@ data class GameAction(val committerId: UUID, val moveSize: Int) {
     fun isValidJson(json: JsonObject): Boolean {
       return json.containsKey("committerId") && json.containsKey("moveSize")
     }
-
-    @JvmStatic
-    fun creteFromList(list: List<String>): GameAction {
-      return GameAction(committerId = UUID.fromString(list[0]), moveSize = list[1].toInt())
-    }
   }
 
   constructor(json: JsonObject) : this(
