@@ -11,5 +11,6 @@ interface Player {
   }
 
   fun setPosition(newPosition: Int): Completable
+  fun getId(): Single<UUID>
   fun getPosition(): Single<Int>
 }

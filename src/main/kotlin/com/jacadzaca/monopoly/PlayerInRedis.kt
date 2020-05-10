@@ -22,6 +22,10 @@ class PlayerInRedis(private val database: RedisAPI, private val id: UUID) : Play
       }
   }
 
+  override fun getId(): Single<UUID> {
+    return Single.just(id)
+  }
+
   override fun getPosition(): Single<Int> {
     return database
       .rxHget(playerKey(), "position")
