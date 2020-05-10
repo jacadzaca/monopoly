@@ -6,13 +6,13 @@ import io.vertx.reactivex.redis.client.RedisAPI
 import io.vertx.reactivex.redis.client.Response
 import java.util.*
 
-class PlayerInRedis(private val redisAPI: RedisAPI, private val id: UUID) : Player {
+class PlayerInRedis(private val database: RedisAPI, private val id: UUID) : Player {
   private companion object {
     private const val UPDATED_EXISTING_KEY = 0
   }
 
   override fun setPosition(newPosition: Int): Completable {
-    return redisAPI
+    return database
       .rxHset("${playerKey()} position $newPosition".split(' '))
       .flatMapCompletable { response ->
         when (response.toInteger()) {
@@ -23,7 +23,7 @@ class PlayerInRedis(private val redisAPI: RedisAPI, private val id: UUID) : Play
   }
 
   override fun getPosition(): Single<Int> {
-    return redisAPI
+    return database
       .rxHget(playerKey(), "position")
       .map(Response::toInteger)
       .toSingle()
