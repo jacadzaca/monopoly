@@ -18,8 +18,8 @@ class GameRoomImpl(private val eventBus: EventBus,
                    private val database: RedisAPI,
                    roomId: UUID)
   : GameRoom {
-  val roomInputAddress = "$roomId:input"
-  val playersListId = "$roomId:players"
+  internal val roomInputAddress = "$roomId:input"
+  internal val playersListId = "$roomId:players"
 
   override fun getCurrentPlayersId(): Maybe<UUID> {
     return database

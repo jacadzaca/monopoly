@@ -1,8 +1,6 @@
 package com.jacadzaca.monopoly
 
 import com.jacadzaca.monopoly.gameroom.GameRoomImpl
-import io.mockk.junit5.MockKExtension
-import io.reactivex.schedulers.Schedulers
 import io.vertx.junit5.Timeout
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
@@ -14,24 +12,20 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.extension.Extensions
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-@Extensions(
-  ExtendWith(MockKExtension::class),
-  ExtendWith(VertxExtension::class)
-)
+@ExtendWith(VertxExtension::class)
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
-class GameRoomImplIntegrationTest {
+internal class GameRoomImplIntegrationTest {
   private lateinit var gameRoom: GameRoomImpl
-  private lateinit var databse: RedisAPI
+  private lateinit var database: RedisAPI
   private val roomId = UUID.randomUUID()
 
   @BeforeEach
   fun init(vertx: Vertx) {
-    databse = RedisAPI.api(Redis.createClient(vertx))
-    gameRoom = GameRoomImpl(vertx.eventBus(), databse, roomId)
+    database = RedisAPI.api(Redis.createClient(vertx))
+    gameRoom = GameRoomImpl(vertx.eventBus(), database, roomId)
   }
 
   @Test
@@ -77,14 +71,14 @@ class GameRoomImplIntegrationTest {
   }
 
   private fun addPlayerToRoom(currentPlayersId: UUID) {
-    databse
+    database
       .rxLpush("${gameRoom.playersListId} $currentPlayersId".split(' '))
       .blockingGet()
   }
 
   @AfterEach
   fun cleanUp() {
-    databse
+    database
       .rxFlushall(listOf())
       .blockingGet()
   }
