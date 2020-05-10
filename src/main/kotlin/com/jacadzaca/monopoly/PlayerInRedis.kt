@@ -1,7 +1,9 @@
 package com.jacadzaca.monopoly
 
 import io.reactivex.Completable
+import io.reactivex.Single
 import io.vertx.reactivex.redis.client.RedisAPI
+import io.vertx.reactivex.redis.client.Response
 import java.util.*
 
 class PlayerInRedis(private val redisAPI: RedisAPI, private val id: UUID) : Player {
@@ -18,6 +20,13 @@ class PlayerInRedis(private val redisAPI: RedisAPI, private val id: UUID) : Play
           else -> Completable.error(RuntimeException("Redis had to create position key, which is not normal"))
         }
       }
+  }
+
+  override fun getPosition(): Single<Int> {
+    return redisAPI
+      .rxHget(playerKey(), "position")
+      .map(Response::toInteger)
+      .toSingle()
   }
 
   internal fun playerKey(): String {
