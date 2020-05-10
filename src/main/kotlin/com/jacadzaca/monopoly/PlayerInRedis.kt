@@ -32,4 +32,19 @@ class PlayerInRedis(private val database: RedisAPI, private val id: UUID) : Play
   internal fun playerKey(): String {
     return "player:$id"
   }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other) return true
+    if (javaClass != other?.javaClass) return false
+
+    other as PlayerInRedis
+
+    if (id != other.id) return false
+
+    return true
+  }
+
+  override fun hashCode(): Int {
+    return id.hashCode()
+  }
 }
