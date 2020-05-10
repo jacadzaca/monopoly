@@ -33,7 +33,7 @@ class PlayerInRedisIntegrationTest {
     addPlayer()
     val newPosition = 10
     player
-      .updatePosition(newPosition)
+      .setPosition(newPosition)
       .test()
       .await()
       .assertNoErrors()
@@ -51,7 +51,7 @@ class PlayerInRedisIntegrationTest {
   fun `updatePosition throws RuntimeException when Redis dose not respond with 0`() {
     val newPosition = 10
     player
-      .updatePosition(newPosition)
+      .setPosition(newPosition)
       .test()
       .await()
       .assertError(RuntimeException::class.java)

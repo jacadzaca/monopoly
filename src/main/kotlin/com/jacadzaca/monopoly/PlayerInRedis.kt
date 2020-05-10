@@ -11,7 +11,7 @@ class PlayerInRedis(private val redisAPI: RedisAPI, private val id: UUID) : Play
     private const val UPDATED_EXISTING_KEY = 0
   }
 
-  override fun updatePosition(newPosition: Int): Completable {
+  override fun setPosition(newPosition: Int): Completable {
     return redisAPI
       .rxHset("${playerKey()} position $newPosition".split(' '))
       .flatMapCompletable { response ->
