@@ -2,17 +2,15 @@ package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.GameAction
 import com.jacadzaca.monopoly.GameActionCodec
+import com.jacadzaca.monopoly.Player
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 import io.reactivex.Single
 import io.vertx.kotlin.core.eventbus.deliveryOptionsOf
-import io.vertx.reactivex.core.Vertx
 import io.vertx.reactivex.core.eventbus.EventBus
-import io.vertx.reactivex.redis.client.Redis
 import io.vertx.reactivex.redis.client.RedisAPI
-import java.nio.charset.Charset
-import java.util.*
+import io.vertx.reactivex.redis.client.Response
+import java.util.UUID
 
 class GameRoomImpl(private val eventBus: EventBus,
                    private val database: RedisAPI,
@@ -21,10 +19,13 @@ class GameRoomImpl(private val eventBus: EventBus,
   internal val roomInputAddress = "$roomId:input"
   internal val playersListId = "$roomId:players"
 
-  override fun getCurrentPlayersId(): Maybe<UUID> {
+  override fun getCurrentPlayer(): Single<Player> {
     return database
       .rxLindex(playersListId, 0.toString())
-      .map { UUID.fromString(it.toString()) }
+      .map(Response::toString)
+      .map(UUID::fromString)
+      .map { Player.playerInRedis(it, database) }
+      .toSingle()
   }
 
   override fun publishAction(action: GameAction): Completable {

@@ -1,14 +1,13 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.GameAction
+import com.jacadzaca.monopoly.Player
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Maybe
 import io.reactivex.Single
-import java.util.*
 
 interface GameRoom {
-  fun getCurrentPlayersId(): Maybe<UUID>
+  fun getCurrentPlayer(): Single<Player>
   fun publishAction(action: GameAction): Completable
   fun listenToRoom(): Flowable<GameAction>
 }
