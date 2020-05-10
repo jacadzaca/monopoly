@@ -25,7 +25,7 @@ class PlayerInRedisIntegrationTest {
   @BeforeEach
   fun init(vertx: Vertx) {
     database = RedisAPI.api(Redis.createClient(vertx))
-    player = PlayerInRedis(database, playerId)
+    player = PlayerInRedis(playerId, database)
   }
 
   @Test
