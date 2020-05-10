@@ -6,7 +6,7 @@ import io.vertx.reactivex.redis.client.RedisAPI
 import io.vertx.reactivex.redis.client.Response
 import java.util.*
 
-class PlayerInRedis(private val database: RedisAPI, private val id: UUID) : Player {
+class PlayerInRedis(override val id: UUID, private val database: RedisAPI) : Player {
   private companion object {
     private const val UPDATED_EXISTING_KEY = 0
   }
@@ -20,10 +20,6 @@ class PlayerInRedis(private val database: RedisAPI, private val id: UUID) : Play
           else -> Completable.error(RuntimeException("Redis had to create position key, which is not normal"))
         }
       }
-  }
-
-  override fun getId(): Single<UUID> {
-    return Single.just(id)
   }
 
   override fun getPosition(): Single<Int> {

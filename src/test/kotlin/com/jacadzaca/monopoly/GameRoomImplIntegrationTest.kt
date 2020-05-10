@@ -29,28 +29,17 @@ internal class GameRoomImplIntegrationTest {
   }
 
   @Test
-  fun `getCurrentPlayersId should fetch the first index from redis list`(testContext: VertxTestContext) {
-    val currentPlayersId = UUID.randomUUID()
-    addPlayerToRoom(currentPlayersId)
+  fun `getCurrentPlayer should fetch the first element from room's players list`(testContext: VertxTestContext) {
+    val currentPlayer = Player.playerInRedis(UUID.randomUUID(), database)
+    addPlayerToRoom(currentPlayer)
 
     gameRoom
-      .getCurrentPlayersId()
+      .getCurrentPlayer()
       .doOnSuccess { testContext.completeNow() }
       .doOnError { testContext.failNow(IllegalStateException("Test case should have returned currentPlayersId")) }
       .test()
       .await()
-      .assertResult(currentPlayersId)
-  }
-
-  @Test
-  fun `getCurrentPlayerId should return empty Maybe if there is no current player`(testContext: VertxTestContext) {
-    gameRoom
-      .getCurrentPlayersId()
-      .doOnSuccess { testContext.failNow(IllegalStateException("No element was supposed to be found")) }
-      .doOnComplete { testContext.completeNow() }
-      .test()
-      .await()
-      .assertNoValues()
+      .assertResult(currentPlayer)
   }
 
   @Test
@@ -70,9 +59,9 @@ internal class GameRoomImplIntegrationTest {
       .subscribe()
   }
 
-  private fun addPlayerToRoom(currentPlayersId: UUID) {
+  private fun addPlayerToRoom(player: Player) {
     database
-      .rxLpush("${gameRoom.playersListId} $currentPlayersId".split(' '))
+      .rxLpush("${gameRoom.playersListId} ${player.id}".split(' '))
       .blockingGet()
   }
 
