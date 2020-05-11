@@ -10,24 +10,15 @@ import java.nio.charset.Charset
 import java.util.UUID
 
 internal class PlayerManagerRedis(private val database: RedisAPI) : PlayerManager {
-  companion object {
-    private val OK = SimpleStringType.OK.toString()
-  }
-
   override fun savePlayer(player: Player): Completable {
     return database
       .rxHmset(player.redisHashDescription())
-      .flatMapCompletable { result ->
-        when (result.toString()) {
-          OK -> Completable.complete()
-          else -> Completable.error(IllegalStateException("Redis responded with: $result"))
-        }
-      }
+      .flatMapCompletable { Completable.complete() }
   }
 
   override fun getPlayer(id: UUID): Maybe<Player> {
     return database
-      .rxHvals("player:${id.toString()}")
+      .rxHvals("player:$id")
       .map(Response::toList)
       .map(this::toStringList)
       .filter { it.isNotEmpty() }
