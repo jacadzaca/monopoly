@@ -9,7 +9,7 @@ import io.vertx.redis.client.impl.types.SimpleStringType
 import java.nio.charset.Charset
 import java.util.UUID
 
-internal class PlayerManagerImpl(private val database: RedisAPI) : PlayerManager {
+internal class PlayerManagerRedis(private val database: RedisAPI) : PlayerManager {
   companion object {
     private val OK = SimpleStringType.OK.toString()
   }

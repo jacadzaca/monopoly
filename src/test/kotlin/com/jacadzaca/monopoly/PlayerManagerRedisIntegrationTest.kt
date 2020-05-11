@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.gameroom.PlayerManagerImpl
+import com.jacadzaca.monopoly.gameroom.PlayerManagerRedis
 import io.vertx.junit5.Timeout
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
@@ -16,14 +16,14 @@ import java.util.concurrent.TimeUnit
 
 @ExtendWith(VertxExtension::class)
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
-class PlayerManagerImplIntegrationTest {
+class PlayerManagerRedisIntegrationTest {
   private lateinit var  database: RedisAPI
-  private lateinit var playerManager: PlayerManagerImpl
+  private lateinit var playerManager: PlayerManagerRedis
 
   @BeforeEach
   fun setUp(vertx: Vertx) {
     database = RedisAPI.api(Redis.createClient(vertx))
-    playerManager = PlayerManagerImpl(database)
+    playerManager = PlayerManagerRedis(database)
   }
 
   @Test
