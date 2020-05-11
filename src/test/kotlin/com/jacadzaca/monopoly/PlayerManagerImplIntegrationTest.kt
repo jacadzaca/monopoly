@@ -1,7 +1,6 @@
 package com.jacadzaca.monopoly
 
 import com.jacadzaca.monopoly.gameroom.PlayerManagerImpl
-import io.mockk.junit5.MockKExtension
 import io.vertx.junit5.Timeout
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
@@ -9,17 +8,23 @@ import io.vertx.reactivex.core.Vertx
 import io.vertx.reactivex.redis.client.Redis
 import io.vertx.reactivex.redis.client.RedisAPI
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.extension.Extensions
 import java.util.*
 import java.util.concurrent.TimeUnit
 
 @ExtendWith(VertxExtension::class)
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 class PlayerManagerImplIntegrationTest {
-  private val database: RedisAPI = RedisAPI.api(Redis.createClient(Vertx.vertx()))
-  private val playerManager: PlayerManagerImpl = PlayerManagerImpl(database)
+  private lateinit var  database: RedisAPI
+  private lateinit var playerManager: PlayerManagerImpl
+
+  @BeforeEach
+  fun setUp(vertx: Vertx) {
+    database = RedisAPI.api(Redis.createClient(vertx))
+    playerManager = PlayerManagerImpl(database)
+  }
 
   @Test
   fun `savePlayer should complete when a player is saved`(testContext: VertxTestContext) {
