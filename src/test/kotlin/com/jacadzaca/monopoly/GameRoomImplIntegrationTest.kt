@@ -1,6 +1,11 @@
 package com.jacadzaca.monopoly
 
 import com.jacadzaca.monopoly.gameroom.GameRoomImpl
+import com.jacadzaca.monopoly.gameroom.PlayerManager
+import io.mockk.every
+import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
+import io.reactivex.Maybe
 import io.vertx.junit5.Timeout
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
@@ -12,25 +17,31 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.extension.Extensions
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-@ExtendWith(VertxExtension::class)
+@Extensions(
+  ExtendWith(MockKExtension::class),
+  ExtendWith(VertxExtension::class)
+)
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 internal class GameRoomImplIntegrationTest {
   private lateinit var gameRoom: GameRoomImpl
   private lateinit var database: RedisAPI
+  private lateinit var playerManager: PlayerManager
   private val roomId = UUID.randomUUID()
 
   @BeforeEach
   fun init(vertx: Vertx) {
     database = RedisAPI.api(Redis.createClient(vertx))
-    gameRoom = GameRoomImpl(vertx.eventBus(), database, roomId)
+    playerManager = mockk()
+    gameRoom = GameRoomImpl(vertx.eventBus(), database, playerManager ,roomId)
   }
 
   @Test
   fun `getCurrentPlayer should fetch the first element from room's players list`(testContext: VertxTestContext) {
-    val currentPlayer = Player.playerInRedis(UUID.randomUUID(), database)
+    val currentPlayer = Player(UUID.randomUUID(), Piece(0))
     addPlayerToRoom(currentPlayer)
 
     gameRoom
@@ -63,6 +74,7 @@ internal class GameRoomImplIntegrationTest {
     database
       .rxLpush("${gameRoom.playersListId} ${player.id}".split(' '))
       .blockingGet()
+    every { playerManager.getPlayer(player.id) } returns Maybe.just(player)
   }
 
   @AfterEach

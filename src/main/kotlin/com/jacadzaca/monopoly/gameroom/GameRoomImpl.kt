@@ -14,6 +14,7 @@ import java.util.UUID
 
 class GameRoomImpl(private val eventBus: EventBus,
                    private val database: RedisAPI,
+                   private val playerManager: PlayerManager,
                    roomId: UUID)
   : GameRoom {
   internal val roomInputAddress = "$roomId:input"
@@ -24,7 +25,7 @@ class GameRoomImpl(private val eventBus: EventBus,
       .rxLindex(playersListId, 0.toString())
       .map(Response::toString)
       .map(UUID::fromString)
-      .map { Player.playerInRedis(it, database) }
+      .flatMap(playerManager::getPlayer)
       .toSingle()
   }
 
