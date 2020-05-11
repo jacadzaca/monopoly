@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 
 @ExtendWith(VertxExtension::class)
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
-class PlayerManagerRedisIntegrationTest {
+internal class PlayerManagerRedisIntegrationTest {
   private lateinit var  database: RedisAPI
   private lateinit var playerManager: PlayerManagerRedis
 
