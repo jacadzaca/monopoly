@@ -2,7 +2,6 @@ package com.jacadzaca.monopoly
 
 import com.jacadzaca.monopoly.gameroom.PlayerManagerImpl
 import io.mockk.junit5.MockKExtension
-import io.reactivex.schedulers.Schedulers
 import io.vertx.junit5.Timeout
 import io.vertx.junit5.VertxExtension
 import io.vertx.junit5.VertxTestContext
@@ -13,14 +12,10 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.Extensions
-import java.lang.IllegalStateException
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-@Extensions(
-  ExtendWith(MockKExtension::class),
-  ExtendWith(VertxExtension::class)
-)
+@ExtendWith(VertxExtension::class)
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 class PlayerManagerImplIntegrationTest {
   private val database: RedisAPI = RedisAPI.api(Redis.createClient(Vertx.vertx()))
@@ -28,7 +23,7 @@ class PlayerManagerImplIntegrationTest {
 
   @Test
   fun `savePlayer should complete when a player is saved`(testContext: VertxTestContext) {
-    val playerToBeSaved = Player()
+    val playerToBeSaved = getTestPlayer()
     playerManager
       .savePlayer(playerToBeSaved)
       .doOnComplete(testContext::completeNow)
@@ -40,7 +35,7 @@ class PlayerManagerImplIntegrationTest {
 
   @Test
   fun `getPlayer should return the queried player`(testContext: VertxTestContext) {
-    val expectedPlayer = Player()
+    val expectedPlayer = getTestPlayer()
     database
       .rxHmset(expectedPlayer.redisHashDescription())
       .blockingGet()
@@ -72,5 +67,9 @@ class PlayerManagerImplIntegrationTest {
     database
       .rxFlushall(listOf())
       .blockingGet()
+  }
+
+  private fun getTestPlayer(): Player {
+    return Player(UUID.randomUUID(), Piece(position = 0))
   }
 }
