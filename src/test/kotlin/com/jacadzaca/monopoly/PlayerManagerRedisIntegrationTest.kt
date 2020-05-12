@@ -17,13 +17,13 @@ import java.util.concurrent.TimeUnit
 @ExtendWith(VertxExtension::class)
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 internal class PlayerManagerRedisIntegrationTest {
-  private lateinit var  database: RedisAPI
+  private lateinit var  redis: RedisAPI
   private lateinit var playerManager: PlayerManagerRedis
 
   @BeforeEach
   fun setUp(vertx: Vertx) {
-    database = RedisAPI.api(Redis.createClient(vertx))
-    playerManager = PlayerManagerRedis(database)
+    redis = RedisAPI.api(Redis.createClient(vertx))
+    playerManager = PlayerManagerRedis(redis)
   }
 
   @Test
@@ -41,7 +41,7 @@ internal class PlayerManagerRedisIntegrationTest {
   @Test
   fun `getPlayer should return the queried player`(testContext: VertxTestContext) {
     val expectedPlayer = getTestPlayer()
-    database
+    redis
       .rxHmset(expectedPlayer.redisHashDescription())
       .blockingGet()
 
@@ -69,7 +69,7 @@ internal class PlayerManagerRedisIntegrationTest {
 
   @AfterEach
   fun cleanUp() {
-    database
+    redis
       .rxFlushall(listOf())
       .blockingGet()
   }

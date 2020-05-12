@@ -28,15 +28,15 @@ import java.util.concurrent.TimeUnit
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 internal class GameRoomImplIntegrationTest {
   private lateinit var gameRoom: GameRoomImpl
-  private lateinit var database: RedisAPI
+  private lateinit var redis: RedisAPI
   private lateinit var playerManager: PlayerManager
   private val roomId = UUID.randomUUID()
 
   @BeforeEach
   fun init(vertx: Vertx) {
-    database = RedisAPI.api(Redis.createClient(vertx))
+    redis = RedisAPI.api(Redis.createClient(vertx))
     playerManager = mockk()
-    gameRoom = GameRoomImpl(vertx.eventBus(), database, playerManager ,roomId)
+    gameRoom = GameRoomImpl(vertx.eventBus(), redis, playerManager ,roomId)
   }
 
   @Test
@@ -71,7 +71,7 @@ internal class GameRoomImplIntegrationTest {
   }
 
   private fun addPlayerToRoom(player: Player) {
-    database
+    redis
       .rxLpush("${gameRoom.playersListId} ${player.id}".split(' '))
       .blockingGet()
     every { playerManager.getPlayer(player.id) } returns Maybe.just(player)
@@ -79,7 +79,7 @@ internal class GameRoomImplIntegrationTest {
 
   @AfterEach
   fun cleanUp() {
-    database
+    redis
       .rxFlushall(listOf())
       .blockingGet()
   }

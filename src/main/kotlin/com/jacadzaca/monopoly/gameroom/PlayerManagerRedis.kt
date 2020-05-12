@@ -5,19 +5,18 @@ import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.vertx.reactivex.redis.client.RedisAPI
 import io.vertx.reactivex.redis.client.Response
-import io.vertx.redis.client.impl.types.SimpleStringType
 import java.nio.charset.Charset
 import java.util.UUID
 
-internal class PlayerManagerRedis(private val database: RedisAPI) : PlayerManager {
+internal class PlayerManagerRedis(private val redis: RedisAPI) : PlayerManager {
   override fun savePlayer(player: Player): Completable {
-    return database
+    return redis
       .rxHmset(player.redisHashDescription())
       .flatMapCompletable { Completable.complete() }
   }
 
   override fun getPlayer(id: UUID): Maybe<Player> {
-    return database
+    return redis
       .rxHvals("player:$id")
       .map(Response::toList)
       .map(this::toStringList)

@@ -13,7 +13,7 @@ import io.vertx.reactivex.redis.client.Response
 import java.util.UUID
 
 class GameRoomImpl(private val eventBus: EventBus,
-                   private val database: RedisAPI,
+                   private val redis: RedisAPI,
                    private val playerManager: PlayerManager,
                    roomId: UUID)
   : GameRoom {
@@ -21,7 +21,7 @@ class GameRoomImpl(private val eventBus: EventBus,
   internal val playersListId = "$roomId:players"
 
   override fun getCurrentPlayer(): Single<Player> {
-    return database
+    return redis
       .rxLindex(playersListId, 0.toString())
       .map(Response::toString)
       .map(UUID::fromString)
