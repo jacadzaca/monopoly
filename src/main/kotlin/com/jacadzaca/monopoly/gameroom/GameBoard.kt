@@ -1,6 +1,5 @@
 package com.jacadzaca.monopoly.gameroom
 
-import com.jacadzaca.monopoly.GameAction
 import com.jacadzaca.monopoly.Player
 
 interface GameBoard {
@@ -10,9 +9,6 @@ interface GameBoard {
     @JvmStatic
     fun create(): GameBoard = standardGameBoard
   }
-
-  fun canPlayerExecuteAction(player: Player, action: GameAction): Boolean
-
   /**
    * pretends to roll a dice and then moves the @param player
    */

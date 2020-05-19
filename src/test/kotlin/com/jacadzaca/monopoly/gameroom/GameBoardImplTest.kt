@@ -1,10 +1,8 @@
 package com.jacadzaca.monopoly.gameroom
 
-import com.jacadzaca.monopoly.GameAction
 import com.jacadzaca.monopoly.Piece
 import com.jacadzaca.monopoly.Player
-
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -19,13 +17,6 @@ internal class GameBoardImplTest {
   @BeforeEach
   fun setUp() {
     gameBoard = GameBoardImpl(BOARD_SIZE) { ROLLED_MOVE }
-  }
-
-  @Test
-  fun `canPlayerExecuteAction should return false if committer's id and player's id differ`() {
-    val player = getTestPlayer()
-    val gameAction = getTestGameAction()
-    assertFalse(gameBoard.canPlayerExecuteAction(player, gameAction))
   }
 
   @Test
@@ -44,8 +35,6 @@ internal class GameBoardImplTest {
     val wrappedPosition = 0
     assertEquals(wrappedPosition, gameBoard.movePlayer(player).piece.position)
   }
-
-  private fun getTestGameAction(): GameAction = GameAction(UUID.randomUUID(), 1)
 
   private fun getTestPlayer(): Player = Player(UUID.randomUUID(), Piece())
 }
