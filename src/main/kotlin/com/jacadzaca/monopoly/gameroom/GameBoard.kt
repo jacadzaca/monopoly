@@ -4,7 +4,7 @@ import com.jacadzaca.monopoly.GameAction
 import com.jacadzaca.monopoly.Player
 
 interface GameBoard {
-  private companion object {
+  companion object {
     private val standardGameBoard = GameBoardImpl(20, (1..6)::random)
 
     @JvmStatic
