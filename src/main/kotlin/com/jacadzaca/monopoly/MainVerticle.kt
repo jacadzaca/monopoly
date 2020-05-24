@@ -13,13 +13,6 @@ class MainVerticle : AbstractVerticle() {
     private val logger = LoggerFactory.getLogger(this::class.java)
   }
   override fun start(startPromise: Promise<Void>) {
-    val router = Router.router(vertx)
-    router.get("/").handler { request ->
-      request
-        .response()
-        .rxSendFile("welcome.html")
-        .subscribe()
-    }
     val server = vertx.createHttpServer()
 
     val gameActionCodec = GameActionCodec()
@@ -36,7 +29,6 @@ class MainVerticle : AbstractVerticle() {
 
 
     server
-      .requestHandler(router)
       .rxListen(8080)
       .subscribe(
         { successfulStart(startPromise) },
