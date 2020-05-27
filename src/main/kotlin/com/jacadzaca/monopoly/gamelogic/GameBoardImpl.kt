@@ -1,5 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic
 
+import java.math.BigInteger
+
 internal class GameBoardImpl(private val boardSize: Int,
                              private val dieRoller: () -> Int)
   : GameBoard {
@@ -9,6 +11,17 @@ internal class GameBoardImpl(private val boardSize: Int,
 
   override fun movePlayer(player: Player): Player {
     return player.copy(piece = Piece(wrapMove(player.piece.position, dieRoller())))
+  }
+
+  override fun addFunds(player: Player, howMuch: BigInteger): Player {
+    return player.copy(balance = player.balance + howMuch)
+  }
+
+  override fun detractFunds(player: Player, howMuch: BigInteger): Player {
+    if (player.balance < howMuch) {
+      throw IllegalArgumentException("$player has insufficient funds")
+    }
+    return player.copy(balance = player.balance - howMuch)
   }
 
   private fun wrapMove(currentPosition: Int, move: Int): Int {

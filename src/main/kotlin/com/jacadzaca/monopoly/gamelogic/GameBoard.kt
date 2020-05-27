@@ -1,5 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic
 
+import java.math.BigInteger
+
 interface GameBoard {
   companion object {
     private val standardGameBoard =
@@ -16,4 +18,6 @@ interface GameBoard {
    * pretends to roll a dice and then moves the @param player
    */
   fun movePlayer(player: Player): Player
+  fun addFunds(player: Player, howMuch: BigInteger): Player
+  fun detractFunds(player: Player, howMuch: BigInteger): Player
 }
