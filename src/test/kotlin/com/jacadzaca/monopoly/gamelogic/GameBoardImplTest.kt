@@ -1,5 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic
 
+import com.jacadzaca.monopoly.getTestGameEvent
+import com.jacadzaca.monopoly.getTestPlayer
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -68,13 +70,4 @@ internal class GameBoardImplTest {
       gameBoard.detractFunds(player, howMuch)
     }
   }
-
-  private fun getTestGameEvent(): GameEvent =
-    GameEvent(UUID.randomUUID(), 1)
-
-  private fun getTestPlayer(): Player =
-    Player(
-      UUID.randomUUID(),
-      Piece(),
-      1234.toBigInteger())
 }

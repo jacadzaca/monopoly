@@ -44,7 +44,7 @@ internal class GameRoomImplIntegrationTest {
 
   @Test
   fun `getCurrentPlayer should fetch the first element from room's players list`(testContext: VertxTestContext) {
-    val currentPlayer = Player(UUID.randomUUID(), Piece(0), 123.toBigInteger())
+    val currentPlayer = getTestPlayer()
     addPlayerToRoom(currentPlayer)
 
     gameRoom
@@ -58,7 +58,7 @@ internal class GameRoomImplIntegrationTest {
 
   @Test
   fun `publishAction should publish action to eventBus`(testContext: VertxTestContext, vertx: Vertx) {
-    val action = GameEvent(UUID.randomUUID(), 1)
+    val action = getTestGameEvent()
 
     vertx
       .eventBus()

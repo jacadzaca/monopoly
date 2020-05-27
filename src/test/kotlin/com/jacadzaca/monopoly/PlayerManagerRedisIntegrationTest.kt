@@ -1,7 +1,5 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.gamelogic.Piece
-import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gameroom.PlayerManagerRedis
 import io.vertx.junit5.Timeout
 import io.vertx.junit5.VertxExtension
@@ -74,9 +72,5 @@ internal class PlayerManagerRedisIntegrationTest {
     redis
       .rxFlushall(listOf())
       .blockingGet()
-  }
-
-  private fun getTestPlayer(): Player {
-    return Player(UUID.randomUUID(), Piece(position = 0), 123.toBigInteger())
   }
 }
