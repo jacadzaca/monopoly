@@ -77,6 +77,6 @@ internal class PlayerManagerRedisIntegrationTest {
   }
 
   private fun getTestPlayer(): Player {
-    return Player(UUID.randomUUID(), Piece(position = 0))
+    return Player(UUID.randomUUID(), Piece(position = 0), 123.toBigInteger())
   }
 }

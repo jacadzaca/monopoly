@@ -44,7 +44,7 @@ internal class GameRoomImplIntegrationTest {
 
   @Test
   fun `getCurrentPlayer should fetch the first element from room's players list`(testContext: VertxTestContext) {
-    val currentPlayer = Player(UUID.randomUUID(), Piece(0))
+    val currentPlayer = Player(UUID.randomUUID(), Piece(0), 123.toBigInteger())
     addPlayerToRoom(currentPlayer)
 
     gameRoom
