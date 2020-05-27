@@ -10,7 +10,7 @@ interface GameBoard {
         standardGameBoard
   }
 
-  fun canPlayerExecuteAction(player: Player, action: GameAction): Boolean
+  fun canPlayerExecuteAction(player: Player, event: GameEvent): Boolean
 
   /**
    * pretends to roll a dice and then moves the @param player

@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly.gameroom
 
-import com.jacadzaca.monopoly.gamelogic.GameAction
+import com.jacadzaca.monopoly.gamelogic.GameEvent
 import com.jacadzaca.monopoly.GameActionCodec
 import com.jacadzaca.monopoly.gamelogic.Player
 import io.reactivex.Completable
@@ -29,20 +29,20 @@ class GameRoomImpl(private val eventBus: EventBus,
       .toSingle()
   }
 
-  override fun publishAction(action: GameAction): Completable {
+  override fun publishAction(event: GameEvent): Completable {
     val gameActionCodecName = GameActionCodec().name()
     return Completable.fromAction {
       eventBus
         .publish(
           roomInputAddress,
-          action,
+          event,
           deliveryOptionsOf(codecName = gameActionCodecName))
     }
   }
 
-  override fun listenToRoom(): Flowable<GameAction> {
+  override fun listenToRoom(): Flowable<GameEvent> {
     return eventBus
-      .consumer<GameAction>(roomInputAddress)
+      .consumer<GameEvent>(roomInputAddress)
       .toFlowable()
       .map { it.body() }
   }

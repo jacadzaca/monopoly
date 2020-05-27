@@ -5,7 +5,7 @@ import io.vertx.kotlin.core.json.Json
 import io.vertx.kotlin.core.json.obj
 import java.util.UUID
 
-data class GameAction(val committerId: UUID, val moveSize: Int) {
+data class GameEvent(val committerId: UUID, val moveSize: Int) {
   companion object {
     @JvmStatic
     fun isValidJson(json: JsonObject): Boolean {

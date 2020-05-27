@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.gamelogic.GameAction
+import com.jacadzaca.monopoly.gamelogic.GameEvent
 import com.jacadzaca.monopoly.gamelogic.Piece
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gameroom.GameRoomImpl
@@ -58,12 +58,12 @@ internal class GameRoomImplIntegrationTest {
 
   @Test
   fun `publishAction should publish action to eventBus`(testContext: VertxTestContext, vertx: Vertx) {
-    val action = GameAction(UUID.randomUUID(), 1)
+    val action = GameEvent(UUID.randomUUID(), 1)
 
     vertx
       .eventBus()
       .registerCodec(GameActionCodec())
-      .consumer<GameAction>(gameRoom.roomInputAddress) { message ->
+      .consumer<GameEvent>(gameRoom.roomInputAddress) { message ->
         Assertions.assertEquals(action, message.body())
         testContext.completeNow()
       }

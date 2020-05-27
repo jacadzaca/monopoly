@@ -3,8 +3,8 @@ package com.jacadzaca.monopoly.gamelogic
 internal class GameBoardImpl(private val boardSize: Int,
                              private val dieRoller: () -> Int)
   : GameBoard {
-  override fun canPlayerExecuteAction(player: Player, action: GameAction): Boolean {
-    return player.id == action.committerId
+  override fun canPlayerExecuteAction(player: Player, event: GameEvent): Boolean {
+    return player.id == event.committerId
   }
 
   override fun movePlayer(player: Player): Player {

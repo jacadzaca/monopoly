@@ -43,8 +43,8 @@ internal class GameBoardImplTest {
     assertEquals(wrappedPosition, gameBoard.movePlayer(player).piece.position)
   }
 
-  private fun getTestGameAction(): GameAction =
-    GameAction(UUID.randomUUID(), 1)
+  private fun getTestGameAction(): GameEvent =
+    GameEvent(UUID.randomUUID(), 1)
 
   private fun getTestPlayer(): Player =
     Player(
