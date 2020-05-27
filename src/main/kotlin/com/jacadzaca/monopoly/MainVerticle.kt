@@ -1,12 +1,12 @@
 package com.jacadzaca.monopoly
 
+import com.jacadzaca.monopoly.gamelogic.GameAction
 import io.vertx.core.Promise
 import io.vertx.core.impl.logging.LoggerFactory
 import io.vertx.kotlin.core.eventbus.deliveryOptionsOf
 import io.vertx.reactivex.core.AbstractVerticle
 import io.vertx.reactivex.core.buffer.Buffer
 import io.vertx.reactivex.core.http.ServerWebSocket
-import io.vertx.reactivex.ext.web.Router
 
 class MainVerticle : AbstractVerticle() {
   private companion object {
@@ -26,8 +26,6 @@ class MainVerticle : AbstractVerticle() {
       .subscribe(
         { handleWebSocketConnection(it, gameActionCodec) },
         logger::error)
-
-
     server
       .rxListen(8080)
       .subscribe(
@@ -36,7 +34,7 @@ class MainVerticle : AbstractVerticle() {
   }
 
   private fun handleWebSocketConnection(connection: ServerWebSocket, gameActionCodec: GameActionCodec) {
-    connection
+    val test = connection
       .toFlowable()
       .map(Buffer::toJsonObject)
       .filter { GameAction.isValidJson(it) }
@@ -44,6 +42,7 @@ class MainVerticle : AbstractVerticle() {
       .subscribe(
         { handleIncomingAction(it, connection, gameActionCodec) },
         { handleWrongIncomingAction(it, connection) })
+    connection.endHandler { test.dispose() }
   }
 
   private fun handleWrongIncomingAction(error: Throwable, connection: ServerWebSocket) {
@@ -52,12 +51,6 @@ class MainVerticle : AbstractVerticle() {
   }
 
   private fun handleIncomingAction(action: GameAction, connection: ServerWebSocket, gameActionCodec: GameActionCodec) {
-    vertx
-      .eventBus()
-      .publish(
-        GameActionsVerticle.ADDRESS,
-        action,
-        deliveryOptionsOf(codecName = gameActionCodec.name(), headers = mapOf(GameActionsVerticle.ROOM_ID to connection.path())))
   }
 
   private fun successfulStart(startPromise: Promise<Void>) {
