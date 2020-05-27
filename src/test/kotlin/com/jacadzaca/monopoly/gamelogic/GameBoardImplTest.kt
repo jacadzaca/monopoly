@@ -1,8 +1,4 @@
-package com.jacadzaca.monopoly.gameroom
-
-import com.jacadzaca.monopoly.GameAction
-import com.jacadzaca.monopoly.Piece
-import com.jacadzaca.monopoly.Player
+package com.jacadzaca.monopoly.gamelogic
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
@@ -18,7 +14,8 @@ internal class GameBoardImplTest {
 
   @BeforeEach
   fun setUp() {
-    gameBoard = GameBoardImpl(BOARD_SIZE) { ROLLED_MOVE }
+    gameBoard =
+      GameBoardImpl(BOARD_SIZE) { ROLLED_MOVE }
   }
 
   @Test
@@ -39,13 +36,19 @@ internal class GameBoardImplTest {
   @Test
   fun `movePlayer should wrap position calculation`() {
     val rolledMove = 3
-    gameBoard = GameBoardImpl(BOARD_SIZE) { rolledMove }
+    gameBoard =
+      GameBoardImpl(BOARD_SIZE) { rolledMove }
     val player = getTestPlayer().copy(piece = Piece(BOARD_SIZE - rolledMove))
     val wrappedPosition = 0
     assertEquals(wrappedPosition, gameBoard.movePlayer(player).piece.position)
   }
 
-  private fun getTestGameAction(): GameAction = GameAction(UUID.randomUUID(), 1)
+  private fun getTestGameAction(): GameAction =
+    GameAction(UUID.randomUUID(), 1)
 
-  private fun getTestPlayer(): Player = Player(UUID.randomUUID(), Piece())
+  private fun getTestPlayer(): Player =
+    Player(
+      UUID.randomUUID(),
+      Piece()
+    )
 }

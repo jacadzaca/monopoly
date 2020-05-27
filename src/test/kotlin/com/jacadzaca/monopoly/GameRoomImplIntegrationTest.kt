@@ -1,5 +1,8 @@
 package com.jacadzaca.monopoly
 
+import com.jacadzaca.monopoly.gamelogic.GameAction
+import com.jacadzaca.monopoly.gamelogic.Piece
+import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gameroom.GameRoomImpl
 import com.jacadzaca.monopoly.gameroom.PlayerManager
 import io.mockk.every

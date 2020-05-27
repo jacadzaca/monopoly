@@ -1,8 +1,4 @@
-package com.jacadzaca.monopoly.gameroom
-
-import com.jacadzaca.monopoly.GameAction
-import com.jacadzaca.monopoly.Piece
-import com.jacadzaca.monopoly.Player
+package com.jacadzaca.monopoly.gamelogic
 
 internal class GameBoardImpl(private val boardSize: Int,
                     private val dieRoller: () -> Int)
@@ -12,7 +8,13 @@ internal class GameBoardImpl(private val boardSize: Int,
   }
 
   override fun movePlayer(player: Player): Player {
-    return player.copy(piece = Piece(wrapMove(player.piece.position, dieRoller())))
+    return player.copy(piece = Piece(
+      wrapMove(
+        player.piece.position,
+        dieRoller()
+      )
+    )
+    )
   }
 
   private fun wrapMove(currentPosition: Int, move: Int): Int {

@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly
+package com.jacadzaca.monopoly.gamelogic
 
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.json.Json

@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly.gameroom
 
-import com.jacadzaca.monopoly.Player
+import com.jacadzaca.monopoly.gamelogic.Player
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import io.vertx.reactivex.redis.client.RedisAPI

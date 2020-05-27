@@ -1,10 +1,12 @@
 package com.jacadzaca.monopoly
 
+import com.jacadzaca.monopoly.gamelogic.GameAction
 import io.vertx.core.buffer.Buffer
 import io.vertx.core.eventbus.MessageCodec
 
 class GameActionCodec : MessageCodec<GameAction, GameAction> {
-  override fun decodeFromWire(pos: Int, buffer: Buffer): GameAction = GameAction(buffer.toJsonObject())
+  override fun decodeFromWire(pos: Int, buffer: Buffer): GameAction =
+      GameAction(buffer.toJsonObject())
 
   override fun systemCodecID(): Byte = -1
 

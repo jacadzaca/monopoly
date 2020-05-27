@@ -1,7 +1,7 @@
 package com.jacadzaca.monopoly.gameroom
 
-import com.jacadzaca.monopoly.GameAction
-import com.jacadzaca.monopoly.Player
+import com.jacadzaca.monopoly.gamelogic.GameAction
+import com.jacadzaca.monopoly.gamelogic.Player
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
