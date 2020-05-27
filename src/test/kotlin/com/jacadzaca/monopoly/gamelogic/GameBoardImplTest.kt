@@ -21,7 +21,7 @@ internal class GameBoardImplTest {
   @Test
   fun `canPlayerExecuteAction should return false if committer's id and player's id differ`() {
     val player = getTestPlayer()
-    val gameAction = getTestGameAction()
+    val gameAction = getTestGameEvent()
     assertFalse(gameBoard.canPlayerExecuteAction(player, gameAction))
   }
 
@@ -43,7 +43,7 @@ internal class GameBoardImplTest {
     assertEquals(wrappedPosition, gameBoard.movePlayer(player).piece.position)
   }
 
-  private fun getTestGameAction(): GameEvent =
+  private fun getTestGameEvent(): GameEvent =
     GameEvent(UUID.randomUUID(), 1)
 
   private fun getTestPlayer(): Player =
