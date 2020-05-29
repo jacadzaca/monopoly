@@ -55,6 +55,22 @@ internal class GameBoardImplTest {
   }
 
   @Test
+  fun `addFunds should throw IllegalArgument if howMuch is negative`() {
+    val howMuch = (-123).toBigInteger()
+    assertThrows<IllegalArgumentException> {
+      gameBoard.addFunds(getTestPlayer(), howMuch)
+    }
+  }
+
+  @Test
+  fun `detractFunds should thor IllegalArgument if howMuch is negative`() {
+    val howMuch = (-123).toBigInteger()
+    assertThrows<IllegalArgumentException> {
+      gameBoard.detractFunds(getTestPlayer(), howMuch)
+    }
+  }
+
+  @Test
   fun `detractFunds should detract from player's balance`() {
     val player = getTestPlayer()
     val howMuch = 123.toBigInteger()

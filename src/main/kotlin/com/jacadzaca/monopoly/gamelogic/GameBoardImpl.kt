@@ -14,12 +14,18 @@ internal class GameBoardImpl(private val boardSize: Int,
   }
 
   override fun addFunds(player: Player, howMuch: BigInteger): Player {
+    if (howMuch < BigInteger.ZERO) {
+      throw IllegalArgumentException("howMuch must be positive, $player $howMuch")
+    }
     return player.copy(balance = player.balance + howMuch)
   }
 
   override fun detractFunds(player: Player, howMuch: BigInteger): Player {
     if (player.balance < howMuch) {
       throw IllegalArgumentException("$player has insufficient funds")
+    }
+    if (howMuch < BigInteger.ZERO) {
+      throw IllegalArgumentException("howMuch must be positive, $player $howMuch")
     }
     return player.copy(balance = player.balance - howMuch)
   }
