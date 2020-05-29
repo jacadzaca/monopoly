@@ -38,10 +38,7 @@ internal class GameBoardImplTest {
 
   @Test
   fun `movePlayer should wrap position calculation`() {
-    val rolledMove = 3
-    gameBoard =
-      GameBoardImpl(BOARD_SIZE) { rolledMove }
-    val player = getTestPlayer().copy(piece = Piece(BOARD_SIZE - rolledMove))
+    val player = getTestPlayer().copy(piece = Piece(BOARD_SIZE - ROLLED_MOVE))
     val wrappedPosition = 0
     assertEquals(wrappedPosition, gameBoard.movePlayer(player).piece.position)
   }
