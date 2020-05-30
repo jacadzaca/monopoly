@@ -1,24 +1,35 @@
 package com.jacadzaca.monopoly.gamelogic
 
+import com.jacadzaca.monopoly.createField
+import com.jacadzaca.monopoly.createLiability
 import com.jacadzaca.monopoly.getTestGameEvent
 import com.jacadzaca.monopoly.getTestPlayer
+import io.mockk.every
+import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.extension.ExtendWith
 import java.util.*
 
+@ExtendWith(MockKExtension::class)
 internal class GameBoardImplTest {
   companion object {
     private const val BOARD_SIZE = 20
     private const val ROLLED_MOVE = 5
   }
   private lateinit var gameBoard: GameBoardImpl
+  private lateinit var rentCalculator: RentCalculator
+  private lateinit var fields: List<Field>
 
   @BeforeEach
   fun setUp() {
+    rentCalculator = mockk(relaxed = true)
+    fields = mockk()
     gameBoard =
-      GameBoardImpl(BOARD_SIZE) { ROLLED_MOVE }
+      GameBoardImpl(BOARD_SIZE, { ROLLED_MOVE }, fields, rentCalculator)
   }
 
   @Test
@@ -34,6 +45,20 @@ internal class GameBoardImplTest {
     assertEquals(
       player.piece.position + ROLLED_MOVE,
       gameBoard.movePlayer(player).piece.position)
+  }
+
+  @Test
+  fun `movePlayer should return Player with a liability if he lands on a field owned by different player `() {
+    val player = getTestPlayer()
+    val fieldOwnedByOther = createField()
+    every { fields[player.piece.position + ROLLED_MOVE] } returns fieldOwnedByOther
+
+    val totalRent = 123.toBigInteger()
+    val liabilityTowardsOther = createLiability(fieldOwnedByOther.owner, totalRent)
+    every { rentCalculator.getTotalRentFor(fieldOwnedByOther) } returns totalRent
+
+    val movedPlayer = gameBoard.movePlayer(player)
+    assertEquals(listOf(liabilityTowardsOther), movedPlayer.liabilities)
   }
 
   @Test

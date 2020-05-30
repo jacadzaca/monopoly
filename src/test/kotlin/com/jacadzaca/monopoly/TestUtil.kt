@@ -1,9 +1,10 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.gamelogic.GameEvent
-import com.jacadzaca.monopoly.gamelogic.Piece
-import com.jacadzaca.monopoly.gamelogic.Player
+import com.jacadzaca.monopoly.gamelogic.*
+import java.math.BigInteger
 import java.util.*
 
 fun getTestPlayer(): Player = Player(UUID.randomUUID(), Piece(), 123.toBigInteger(), listOf())
 fun getTestGameEvent(): GameEvent = GameEvent(UUID.randomUUID(), 1)
+fun createLiability(toWhom: UUID = UUID.randomUUID(), howMuch: BigInteger = 123.toBigInteger()): Liability = Liability(howMuch, toWhom)
+fun createField(owner: UUID = UUID.randomUUID()): Field = Field(listOf(), owner)
