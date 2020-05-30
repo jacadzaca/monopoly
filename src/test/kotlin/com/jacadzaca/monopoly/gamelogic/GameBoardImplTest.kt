@@ -49,7 +49,7 @@ internal class GameBoardImplTest {
   }
 
   @Test
-  fun `movePlayer should return Player with a liability if he lands on a field owned by different player `() {
+  fun `movePlayer should return Player with a liability if they lands on a field owned by a different player `() {
     val fieldOwnedByOther = createField()
     every { fields[player.piece.position + ROLLED_MOVE] } returns fieldOwnedByOther
 
