@@ -1,9 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic
 
-import com.jacadzaca.monopoly.createTile
-import com.jacadzaca.monopoly.createLiability
-import com.jacadzaca.monopoly.getTestGameEvent
-import com.jacadzaca.monopoly.getTestPlayer
+import com.jacadzaca.monopoly.*
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -48,25 +45,24 @@ internal class GameBoardImplTest {
   }
 
   @Test
-  fun `movePlayer should return Player with a liability if they lands on a tile owned by a different player `() {
+  fun `collectRent should return a Player with a liability if they lands on a tile owned by a different player `() {
     val fieldOwnedByOther = createTile()
-    every { tiles[player.piece.position + ROLLED_MOVE] } returns fieldOwnedByOther
+    every { tiles[player.piece.position] } returns fieldOwnedByOther
 
     val totalRent = 123.toBigInteger()
     val liabilityTowardsOther = createLiability(fieldOwnedByOther.owner!!, totalRent)
     every { rentCalculator.getTotalRentFor(fieldOwnedByOther) } returns totalRent
 
-    val movedPlayer = gameBoard.movePlayer(player)
-    assertEquals(liabilityTowardsOther, movedPlayer.liability)
-    assertNotNull(movedPlayer.liability)
+    val playerWithLiability = gameBoard.collectRent(player)
+    assertEquals(liabilityTowardsOther, playerWithLiability.liability)
+    assertNotNull(playerWithLiability.liability)
   }
 
   @Test
-  fun `movePlayer should not return a Player with a liability if they lands on a tile owned by them`() {
+  fun `collectRent should not return a Player with a liability if they lands on a tile owned by them`() {
     val fieldOwnedByPlayer = createTile(player.id)
-    every { tiles[player.piece.position + ROLLED_MOVE] } returns fieldOwnedByPlayer
-    val movedPlayer = gameBoard.movePlayer(player)
-    assertNull(movedPlayer.liability)
+    every { tiles[player.piece.position] } returns fieldOwnedByPlayer
+    assertNull(gameBoard.collectRent(player).liability)
   }
 
   @Test
