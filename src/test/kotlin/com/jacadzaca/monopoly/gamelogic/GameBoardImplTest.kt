@@ -42,6 +42,7 @@ internal class GameBoardImplTest {
   @Test
   fun `movePlayer should return Player with position increased by whatever dieRoller returns`() {
     val player = getTestPlayer()
+    every { fields[player.piece.position + ROLLED_MOVE] } returns createField(player.id)
     assertEquals(
       player.piece.position + ROLLED_MOVE,
       gameBoard.movePlayer(player).piece.position)
@@ -66,6 +67,7 @@ internal class GameBoardImplTest {
   fun `movePlayer should wrap position calculation`() {
     val player = getTestPlayer().copy(piece = Piece(BOARD_SIZE - ROLLED_MOVE))
     val wrappedPosition = 0
+    every { fields[wrappedPosition] } returns createField(player.id)
     assertEquals(wrappedPosition, gameBoard.movePlayer(player).piece.position)
   }
 
