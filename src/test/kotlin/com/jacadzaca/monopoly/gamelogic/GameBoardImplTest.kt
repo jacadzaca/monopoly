@@ -52,7 +52,8 @@ internal class GameBoardImplTest {
   fun `movePlayer should wrap position calculation`() {
     every { tiles[0] } returns GameBoard.startTile
     player = player.copy(piece = Piece(position = tiles[BOARD_SIZE - ROLLED_MOVE]))
-    assertEquals(GameBoard.startTile, gameBoard.movePlayer(player).piece.position)
+    every { tiles.indexOf(player.piece.position) } returns BOARD_SIZE - ROLLED_MOVE
+    assertSame(GameBoard.startTile, gameBoard.movePlayer(player).piece.position)
   }
 
   @Test
