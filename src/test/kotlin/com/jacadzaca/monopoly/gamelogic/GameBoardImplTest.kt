@@ -77,6 +77,28 @@ internal class GameBoardImplTest {
   }
 
   @Test
+  fun `buyTile should update the tile's owner`() {
+    val boughtTile = player.piece.position.copy(owner = player.id)
+    assertEquals(boughtTile, gameBoard.buyTile(player).piece.position)
+  }
+
+  @Test
+  fun `buyTile should throws IllegalArgument if player has insufficient funds`() {
+    player = player.copy(piece = Piece(position = createTile().copy(price = player.balance + 1.toBigInteger())))
+    assertThrows<IllegalArgumentException> {
+      gameBoard.buyTile(player)
+    }
+  }
+
+  @Test
+  fun `buyTile should throws IllegalArgument if player already own the tile`() {
+    player = player.copy(piece = Piece(position = createTile(player.id)))
+    assertThrows<IllegalArgumentException> {
+      gameBoard.buyTile(player)
+    }
+  }
+
+  @Test
   fun `addFunds should add to player's balance`() {
     val howMuch = 123.toBigInteger()
     assertEquals(player.balance + howMuch,
