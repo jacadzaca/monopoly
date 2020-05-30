@@ -23,26 +23,26 @@ internal class GameBoardImplTest {
   private lateinit var gameBoard: GameBoardImpl
   private lateinit var rentCalculator: RentCalculator
   private lateinit var fields: List<Field>
+  private lateinit var player: Player
 
   @BeforeEach
   fun setUp() {
+    player = getTestPlayer()
     rentCalculator = mockk(relaxed = true)
     fields = mockk()
     gameBoard =
       GameBoardImpl(BOARD_SIZE, { ROLLED_MOVE }, fields, rentCalculator)
+    every { fields[player.piece.position + ROLLED_MOVE] } returns createField(player.id)
   }
 
   @Test
   fun `canPlayerExecuteAction should return false if committer's id and player's id differ`() {
-    val player = getTestPlayer()
     val gameAction = getTestGameEvent()
     assertFalse(gameBoard.canPlayerExecuteAction(player, gameAction))
   }
 
   @Test
   fun `movePlayer should return Player with position increased by whatever dieRoller returns`() {
-    val player = getTestPlayer()
-    every { fields[player.piece.position + ROLLED_MOVE] } returns createField(player.id)
     assertEquals(
       player.piece.position + ROLLED_MOVE,
       gameBoard.movePlayer(player).piece.position)
@@ -50,7 +50,6 @@ internal class GameBoardImplTest {
 
   @Test
   fun `movePlayer should return Player with a liability if he lands on a field owned by different player `() {
-    val player = getTestPlayer()
     val fieldOwnedByOther = createField()
     every { fields[player.piece.position + ROLLED_MOVE] } returns fieldOwnedByOther
 
@@ -65,7 +64,7 @@ internal class GameBoardImplTest {
 
   @Test
   fun `movePlayer should wrap position calculation`() {
-    val player = getTestPlayer().copy(piece = Piece(BOARD_SIZE - ROLLED_MOVE))
+    player = player.copy(piece = Piece(BOARD_SIZE - ROLLED_MOVE))
     val wrappedPosition = 0
     every { fields[wrappedPosition] } returns createField(player.id)
     assertEquals(wrappedPosition, gameBoard.movePlayer(player).piece.position)
@@ -73,7 +72,6 @@ internal class GameBoardImplTest {
 
   @Test
   fun `addFunds should add to player's balance`() {
-    val player = getTestPlayer()
     val howMuch = 123.toBigInteger()
     assertEquals(player.balance + howMuch,
                   gameBoard.addFunds(player, howMuch).balance)
@@ -83,7 +81,7 @@ internal class GameBoardImplTest {
   fun `addFunds should throw IllegalArgument if howMuch is negative`() {
     val howMuch = (-123).toBigInteger()
     assertThrows<IllegalArgumentException> {
-      gameBoard.addFunds(getTestPlayer(), howMuch)
+      gameBoard.addFunds(player, howMuch)
     }
   }
 
@@ -91,13 +89,12 @@ internal class GameBoardImplTest {
   fun `detractFunds should thor IllegalArgument if howMuch is negative`() {
     val howMuch = (-123).toBigInteger()
     assertThrows<IllegalArgumentException> {
-      gameBoard.detractFunds(getTestPlayer(), howMuch)
+      gameBoard.detractFunds(player, howMuch)
     }
   }
 
   @Test
   fun `detractFunds should detract from player's balance`() {
-    val player = getTestPlayer()
     val howMuch = 123.toBigInteger()
     assertEquals(player.balance - howMuch,
                   gameBoard.detractFunds(player, howMuch).balance)
@@ -105,7 +102,6 @@ internal class GameBoardImplTest {
 
   @Test
   fun `detractFunds should throw an IllegalArgument if user is trying to extract more than the player has`() {
-    val player = getTestPlayer()
     val howMuch = player.balance + 123.toBigInteger()
     assertThrows<IllegalArgumentException> {
       gameBoard.detractFunds(player, howMuch)
