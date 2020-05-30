@@ -3,15 +3,6 @@ package com.jacadzaca.monopoly.gamelogic
 import java.math.BigInteger
 
 interface GameBoard {
-  companion object {
-    private val standardGameBoard =
-      GameBoardImpl(20, (1..6)::random)
-
-    @JvmStatic
-    fun create(): GameBoard =
-        standardGameBoard
-  }
-
   fun canPlayerExecuteAction(player: Player, event: GameEvent): Boolean
 
   /**
