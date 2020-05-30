@@ -58,7 +58,8 @@ internal class GameBoardImplTest {
     every { rentCalculator.getTotalRentFor(fieldOwnedByOther) } returns totalRent
 
     val movedPlayer = gameBoard.movePlayer(player)
-    assertEquals(listOf(liabilityTowardsOther), movedPlayer.liabilities)
+    assertEquals(liabilityTowardsOther, movedPlayer.liability)
+    assertNotNull(movedPlayer.liability)
   }
 
   @Test

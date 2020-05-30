@@ -6,4 +6,4 @@ import java.util.UUID
 data class Player(val id: UUID,
                   val piece: Piece,
                   val balance: BigInteger,
-                  val liabilities: List<Liability>)
+                  val liability: Liability?)

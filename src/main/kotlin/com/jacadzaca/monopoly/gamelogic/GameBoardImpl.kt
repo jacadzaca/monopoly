@@ -15,8 +15,9 @@ internal class GameBoardImpl(private val boardSize: Int,
     val position = wrapMove(player.piece.position, dieRoller())
     val field = fields[position]
     if (field.owner != player.id) {
-      return player.copy(piece = Piece(position),
-        liabilities = player.liabilities.plus(Liability(rentCalculator.getTotalRentFor(field), field.owner)))
+      return player.copy(
+        piece = Piece(position),
+        liability = Liability(rentCalculator.getTotalRentFor(field), field.owner))
     }
     return player.copy(piece = Piece(position))
   }
