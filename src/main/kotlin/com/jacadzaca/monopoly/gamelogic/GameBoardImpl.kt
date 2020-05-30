@@ -15,30 +15,30 @@ internal class GameBoardImpl(private val boardSize: Int,
     return player.copy(piece = Piece(wrapMove(player.piece.position, dieRoller())))
   }
 
-  override fun collectRent(player: Player): Player {
-    val tile = tiles[player.piece.position]
-    if (tile.owner != null && tile.owner != player.id) {
-      return player.copy(
+  override fun collectRent(from: Player): Player {
+    val tile = tiles[from.piece.position]
+    if (tile.owner != null && tile.owner != from.id) {
+      return from.copy(
         liability = Liability(rentCalculator.getTotalRentFor(tile), tile.owner))
     }
-    return player
+    return from
   }
 
-  override fun addFunds(player: Player, howMuch: BigInteger): Player {
+  override fun addFunds(to: Player, howMuch: BigInteger): Player {
     if (howMuch < BigInteger.ZERO) {
-      throw IllegalArgumentException("howMuch must be positive, $player $howMuch")
+      throw IllegalArgumentException("howMuch must be positive, $to $howMuch")
     }
-    return player.copy(balance = player.balance + howMuch)
+    return to.copy(balance = to.balance + howMuch)
   }
 
-  override fun detractFunds(player: Player, howMuch: BigInteger): Player {
-    if (player.balance < howMuch) {
-      throw IllegalArgumentException("$player has insufficient funds")
+  override fun detractFunds(from: Player, howMuch: BigInteger): Player {
+    if (from.balance < howMuch) {
+      throw IllegalArgumentException("$from has insufficient funds")
     }
     if (howMuch < BigInteger.ZERO) {
-      throw IllegalArgumentException("howMuch must be positive, $player $howMuch")
+      throw IllegalArgumentException("howMuch must be positive, $from $howMuch")
     }
-    return player.copy(balance = player.balance - howMuch)
+    return from.copy(balance = from.balance - howMuch)
   }
 
   private fun wrapMove(currentPosition: Int, move: Int): Int {
