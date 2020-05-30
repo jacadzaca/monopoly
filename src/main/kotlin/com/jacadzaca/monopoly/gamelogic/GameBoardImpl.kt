@@ -4,7 +4,7 @@ import java.math.BigInteger
 
 internal class GameBoardImpl(private val boardSize: Int,
                              private val dieRoller: () -> Int,
-                             private val fields: List<Field>,
+                             private val tiles: List<Tile>,
                              private val rentCalculator: RentCalculator)
   : GameBoard {
   override fun canPlayerExecuteAction(player: Player, event: GameEvent): Boolean {
@@ -13,11 +13,11 @@ internal class GameBoardImpl(private val boardSize: Int,
 
   override fun movePlayer(player: Player): Player {
     val position = wrapMove(player.piece.position, dieRoller())
-    val field = fields[position]
-    if (field.owner != player.id) {
+    val tile = tiles[position]
+    if (tile.owner != player.id) {
       return player.copy(
         piece = Piece(position),
-        liability = Liability(rentCalculator.getTotalRentFor(field), field.owner))
+        liability = Liability(rentCalculator.getTotalRentFor(tile), tile.owner))
     }
     return player.copy(piece = Piece(position))
   }
