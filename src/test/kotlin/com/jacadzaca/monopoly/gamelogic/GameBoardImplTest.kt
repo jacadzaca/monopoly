@@ -31,7 +31,7 @@ internal class GameBoardImplTest {
     tiles = mockk()
     gameBoard =
       GameBoardImpl(BOARD_SIZE, { ROLLED_MOVE }, tiles, rentCalculator)
-    every { tiles[player.piece.position + ROLLED_MOVE] } returns createTile(player.id)
+    every { tiles[any()] } returns createTile(null)
   }
 
   @Test
@@ -53,7 +53,7 @@ internal class GameBoardImplTest {
     every { tiles[player.piece.position + ROLLED_MOVE] } returns fieldOwnedByOther
 
     val totalRent = 123.toBigInteger()
-    val liabilityTowardsOther = createLiability(fieldOwnedByOther.owner, totalRent)
+    val liabilityTowardsOther = createLiability(fieldOwnedByOther.owner!!, totalRent)
     every { rentCalculator.getTotalRentFor(fieldOwnedByOther) } returns totalRent
 
     val movedPlayer = gameBoard.movePlayer(player)
@@ -62,10 +62,17 @@ internal class GameBoardImplTest {
   }
 
   @Test
+  fun `movePlayer should not return a Player with a liability if they lands on a tile owned by them`() {
+    val fieldOwnedByPlayer = createTile(player.id)
+    every { tiles[player.piece.position + ROLLED_MOVE] } returns fieldOwnedByPlayer
+    val movedPlayer = gameBoard.movePlayer(player)
+    assertNull(movedPlayer.liability)
+  }
+
+  @Test
   fun `movePlayer should wrap position calculation`() {
     player = player.copy(piece = Piece(BOARD_SIZE - ROLLED_MOVE))
     val wrappedPosition = 0
-    every { tiles[wrappedPosition] } returns createTile(player.id)
     assertEquals(wrappedPosition, gameBoard.movePlayer(player).piece.position)
   }
 
