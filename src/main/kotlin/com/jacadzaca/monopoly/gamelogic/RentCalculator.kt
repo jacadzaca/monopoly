@@ -2,6 +2,6 @@ package com.jacadzaca.monopoly.gamelogic
 
 import java.math.BigInteger
 
-interface RentCalculator {
+internal interface RentCalculator {
   fun getTotalRentFor(tile: Tile): BigInteger
 }
