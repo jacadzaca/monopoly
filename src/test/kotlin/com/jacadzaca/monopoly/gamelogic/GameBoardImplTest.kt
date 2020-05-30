@@ -27,7 +27,7 @@ internal class GameBoardImplTest {
   @BeforeEach
   fun setUp() {
     player = getTestPlayer()
-    rentCalculator = mockk(relaxed = true)
+    rentCalculator = mockk()
     tiles = mockk()
     gameBoard =
       GameBoardImpl(BOARD_SIZE, { ROLLED_MOVE }, tiles, rentCalculator)
