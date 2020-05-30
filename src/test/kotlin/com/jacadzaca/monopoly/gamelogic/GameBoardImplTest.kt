@@ -1,6 +1,9 @@
 package com.jacadzaca.monopoly.gamelogic
 
-import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.createLiability
+import com.jacadzaca.monopoly.createTile
+import com.jacadzaca.monopoly.getTestGameEvent
+import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -29,6 +32,7 @@ internal class GameBoardImplTest {
     gameBoard =
       GameBoardImpl(BOARD_SIZE, { ROLLED_MOVE }, tiles, rentCalculator)
     every { tiles[any()] } returns createTile(null)
+    every { tiles.indexOf(GameBoard.startTile) } returns 0
   }
 
   @Test
@@ -39,15 +43,15 @@ internal class GameBoardImplTest {
 
   @Test
   fun `movePlayer should return Player with position increased by whatever dieRoller returns`() {
-    assertEquals(
-      player.piece.position + ROLLED_MOVE,
-      gameBoard.movePlayer(player).piece.position)
+    val expectedPosition = createTile()
+    every { tiles[tiles.indexOf(player.piece.position) + ROLLED_MOVE] } returns expectedPosition
+    assertSame(expectedPosition, gameBoard.movePlayer(player).piece.position)
   }
 
   @Test
   fun `collectRent should return a Player with a liability if they lands on a tile owned by a different player `() {
     val fieldOwnedByOther = createTile()
-    every { tiles[player.piece.position] } returns fieldOwnedByOther
+    player = player.copy(piece = player.piece.copy(position = fieldOwnedByOther))
 
     val totalRent = 123.toBigInteger()
     val liabilityTowardsOther = createLiability(fieldOwnedByOther.owner!!, totalRent)
@@ -61,15 +65,15 @@ internal class GameBoardImplTest {
   @Test
   fun `collectRent should not return a Player with a liability if they lands on a tile owned by them`() {
     val fieldOwnedByPlayer = createTile(player.id)
-    every { tiles[player.piece.position] } returns fieldOwnedByPlayer
+    player = player.copy(piece = player.piece.copy(position = fieldOwnedByPlayer))
     assertNull(gameBoard.collectRent(player).liability)
   }
 
   @Test
   fun `movePlayer should wrap position calculation`() {
-    player = player.copy(piece = Piece(BOARD_SIZE - ROLLED_MOVE))
-    val wrappedPosition = 0
-    assertEquals(wrappedPosition, gameBoard.movePlayer(player).piece.position)
+    every { tiles[0] } returns GameBoard.startTile
+    player = player.copy(piece = Piece(position = tiles[BOARD_SIZE - ROLLED_MOVE]))
+    assertEquals(GameBoard.startTile, gameBoard.movePlayer(player).piece.position)
   }
 
   @Test

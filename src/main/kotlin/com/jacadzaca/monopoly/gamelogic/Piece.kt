@@ -1,3 +1,3 @@
 package com.jacadzaca.monopoly.gamelogic
 
-data class Piece(var position: Int = 0)
+data class Piece(val position: Tile = GameBoard.startTile)

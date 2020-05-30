@@ -3,6 +3,9 @@ package com.jacadzaca.monopoly.gamelogic
 import java.math.BigInteger
 
 interface GameBoard {
+  companion object {
+    val startTile = Tile(listOf(), null)
+  }
   fun canPlayerExecuteAction(player: Player, event: GameEvent): Boolean
 
   /**
