@@ -49,6 +49,13 @@ internal class GameBoardImplTest {
   }
 
   @Test
+  fun `movePlayer should wrap position calculation`() {
+    every { tiles[0] } returns GameBoard.startTile
+    player = player.copy(piece = Piece(position = tiles[BOARD_SIZE - ROLLED_MOVE]))
+    assertEquals(GameBoard.startTile, gameBoard.movePlayer(player).piece.position)
+  }
+
+  @Test
   fun `collectRent should return a Player with a liability if they lands on a tile owned by a different player `() {
     val fieldOwnedByOther = createTile()
     player = player.copy(piece = player.piece.copy(position = fieldOwnedByOther))
@@ -67,13 +74,6 @@ internal class GameBoardImplTest {
     val fieldOwnedByPlayer = createTile(player.id)
     player = player.copy(piece = player.piece.copy(position = fieldOwnedByPlayer))
     assertNull(gameBoard.collectRent(player).liability)
-  }
-
-  @Test
-  fun `movePlayer should wrap position calculation`() {
-    every { tiles[0] } returns GameBoard.startTile
-    player = player.copy(piece = Piece(position = tiles[BOARD_SIZE - ROLLED_MOVE]))
-    assertEquals(GameBoard.startTile, gameBoard.movePlayer(player).piece.position)
   }
 
   @Test
