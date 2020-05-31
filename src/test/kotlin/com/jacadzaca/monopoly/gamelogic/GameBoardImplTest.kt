@@ -44,22 +44,22 @@ internal class GameBoardImplTest {
   @Test
   fun `movePlayer should return Player with position increased by whatever dieRoller returns`() {
     val expectedPosition = createTile()
-    every { tiles[tiles.indexOf(player.piece.position) + ROLLED_MOVE] } returns expectedPosition
-    assertSame(expectedPosition, gameBoard.movePlayer(player).piece.position)
+    every { tiles[tiles.indexOf(player.position) + ROLLED_MOVE] } returns expectedPosition
+    assertSame(expectedPosition, gameBoard.movePlayer(player).position)
   }
 
   @Test
   fun `movePlayer should wrap position calculation`() {
     every { tiles[0] } returns GameBoard.startTile
-    player = player.copy(piece = Piece(position = tiles[BOARD_SIZE - ROLLED_MOVE]))
-    every { tiles.indexOf(player.piece.position) } returns BOARD_SIZE - ROLLED_MOVE
-    assertSame(GameBoard.startTile, gameBoard.movePlayer(player).piece.position)
+    player = player.copy(position = tiles[BOARD_SIZE - ROLLED_MOVE])
+    every { tiles.indexOf(player.position) } returns BOARD_SIZE - ROLLED_MOVE
+    assertSame(GameBoard.startTile, gameBoard.movePlayer(player).position)
   }
 
   @Test
   fun `collectRent should return a Player with a liability if they lands on a tile owned by a different player `() {
     val fieldOwnedByOther = createTile()
-    player = player.copy(piece = player.piece.copy(position = fieldOwnedByOther))
+    player = player.copy(position = fieldOwnedByOther)
 
     val totalRent = 123.toBigInteger()
     val liabilityTowardsOther = createLiability(fieldOwnedByOther.owner!!, totalRent)
@@ -73,19 +73,19 @@ internal class GameBoardImplTest {
   @Test
   fun `collectRent should not return a Player with a liability if they lands on a tile owned by them`() {
     val fieldOwnedByPlayer = createTile(player.id)
-    player = player.copy(piece = player.piece.copy(position = fieldOwnedByPlayer))
+    player = player.copy(position = fieldOwnedByPlayer)
     assertNull(gameBoard.collectRent(player).liability)
   }
 
   @Test
   fun `buyTile should update the tile's owner`() {
-    val boughtTile = player.piece.position.copy(owner = player.id)
-    assertEquals(boughtTile, gameBoard.buyTile(player).piece.position)
+    val boughtTile = player.position.copy(owner = player.id)
+    assertEquals(boughtTile, gameBoard.buyTile(player).position)
   }
 
   @Test
   fun `buyTile throws IllegalArgument if player has insufficient funds`() {
-    player = player.copy(piece = Piece(position = createTile().copy(price = player.balance + 1.toBigInteger())))
+    player = player.copy(position = createTile().copy(price = player.balance + 1.toBigInteger()))
     assertThrows<IllegalArgumentException> {
       gameBoard.buyTile(player)
     }
@@ -93,7 +93,7 @@ internal class GameBoardImplTest {
 
   @Test
   fun `buyTile throws IllegalArgument if player already own the tile`() {
-    player = player.copy(piece = Piece(position = createTile(player.id)))
+    player = player.copy(position = createTile(player.id))
     assertThrows<IllegalArgumentException> {
       gameBoard.buyTile(player)
     }

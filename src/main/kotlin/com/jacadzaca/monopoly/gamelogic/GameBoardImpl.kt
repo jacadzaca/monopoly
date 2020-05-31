@@ -12,12 +12,12 @@ internal class GameBoardImpl(private val boardSize: Int,
   }
 
   override fun movePlayer(player: Player): Player {
-    val currentPosition = tiles.indexOf(player.piece.position)
-    return player.copy(piece = Piece(position = tiles[wrapMove(currentPosition, dieRoller())]))
+    val currentPosition = tiles.indexOf(player.position)
+    return player.copy(position = tiles[wrapMove(currentPosition, dieRoller())])
   }
 
   override fun collectRent(from: Player): Player {
-    val tile = from.piece.position
+    val tile = from.position
     if (tile.owner != null && tile.owner != from.id) {
       return from.copy(
         liability = Liability(rentCalculator.getTotalRentFor(tile), tile.owner!!))
@@ -26,7 +26,7 @@ internal class GameBoardImpl(private val boardSize: Int,
   }
 
   override fun buyTile(buyer: Player): Player {
-    val tileToBeBought = buyer.piece.position
+    val tileToBeBought = buyer.position
     if (buyer.balance < tileToBeBought.price) {
       throw IllegalArgumentException("Insufficient funds to buy $tileToBeBought by $buyer")
     }
