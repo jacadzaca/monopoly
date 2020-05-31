@@ -84,7 +84,7 @@ internal class GameBoardImplTest {
   }
 
   @Test
-  fun `buyTile should throws IllegalArgument if player has insufficient funds`() {
+  fun `buyTile throws IllegalArgument if player has insufficient funds`() {
     player = player.copy(piece = Piece(position = createTile().copy(price = player.balance + 1.toBigInteger())))
     assertThrows<IllegalArgumentException> {
       gameBoard.buyTile(player)
@@ -92,7 +92,7 @@ internal class GameBoardImplTest {
   }
 
   @Test
-  fun `buyTile should throws IllegalArgument if player already own the tile`() {
+  fun `buyTile throws IllegalArgument if player already own the tile`() {
     player = player.copy(piece = Piece(position = createTile(player.id)))
     assertThrows<IllegalArgumentException> {
       gameBoard.buyTile(player)
