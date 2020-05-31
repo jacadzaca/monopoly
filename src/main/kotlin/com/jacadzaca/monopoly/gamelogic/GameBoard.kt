@@ -14,6 +14,4 @@ interface GameBoard {
   fun movePlayer(player: Player): Player
   fun collectRent(from: Player): Player
   fun buyTile(buyer: Player): Player
-  fun addFunds(to: Player, howMuch: BigInteger): Player
-  fun detractFunds(from: Player, howMuch: BigInteger): Player
 }
