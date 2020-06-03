@@ -1,6 +1,5 @@
 package com.jacadzaca.monopoly.gamelogic.player
 
-import com.jacadzaca.monopoly.gamelogic.player.Player
 import java.math.BigInteger
 
 interface FundsManager {

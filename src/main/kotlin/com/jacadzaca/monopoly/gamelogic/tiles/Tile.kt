@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.gamelogic
+package com.jacadzaca.monopoly.gamelogic.tiles
 
 import com.jacadzaca.monopoly.gamelogic.buildings.Building
 import java.math.BigInteger

@@ -2,6 +2,7 @@ package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.createTile
 import com.jacadzaca.monopoly.gamelogic.buildings.Building
+import com.jacadzaca.monopoly.gamelogic.tiles.RentCalculatorImpl
 import org.junit.jupiter.api.BeforeEach
 
 import org.junit.jupiter.api.Assertions.*

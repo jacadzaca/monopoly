@@ -3,6 +3,8 @@ package com.jacadzaca.monopoly.gamelogic
 import com.jacadzaca.monopoly.createLiability
 import com.jacadzaca.monopoly.createTile
 import com.jacadzaca.monopoly.gamelogic.player.Player
+import com.jacadzaca.monopoly.gamelogic.tiles.RentCalculator
+import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestGameEvent
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every

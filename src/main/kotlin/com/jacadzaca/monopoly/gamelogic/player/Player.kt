@@ -1,7 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic.player
 
 import com.jacadzaca.monopoly.gamelogic.GameBoard
-import com.jacadzaca.monopoly.gamelogic.Tile
+import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import java.math.BigInteger
 import java.util.UUID
 

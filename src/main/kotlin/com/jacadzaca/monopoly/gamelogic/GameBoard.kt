@@ -1,6 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.gamelogic.player.Player
+import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 
 interface GameBoard {
   companion object {
