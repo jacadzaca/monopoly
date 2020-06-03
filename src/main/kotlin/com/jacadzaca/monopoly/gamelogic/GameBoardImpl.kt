@@ -1,5 +1,8 @@
 package com.jacadzaca.monopoly.gamelogic
 
+import com.jacadzaca.monopoly.gamelogic.player.Liability
+import com.jacadzaca.monopoly.gamelogic.player.Player
+
 internal class GameBoardImpl(private val boardSize: Int,
                              private val dieRoller: () -> Int,
                              private val tiles: List<Tile>,
@@ -13,7 +16,12 @@ internal class GameBoardImpl(private val boardSize: Int,
     val tile = from.position
     if (tile.owner != null && tile.owner != from.id) {
       return from.copy(
-        liability = Liability(rentCalculator.getTotalRentFor(tile), tile.owner!!))
+        liability = Liability(
+          rentCalculator.getTotalRentFor(
+            tile
+          ), tile.owner!!
+        )
+      )
     }
     return from
   }

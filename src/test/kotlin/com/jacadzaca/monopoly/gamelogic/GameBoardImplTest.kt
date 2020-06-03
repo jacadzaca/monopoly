@@ -2,6 +2,7 @@ package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.createLiability
 import com.jacadzaca.monopoly.createTile
+import com.jacadzaca.monopoly.gamelogic.player.Player
 import com.jacadzaca.monopoly.getTestGameEvent
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
@@ -10,7 +11,6 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)

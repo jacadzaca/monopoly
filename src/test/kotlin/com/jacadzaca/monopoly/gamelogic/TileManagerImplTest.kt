@@ -1,6 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.createTile
+import com.jacadzaca.monopoly.gamelogic.player.Player
 import com.jacadzaca.monopoly.getTestPlayer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach

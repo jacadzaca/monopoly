@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly.gameroom
 
-import com.jacadzaca.monopoly.gamelogic.Player
+import com.jacadzaca.monopoly.gamelogic.player.Player
 import io.reactivex.Completable
 import io.reactivex.Maybe
 import java.util.UUID

@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.gamelogic
+package com.jacadzaca.monopoly.gamelogic.player
 
 import java.math.BigInteger
 import java.util.*

@@ -1,5 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic
 
+import com.jacadzaca.monopoly.gamelogic.player.Player
+
 internal class TileManagerImpl : TileManager {
   override fun buyTile(buyer: Player, toBuy: Tile): Tile {
     if (buyer.balance < toBuy.price) {
