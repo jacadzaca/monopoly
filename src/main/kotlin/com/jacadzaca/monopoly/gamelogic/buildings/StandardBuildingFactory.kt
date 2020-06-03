@@ -4,8 +4,8 @@ import java.math.BigInteger
 
 internal class StandardBuildingFactory : BuildingFactory {
   private companion object {
-    val house = Building(100.toBigInteger())
-    val hotel = Building(1000.toBigInteger())
+    val house = Building(100.toBigInteger(), BuildingType.HOUSE)
+    val hotel = Building(1000.toBigInteger(), BuildingType.HOTEL)
   }
 
   override fun create(type: BuildingType): Building {
