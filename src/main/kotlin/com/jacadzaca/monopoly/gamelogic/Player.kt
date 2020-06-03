@@ -6,4 +6,9 @@ import java.util.UUID
 data class Player(val id: UUID,
                   val position: Tile = GameBoard.startTile,
                   val balance: BigInteger,
-                  val liability: Liability?)
+                  val liability: Liability?) {
+
+  fun move(to: Tile): Player {
+    return copy(position = to)
+  }
+}

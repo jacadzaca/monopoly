@@ -42,21 +42,6 @@ internal class GameBoardImplTest {
   }
 
   @Test
-  fun `movePlayer should return Player with position increased by whatever dieRoller returns`() {
-    val expectedPosition = createTile()
-    every { tiles[tiles.indexOf(player.position) + ROLLED_MOVE] } returns expectedPosition
-    assertSame(expectedPosition, gameBoard.movePlayer(player).position)
-  }
-
-  @Test
-  fun `movePlayer should wrap position calculation`() {
-    every { tiles[0] } returns GameBoard.startTile
-    player = player.copy(position = tiles[BOARD_SIZE - ROLLED_MOVE])
-    every { tiles.indexOf(player.position) } returns BOARD_SIZE - ROLLED_MOVE
-    assertSame(GameBoard.startTile, gameBoard.movePlayer(player).position)
-  }
-
-  @Test
   fun `collectRent should return a Player with a liability if they lands on a tile owned by a different player `() {
     val fieldOwnedByOther = createTile()
     player = player.copy(position = fieldOwnedByOther)

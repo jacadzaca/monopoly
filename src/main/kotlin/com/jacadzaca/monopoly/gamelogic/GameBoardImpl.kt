@@ -9,11 +9,6 @@ internal class GameBoardImpl(private val boardSize: Int,
     return player.id == event.committerId
   }
 
-  override fun movePlayer(player: Player): Player {
-    val currentPosition = tiles.indexOf(player.position)
-    return player.copy(position = tiles[wrapMove(currentPosition, dieRoller())])
-  }
-
   override fun collectRent(from: Player): Player {
     val tile = from.position
     if (tile.owner != null && tile.owner != from.id) {
@@ -21,9 +16,5 @@ internal class GameBoardImpl(private val boardSize: Int,
         liability = Liability(rentCalculator.getTotalRentFor(tile), tile.owner!!))
     }
     return from
-  }
-
-  private fun wrapMove(currentPosition: Int, move: Int): Int {
-    return (currentPosition + move) % boardSize
   }
 }
