@@ -2,8 +2,8 @@ package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.createLiability
 import com.jacadzaca.monopoly.createTile
+import com.jacadzaca.monopoly.gamelogic.buildings.Building
 import com.jacadzaca.monopoly.gamelogic.player.Player
-import com.jacadzaca.monopoly.gamelogic.tiles.RentCalculator
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestGameEvent
 import com.jacadzaca.monopoly.getTestPlayer
@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import java.math.BigInteger
 
 @ExtendWith(MockKExtension::class)
 internal class GameBoardImplTest {
@@ -22,17 +23,15 @@ internal class GameBoardImplTest {
     private const val ROLLED_MOVE = 5
   }
   private lateinit var gameBoard: GameBoardImpl
-  private lateinit var rentCalculator: RentCalculator
   private lateinit var tiles: List<Tile>
   private lateinit var player: Player
 
   @BeforeEach
   fun setUp() {
     player = getTestPlayer()
-    rentCalculator = mockk()
     tiles = mockk()
     gameBoard =
-      GameBoardImpl(BOARD_SIZE, { ROLLED_MOVE }, tiles, rentCalculator)
+      GameBoardImpl(BOARD_SIZE, { ROLLED_MOVE }, tiles)
     every { tiles[any()] } returns createTile(null)
     every { tiles.indexOf(GameBoard.startTile) } returns 0
   }
@@ -45,12 +44,11 @@ internal class GameBoardImplTest {
 
   @Test
   fun `collectRent should return a Player with a liability if they lands on a tile owned by a different player `() {
-    val fieldOwnedByOther = createTile()
+    val fieldOwnedByOther = createTile().copy(buildings = listOf(Building(122.toBigInteger()), Building(BigInteger.ONE)))
     player = player.copy(position = fieldOwnedByOther)
 
     val totalRent = 123.toBigInteger()
     val liabilityTowardsOther = createLiability(fieldOwnedByOther.owner!!, totalRent)
-    every { rentCalculator.getTotalRentFor(fieldOwnedByOther) } returns totalRent
 
     val playerWithLiability = gameBoard.collectRent(player)
     assertEquals(liabilityTowardsOther, playerWithLiability.liability)

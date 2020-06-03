@@ -6,4 +6,9 @@ import java.util.*
 
 data class Tile(val buildings: List<Building>,
                 val price: BigInteger,
-                var owner: UUID?)
+                var owner: UUID?) {
+
+  fun totalRent(): BigInteger {
+    return buildings.map(Building::rent).reduce(BigInteger::add)
+  }
+}
