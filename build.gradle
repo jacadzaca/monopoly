@@ -45,6 +45,7 @@ dependencies {
   implementation "io.vertx:vertx-rx-java2:$vertxVersion"
   implementation "io.vertx:vertx-service-proxy:$vertxVersion"
   kapt           "io.vertx:vertx-codegen:$vertxVersion:processor"
+  implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.2"
 
   testImplementation "io.vertx:vertx-junit5:$vertxVersion"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion"
