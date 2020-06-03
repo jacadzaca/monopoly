@@ -1,7 +1,5 @@
 package com.jacadzaca.monopoly.gamelogic
 
-import java.math.BigInteger
-
 interface GameBoard {
   companion object {
     val startTile = Tile(listOf(), 0.toBigInteger(), null)
@@ -13,5 +11,4 @@ interface GameBoard {
    */
   fun movePlayer(player: Player): Player
   fun collectRent(from: Player): Player
-  fun buyTile(buyer: Player): Player
 }

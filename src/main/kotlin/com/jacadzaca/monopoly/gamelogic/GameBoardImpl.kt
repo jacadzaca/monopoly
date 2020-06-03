@@ -23,18 +23,6 @@ internal class GameBoardImpl(private val boardSize: Int,
     return from
   }
 
-  override fun buyTile(buyer: Player): Player {
-    val tileToBeBought = buyer.position
-    if (buyer.balance < tileToBeBought.price) {
-      throw IllegalArgumentException("Insufficient funds to buy $tileToBeBought by $buyer")
-    }
-    if (buyer.id == tileToBeBought.owner) {
-      throw IllegalArgumentException("$buyer cannot buy a tile that is already owned by him")
-    }
-     tileToBeBought.owner = buyer.id
-    return buyer
-  }
-
   private fun wrapMove(currentPosition: Int, move: Int): Int {
     return (currentPosition + move) % boardSize
   }
