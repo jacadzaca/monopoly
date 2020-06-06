@@ -13,7 +13,7 @@ import java.util.*
 fun getTestPlayer(): Player =
     Player(
         UUID.randomUUID(),
-        createTile(null),
+        0,
         123.toBigInteger(),
         null
     )
