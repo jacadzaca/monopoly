@@ -40,7 +40,16 @@ internal class TileManagerImplTest {
   fun `buyTile should change the tile's owner`() {
     val tileThatCanBeBought = createTile(null).copy(price = buyer.balance - 123.toBigInteger())
     val boughtTile = tileThatCanBeBought.copy(owner = buyer.id)
-    assertEquals(boughtTile.owner, tileManager.buyTile(buyer, tileThatCanBeBought).owner)
+    assertEquals(boughtTile.owner, tileManager.buyTile(buyer, tileThatCanBeBought).second.owner)
+  }
+
+  @Test
+  fun `buyTile should detract from the buyer's account`() {
+    val tileThatCanBeBought = createTile(null).copy(price = buyer.balance - 123.toBigInteger())
+    val buyerWithDetractedFunds = buyer.copy(balance = buyer.balance - tileThatCanBeBought.price)
+    assertEquals(
+      buyerWithDetractedFunds.balance,
+      tileManager.buyTile(buyer, tileThatCanBeBought).first.balance)
   }
 
   @Test

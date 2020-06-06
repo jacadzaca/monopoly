@@ -4,6 +4,6 @@ import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
 import com.jacadzaca.monopoly.gamelogic.player.Player
 
 interface TileManager {
-  fun buyTile(buyer: Player, toBuy: Tile): Tile
+  fun buyTile(buyer: Player, toBuy: Tile): Pair<Player, Tile>
   fun buyProperty(buyer: Player, onTile: Tile, buildingType: BuildingType): Pair<Player, Tile>
 }
