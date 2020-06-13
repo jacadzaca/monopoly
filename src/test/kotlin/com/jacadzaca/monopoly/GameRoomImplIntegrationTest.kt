@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.gamelogic.GameEvent
+import com.jacadzaca.monopoly.gamelogic.GameAction
 import com.jacadzaca.monopoly.gamelogic.player.Player
 import com.jacadzaca.monopoly.gameroom.GameRoomImpl
 import com.jacadzaca.monopoly.gameroom.PlayerManager
@@ -62,7 +62,7 @@ internal class GameRoomImplIntegrationTest {
     vertx
       .eventBus()
       .registerCodec(GameActionCodec())
-      .consumer<GameEvent>(gameRoom.roomInputAddress) { message ->
+      .consumer<GameAction>(gameRoom.roomInputAddress) { message ->
         Assertions.assertEquals(action, message.body())
         testContext.completeNow()
       }

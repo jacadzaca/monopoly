@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.gamelogic.GameEvent
+import com.jacadzaca.monopoly.gamelogic.GameAction
 import io.vertx.core.Promise
 import io.vertx.core.impl.logging.LoggerFactory
 import io.vertx.reactivex.core.AbstractVerticle
@@ -36,8 +36,8 @@ class MainVerticle : AbstractVerticle() {
     val test = connection
       .toFlowable()
       .map(Buffer::toJsonObject)
-      .filter { GameEvent.isValidJson(it) }
-      .map(::GameEvent)
+      .filter { GameAction.isValidJson(it) }
+      .map(::GameAction)
       .subscribe(
         { handleIncomingAction(it, connection, gameActionCodec) },
         { handleWrongIncomingAction(it, connection) })
@@ -49,7 +49,7 @@ class MainVerticle : AbstractVerticle() {
     connection.writeTextMessage("Invalid input")
   }
 
-  private fun handleIncomingAction(event: GameEvent, connection: ServerWebSocket, gameActionCodec: GameActionCodec) {
+  private fun handleIncomingAction(action: GameAction, connection: ServerWebSocket, gameActionCodec: GameActionCodec) {
   }
 
   private fun successfulStart(startPromise: Promise<Void>) {
