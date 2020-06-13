@@ -8,8 +8,4 @@ data class Player(val id: UUID,
                   val position: Int = 0,
                   val balance: BigInteger,
                   val liability: Liability?) {
-
-  fun updatePosition(position: Int): Player {
-    return copy(position = position)
-  }
 }
