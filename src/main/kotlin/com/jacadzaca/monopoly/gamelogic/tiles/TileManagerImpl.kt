@@ -7,19 +7,17 @@ import com.jacadzaca.monopoly.gamelogic.player.Player
 internal class TileManagerImpl(private val buildingFactory: BuildingFactory,
                                private val requiredHousesForHotel: Int)
   : TileManager {
-  override fun buyTile(buyer: Player, toBuy: Tile): Pair<Player, Tile> {
+  override fun buyTile(buyer: Player, toBuy: Tile): Tile {
     if (buyer.balance < toBuy.price) {
       throw IllegalArgumentException("Insufficient funds to buy $toBuy by $buyer")
     }
     if (buyer.id == toBuy.owner) {
       throw IllegalArgumentException("$buyer cannot buy a tile that is already owned by him")
     }
-    return Pair(
-      buyer.copy(balance = buyer.balance - toBuy.price),
-      toBuy.copy(owner = buyer.id))
+    return toBuy.copy(owner = buyer.id)
   }
 
-  override fun buyProperty(buyer: Player, onTile: Tile, buildingType: BuildingType): Pair<Player, Tile> {
+  override fun buyProperty(buyer: Player, onTile: Tile, buildingType: BuildingType): Tile {
     if (onTile.owner != buyer.id) {
       throw IllegalArgumentException("$buyer dose not own the $onTile, he cannot purchase a property")
     }
@@ -30,8 +28,6 @@ internal class TileManagerImpl(private val buildingFactory: BuildingFactory,
       throw IllegalArgumentException("In order for $buyer to buy a property on $onTile, they must own " +
         "$requiredHousesForHotel houses")
     }
-    return Pair(
-      buyer.copy(balance = buyer.balance - buildingFactory.getPriceFor(buildingType)),
-      onTile.copy(buildings = onTile.buildings.add(buildingFactory.create(buildingType))))
+    return onTile.copy(buildings = onTile.buildings.add(buildingFactory.create(buildingType)))
   }
 }

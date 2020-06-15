@@ -40,16 +40,7 @@ internal class TileManagerImplTest {
   fun `buyTile should change the tile's owner`() {
     val tileThatCanBeBought = createTile(null).copy(price = buyer.balance - 123.toBigInteger())
     val boughtTile = tileThatCanBeBought.copy(owner = buyer.id)
-    assertEquals(boughtTile.owner, tileManager.buyTile(buyer, tileThatCanBeBought).second.owner)
-  }
-
-  @Test
-  fun `buyTile should detract from the buyer's account`() {
-    val tileThatCanBeBought = createTile(null).copy(price = buyer.balance - 123.toBigInteger())
-    val buyerWithDetractedFunds = buyer.copy(balance = buyer.balance - tileThatCanBeBought.price)
-    assertEquals(
-      buyerWithDetractedFunds.balance,
-      tileManager.buyTile(buyer, tileThatCanBeBought).first.balance)
+    assertEquals(boughtTile.owner, tileManager.buyTile(buyer, tileThatCanBeBought).owner)
   }
 
   @Test
@@ -71,15 +62,7 @@ internal class TileManagerImplTest {
   @Test
   fun `buyProperty should add the property to the tile's listing`() {
     val tileWithProperty = tile.copy(buildings = persistentListOf(buildingFactory.create(BuildingType.HOUSE)))
-    assertEquals(tileWithProperty.buildings, tileManager.buyProperty(buyer, tile, BuildingType.HOUSE).second.buildings)
-  }
-
-  @Test
-  fun `buyProperty should detract from buyer's account`() {
-    val price = buyer.balance - BigInteger.ONE
-    every { buildingFactory.getPriceFor(BuildingType.HOUSE) } returns price
-    val playerWithDetractedFunds = buyer.copy(balance = buyer.balance - price)
-    assertEquals(playerWithDetractedFunds.balance, tileManager.buyProperty(buyer, tile, BuildingType.HOUSE).first.balance)
+    assertEquals(tileWithProperty.buildings, tileManager.buyProperty(buyer, tile, BuildingType.HOUSE).buildings)
   }
 
   @Test
