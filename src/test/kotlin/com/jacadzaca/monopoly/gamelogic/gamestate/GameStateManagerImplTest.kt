@@ -6,7 +6,6 @@ import com.jacadzaca.monopoly.gamelogic.buildings.BuildingFactory
 import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.MoveEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.PropertyPurchaseEvent
-import com.jacadzaca.monopoly.gamelogic.player.FundsManager
 import com.jacadzaca.monopoly.gamelogic.player.PlayerMover
 import com.jacadzaca.monopoly.gamelogic.tiles.TileManager
 import com.jacadzaca.monopoly.getTestPlayer
@@ -21,7 +20,6 @@ import org.junit.jupiter.api.Test
 internal class GameStateManagerImplTest {
   private val player = getTestPlayer()
   private lateinit var tileManager: TileManager
-  private lateinit var fundsManager: FundsManager
   private lateinit var buildingFactory: BuildingFactory
   private lateinit var gameStateManager: GameStateManagerImpl
   private lateinit var playerMover: PlayerMover
@@ -34,9 +32,8 @@ internal class GameStateManagerImplTest {
     tileManager = mockk(relaxed = true)
     buildingFactory = mockk()
     every { buildingFactory.getPriceFor(any()) } returns 100.toBigInteger()
-    fundsManager = mockk(relaxed = true)
     playerMover = mockk()
-    gameStateManager = GameStateManagerImpl(tileManager, fundsManager, buildingFactory, playerMover)
+    gameStateManager = GameStateManagerImpl(tileManager, buildingFactory, playerMover)
   }
 
   @Test
@@ -71,9 +68,6 @@ internal class GameStateManagerImplTest {
     val event = PropertyPurchaseEvent(player.id, BuildingType.HOUSE, 3)
 
     val playerWithDetractedFunds = player.copy(balance = player.balance - buildingFactory.getPriceFor(BuildingType.HOUSE))
-    every {
-      fundsManager.detractFunds(player, buildingFactory.getPriceFor(BuildingType.HOUSE))
-    } returns playerWithDetractedFunds
 
     val expected = gameState.copy(players = persistentHashMapOf(event.playerId to playerWithDetractedFunds))
     val actual = gameStateManager.applyEvent(event, gameState) as InMemoryGameState
