@@ -52,11 +52,7 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply PropertyPurchaseEvent should add a estate to the whereToBuy tile`() {
-    val event = PropertyPurchaseEvent(
-      player.id,
-      BuildingType.HOUSE,
-      3
-    )
+    val event = PropertyPurchaseEvent(player.id, BuildingType.HOUSE, 3)
 
     val tile = gameState.getTile(event.whereToBuy)
     val tileWithEstate = tile.copy(buildings = tile.buildings.add(createHouse()))
@@ -72,11 +68,7 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply PropertyPurchaseEvent should detract from the buyer's balance`() {
-    val event = PropertyPurchaseEvent(
-      player.id,
-      BuildingType.HOUSE,
-      3
-    )
+    val event = PropertyPurchaseEvent(player.id, BuildingType.HOUSE, 3)
 
     val playerWithDetractedFunds = player.copy(balance = player.balance - buildingFactory.getPriceFor(BuildingType.HOUSE))
     every {
