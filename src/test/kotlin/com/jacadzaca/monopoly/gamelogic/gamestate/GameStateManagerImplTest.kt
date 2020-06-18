@@ -43,12 +43,12 @@ internal class GameStateManagerImplTest {
   @Test
   fun `apply MoveEvent should update the mover's position`() {
     val event = MoveEvent(player.id)
-    val movedPlayer = player.copy()
+    val movedPlayer = player.copy(position = 10)
     every { playerMover.move(player, gameState.boardSize) } returns movedPlayer
 
-    val expected = gameState.copy(players = persistentHashMapOf(event.playerId to movedPlayer))
-    val actual = gameStateManager.applyEvent(event, gameState) as InMemoryGameState
-    assertEquals(expected.players, actual.players)
+    val actual = gameStateManager.applyEvent(event, gameState)
+
+    assertEquals(movedPlayer.position, actual.getPlayer(player.id).position)
   }
 
   @Test
@@ -61,22 +61,20 @@ internal class GameStateManagerImplTest {
       tileManager.buyProperty(player, tile, any())
     } returns tileWithEstate
 
-    val expected = gameState.copy(tiles = tiles.set(event.whereToBuy, tileWithEstate))
-    val actual = gameStateManager.applyEvent(event, gameState) as InMemoryGameState
+    val actual = gameStateManager.applyEvent(event, gameState)
 
-    assertEquals(expected.tiles, actual.tiles)
+    assertEquals(tileWithEstate.buildings, actual.getTile(event.whereToBuy).buildings)
   }
 
   @Test
   fun `apply PropertyPurchaseEvent should detract from the buyer's balance`() {
     val event = PropertyPurchaseEvent(player.id, BuildingType.HOUSE, 3)
 
-    val playerWithDetractedFunds = player.copy(balance = player.balance - buildingFactory.getPriceFor(BuildingType.HOUSE))
+    val playerWithDetractedFunds = player.detractFunds(buildingFactory.getPriceFor(BuildingType.HOUSE))
 
-    val expected = gameState.copy(players = persistentHashMapOf(event.playerId to playerWithDetractedFunds))
-    val actual = gameStateManager.applyEvent(event, gameState) as InMemoryGameState
+    val actual = gameStateManager.applyEvent(event, gameState)
 
-    assertEquals(expected.players, actual.players)
+    assertEquals(playerWithDetractedFunds.balance, actual.getPlayer(player.id).balance)
   }
 
   @Test
@@ -84,10 +82,9 @@ internal class GameStateManagerImplTest {
     val event = PlayerPaysLiabilityEvent(player.id, createLiability(receiver.id, 100.toBigInteger()))
     val playerWithDetractedFunds = player.detractFunds(event.liability.howMuch)
 
-    val expected = gameState.copy(players = gameState.players.put(player.id, playerWithDetractedFunds))
     val actual = gameStateManager.applyEvent(event, gameState)
 
-    assertEquals(expected.getPlayer(player.id).balance, actual.getPlayer(player.id).balance)
+    assertEquals(playerWithDetractedFunds.balance, actual.getPlayer(player.id).balance)
   }
 
   @Test
