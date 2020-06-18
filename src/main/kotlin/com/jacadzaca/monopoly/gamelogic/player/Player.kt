@@ -8,4 +8,7 @@ data class Player(val id: UUID,
                   val position: Int = 0,
                   val balance: BigInteger,
                   val liability: Liability?) {
+  fun addFunds(toAdd: BigInteger): Player = copy(balance = balance + toAdd)
+  fun detractFunds(toDetract: BigInteger): Player = copy(balance = balance - toDetract)
+
 }
