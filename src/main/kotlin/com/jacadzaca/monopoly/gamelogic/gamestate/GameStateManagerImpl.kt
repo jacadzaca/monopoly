@@ -1,10 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate
 
 import com.jacadzaca.monopoly.gamelogic.buildings.BuildingFactory
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.MoveEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.PlayerPaysLiabilityEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.PropertyPurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.*
 import com.jacadzaca.monopoly.gamelogic.player.PlayerMover
 import com.jacadzaca.monopoly.gamelogic.tiles.TileManager
 
@@ -14,6 +11,14 @@ internal class GameStateManagerImpl(private val tileManager: TileManager,
   GameStateManager {
   override fun applyEvent(event: MoveEvent, gameState: GameState): GameState {
     return gameState.update(event.playerId, playerMover.move(gameState.getPlayer(event.playerId), gameState.boardSize))
+  }
+
+  override fun applyEvent(event: TilePurchaseEvent, gameState: GameState): GameState {
+    val buyer = gameState.getPlayer(event.playerId)
+    val tileToBuy = gameState.getTile(event.tileIndex)
+    return gameState
+      .update(event.tileIndex, tileManager.buyTile(buyer, tileToBuy))
+      .update(event.playerId, buyer.detractFunds(tileToBuy.price))
   }
 
   override fun applyEvent(event: PropertyPurchaseEvent, gameState: GameState): GameState {

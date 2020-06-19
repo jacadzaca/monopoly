@@ -8,6 +8,7 @@ import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.MoveEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.PlayerPaysLiabilityEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.PropertyPurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.TilePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.player.PlayerMover
 import com.jacadzaca.monopoly.gamelogic.tiles.TileManager
 import com.jacadzaca.monopoly.getTestPlayer
@@ -18,6 +19,7 @@ import kotlinx.collections.immutable.toPersistentList
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.math.BigInteger
 
 internal class GameStateManagerImplTest {
@@ -49,6 +51,45 @@ internal class GameStateManagerImplTest {
     val actual = gameStateManager.applyEvent(event, gameState)
 
     assertEquals(movedPlayer.position, actual.getPlayer(player.id).position)
+  }
+
+  @Test
+  fun `apply TilePurchaseEvent should change the tile's owner`() {
+    val event = TilePurchaseEvent(player.id, 2)
+    val tileOwnedByBuyer = gameState.getTile(event.tileIndex).copy(owner = player.id)
+    every { tileManager.buyTile(player, gameState.getTile(event.tileIndex)) } returns tileOwnedByBuyer
+    val actual = gameStateManager.applyEvent(event, gameState)
+    assertEquals(tileOwnedByBuyer.owner, actual.getTile(event.tileIndex).owner)
+  }
+
+  @Test
+  fun `apply TilePurchaseEvent should detract from the buyer's balance`() {
+    val event = TilePurchaseEvent(player.id, 2)
+    val price = gameState.getTile(event.tileIndex).price
+    val buyerWithDetractedFunds = player.detractFunds(price)
+    val actual = gameStateManager.applyEvent(event, gameState)
+    assertEquals(buyerWithDetractedFunds.balance, actual.getPlayer(player.id).balance)
+  }
+
+  @Test
+  fun `apply TilePurchaseEvent throws IllegalArgument if buyer has insufficient funds`() {
+    val event = TilePurchaseEvent(player.id, 3)
+    val price = gameState.getTile(event.tileIndex).price
+    val buyer = player.copy(balance = price - BigInteger.TEN)
+    every { tileManager.buyTile(buyer, gameState.getTile(event.tileIndex)) } throws IllegalArgumentException()
+    assertThrows<IllegalArgumentException> {
+      gameStateManager.applyEvent(event, gameState.update(player.id, buyer))
+    }
+  }
+
+  @Test
+  fun `apply TilePurchaseEvent throws IllegalArgument if buyer already owns the tile`() {
+    val event = TilePurchaseEvent(player.id, 3)
+    val tileToBeBought = gameState.getTile(event.tileIndex).copy(owner = event.playerId)
+    every { tileManager.buyTile(player, tileToBeBought) } throws IllegalArgumentException()
+    assertThrows<IllegalArgumentException> {
+      gameStateManager.applyEvent(event, gameState.update(event.tileIndex, tileToBeBought))
+    }
   }
 
   @Test

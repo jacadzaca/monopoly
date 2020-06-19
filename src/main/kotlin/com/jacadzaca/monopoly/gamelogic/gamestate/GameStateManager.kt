@@ -3,9 +3,15 @@ package com.jacadzaca.monopoly.gamelogic.gamestate
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.MoveEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.PlayerPaysLiabilityEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.PropertyPurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.TilePurchaseEvent
 
 interface GameStateManager {
   fun applyEvent(event: MoveEvent, gameState: GameState): GameState
+
+  /**
+   * @throws IllegalArgumentException if @event.playerId cannot buy the tile
+   */
+  fun applyEvent(event: TilePurchaseEvent, gameState: GameState): GameState
   fun applyEvent(event: PropertyPurchaseEvent, gameState: GameState): GameState
 
   /**
