@@ -13,8 +13,7 @@ internal class GameStateManagerImpl(private val tileManager: TileManager,
                                     private val playerMover: PlayerMover) :
   GameStateManager {
   override fun applyEvent(event: MoveEvent, gameState: GameState): GameState {
-    val movedPlayer = playerMover.move(gameState.getPlayer(event.playerId), gameState.boardSize)
-    return gameState.update(event.playerId, movedPlayer)
+    return gameState.update(event.playerId, playerMover.move(gameState.getPlayer(event.playerId), gameState.boardSize))
   }
 
   override fun applyEvent(event: PropertyPurchaseEvent, gameState: GameState): GameState {
