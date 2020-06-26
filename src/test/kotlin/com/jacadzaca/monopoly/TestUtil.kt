@@ -10,12 +10,12 @@ import kotlinx.collections.immutable.persistentListOf
 import java.math.BigInteger
 import java.util.*
 
-fun getTestPlayer(): Player =
+fun getTestPlayer(startPosition: Int = 0, liability: Liability? = null): Player =
     Player(
         UUID.randomUUID(),
-        0,
+        startPosition,
         123.toBigInteger(),
-        null
+        liability
     )
 fun getTestGameEvent(): GameAction = GameAction(UUID.randomUUID(), 1)
 fun createHouse(rent: BigInteger = 100.toBigInteger()) = Building(rent, BuildingType.HOUSE)
