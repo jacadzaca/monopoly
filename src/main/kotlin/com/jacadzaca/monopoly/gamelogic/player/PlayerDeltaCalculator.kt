@@ -16,6 +16,11 @@ class PlayerDeltaCalculator(private val boardSize: Int) : DeltaCalculator<Player
     )
   }
 
+  /**
+   * Keep in mind, that NO change in position is interpreted as traversing
+   * the whole board. We never not move, every turn begins
+   * with a player moving, so it's ok.
+   */
   private fun calculateChangeInPosition(current: Int, previous: Int): Int {
     return when {
       current < previous -> boardSize - (previous - current)
