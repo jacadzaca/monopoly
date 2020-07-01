@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic.player
 
+import com.jacadzaca.monopoly.createLiability
 import com.jacadzaca.monopoly.getTestPlayer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -8,7 +9,7 @@ import java.util.*
 
 internal class PlayerDeltaCalculatorTest {
   private val boardSize = 20
-  private val differenceCalculator = PlayerDeltaCalculator(boardSize)
+  private val deltaCalculator = PlayerDeltaCalculator(boardSize)
   private val previous = getTestPlayer(startPosition = 5)
 
   @Test
@@ -20,7 +21,7 @@ internal class PlayerDeltaCalculatorTest {
     val current = previous.copy(position = previous.position + change)
 
     val expected = PlayerDelta(changeInPosition = change)
-    val actual = differenceCalculator.calculate(current, previous)
+    val actual = deltaCalculator.calculate(current, previous)
     assertEquals(expected.changeInPosition, actual.changeInPosition)
   }
 
@@ -28,8 +29,17 @@ internal class PlayerDeltaCalculatorTest {
   fun `calculate should unwrap change in position if current's position is less than previous's position`() {
     val current = previous.copy(position = previous.position - 1)
 
-    val expected = PlayerDelta(changeInPosition = boardSize + current.position)
-    val actual = differenceCalculator.calculate(current, previous)
+    val expected = PlayerDelta(changeInPosition = boardSize - (previous.position - current.position))
+    val actual = deltaCalculator.calculate(current, previous)
+    assertEquals(expected.changeInPosition, actual.changeInPosition)
+  }
+
+  @Test
+  fun `calculate should set changeInPosition to boardSize if current's position is equal to previous'`() {
+    val current = previous.copy(position = previous.position)
+
+    val expected = PlayerDelta(changeInPosition = boardSize)
+    val actual = deltaCalculator.calculate(current, previous)
     assertEquals(expected.changeInPosition, actual.changeInPosition)
   }
 
@@ -39,7 +49,7 @@ internal class PlayerDeltaCalculatorTest {
     val current = previous.addFunds(change)
 
     val expected = PlayerDelta(changeInBalance = change)
-    val actual = differenceCalculator.calculate(current, previous)
+    val actual = deltaCalculator.calculate(current, previous)
 
     assertEquals(expected.changeInBalance, actual.changeInBalance)
   }
@@ -50,14 +60,20 @@ internal class PlayerDeltaCalculatorTest {
     val current = previous.detractFunds(change)
 
     val expected = PlayerDelta(changeInBalance = -change)
-    val actual = differenceCalculator.calculate(current, previous)
+    val actual = deltaCalculator.calculate(current, previous)
 
     assertEquals(expected.changeInBalance, actual.changeInBalance)
   }
 
   @Test
-  fun `calculate should `() {
+  fun `calculate should add a liability if current has one and previous dose not`() {
+    val change = createLiability(previous.id, 10.toBigInteger())
+    val current = previous.copy(liability = change)
 
+    val expected = PlayerDelta(changeInLiability = change)
+    val actual = deltaCalculator.calculate(current, previous)
+
+    assertEquals(expected.changeInLiability, actual.changeInLiability)
   }
 
   @Test
@@ -65,7 +81,7 @@ internal class PlayerDeltaCalculatorTest {
     val differentId = UUID.randomUUID()
     val current = previous.copy(id = differentId)
     assertThrows<IllegalArgumentException> {
-      differenceCalculator.calculate(current, previous)
+      deltaCalculator.calculate(current, previous)
     }
   }
 }

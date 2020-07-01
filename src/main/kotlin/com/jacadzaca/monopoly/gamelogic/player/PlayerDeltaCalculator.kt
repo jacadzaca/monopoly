@@ -1,9 +1,37 @@
 package com.jacadzaca.monopoly.gamelogic.player
 
 import com.jacadzaca.monopoly.gamelogic.DeltaCalculator
+import java.lang.IllegalArgumentException
+import java.math.BigInteger
 
-class PlayerDeltaCalculator(val boardSize: Int) : DeltaCalculator<Player> {
+class PlayerDeltaCalculator(private val boardSize: Int) : DeltaCalculator<Player> {
   override fun calculate(current: Player, previous: Player): PlayerDelta {
-    TODO("Not yet implemented")
+    if (current.id != previous.id) {
+      throw IllegalArgumentException("Cannot create a delta from two different players!")
+    }
+    return PlayerDelta(
+      calculateChangeInPosition(current.position, previous.position),
+      calculateChangeInBalance(current.balance, previous.balance),
+      calculateChangeInLiability(current.liability, previous.liability)
+    )
+  }
+
+  private fun calculateChangeInPosition(current: Int, previous: Int): Int {
+    return when {
+      current < previous -> boardSize - (previous - current)
+      current == previous -> boardSize
+      else -> current - previous
+    }
+  }
+
+  private fun calculateChangeInBalance(current: BigInteger, previous: BigInteger): BigInteger? {
+    return current - previous
+  }
+
+  private fun calculateChangeInLiability(current: Liability?, previous: Liability?): Liability? {
+    return when {
+      current != null && previous == null -> current
+      else -> null
+    }
   }
 }
