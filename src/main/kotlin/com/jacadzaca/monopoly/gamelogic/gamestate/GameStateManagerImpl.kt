@@ -23,9 +23,9 @@ internal class GameStateManagerImpl(private val tileManager: TileManager,
 
   override fun applyEvent(event: PropertyPurchaseEvent, gameState: GameState): GameState {
     val buyer = gameState.getPlayer(event.playerId)
-    val tileWithEstate = tileManager.buyProperty(buyer, gameState.getTile(event.whereToBuy), event.propertyType)
+    val tileWithEstate = tileManager.buyProperty(buyer, gameState.getTile(event.tileIndex), event.propertyType)
     return gameState
-      .update(event.whereToBuy, tileWithEstate)
+      .update(event.tileIndex, tileWithEstate)
       .update(event.playerId, buyer.detractFunds(buildingFactory.getPriceFor(event.propertyType)))
   }
 

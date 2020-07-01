@@ -96,7 +96,7 @@ internal class GameStateManagerImplTest {
   fun `apply PropertyPurchaseEvent should add a estate to the whereToBuy tile`() {
     val event = PropertyPurchaseEvent(player.id, BuildingType.HOUSE, 3)
 
-    val tile = gameState.getTile(event.whereToBuy)
+    val tile = gameState.getTile(event.tileIndex)
     val tileWithEstate = tile.copy(buildings = tile.buildings.add(createHouse()))
     every {
       tileManager.buyProperty(player, tile, any())
@@ -104,7 +104,7 @@ internal class GameStateManagerImplTest {
 
     val actual = gameStateManager.applyEvent(event, gameState)
 
-    assertEquals(tileWithEstate.buildings, actual.getTile(event.whereToBuy).buildings)
+    assertEquals(tileWithEstate.buildings, actual.getTile(event.tileIndex).buildings)
   }
 
   @Test

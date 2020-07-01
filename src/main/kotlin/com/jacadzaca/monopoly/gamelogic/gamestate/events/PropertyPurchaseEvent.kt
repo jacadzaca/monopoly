@@ -6,4 +6,4 @@ import java.util.*
 
 data class PropertyPurchaseEvent(override val playerId: PlayerID,
                                  val propertyType: BuildingType,
-                                 val whereToBuy: Int): GameEvent
+                                 val tileIndex: Int): GameEvent
