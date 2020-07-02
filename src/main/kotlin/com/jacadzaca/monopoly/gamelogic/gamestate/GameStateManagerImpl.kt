@@ -10,28 +10,28 @@ internal class GameStateManagerImpl(private val tileManager: TileManager,
                                     private val playerMover: PlayerMover) :
   GameStateManager {
   override fun applyEvent(event: MoveEvent, gameState: GameState): GameState {
-    return gameState.update(event.playerId, playerMover.move(gameState.getPlayer(event.playerId), gameState.boardSize))
+    return gameState.update(event.playerId, playerMover.move(gameState.players.getValue(event.playerId), gameState.boardSize))
   }
 
   override fun applyEvent(event: TilePurchaseEvent, gameState: GameState): GameState {
-    val buyer = gameState.getPlayer(event.playerId)
-    val tileToBuy = gameState.getTile(event.tileIndex)
+    val buyer = gameState.players.getValue(event.playerId)
+    val tileToBuy = gameState.tiles[event.tileIndex]
     return gameState
       .update(event.tileIndex, tileManager.buyTile(buyer, tileToBuy))
       .update(event.playerId, buyer.detractFunds(tileToBuy.price))
   }
 
   override fun applyEvent(event: PropertyPurchaseEvent, gameState: GameState): GameState {
-    val buyer = gameState.getPlayer(event.playerId)
-    val tileWithEstate = tileManager.buyProperty(buyer, gameState.getTile(event.tileIndex), event.propertyType)
+    val buyer = gameState.players.getValue(event.playerId)
+    val tileWithEstate = tileManager.buyProperty(buyer, gameState.tiles[event.tileIndex], event.propertyType)
     return gameState
       .update(event.tileIndex, tileWithEstate)
       .update(event.playerId, buyer.detractFunds(buildingFactory.getPriceFor(event.propertyType)))
   }
 
   override fun applyEvent(event: PlayerPaysLiabilityEvent, gameState: GameState): GameState {
-    val payer = gameState.getPlayer(event.playerId)
-    val receiver = gameState.getPlayer(event.liability.toWhom)
+    val payer = gameState.players.getValue(event.playerId)
+    val receiver = gameState.players.getValue(event.liability.toWhom)
     return if (payer.balance < event.liability.howMuch) {
       gameState
         .update(event.playerId, payer.detractFunds(event.liability.howMuch))

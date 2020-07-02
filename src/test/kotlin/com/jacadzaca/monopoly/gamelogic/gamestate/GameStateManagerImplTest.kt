@@ -30,7 +30,7 @@ internal class GameStateManagerImplTest {
   private lateinit var gameStateManager: GameStateManagerImpl
   private lateinit var playerMover: PlayerMover
   private val tiles = (1..4).map { createTile() }.toPersistentList()
-  private val gameState = InMemoryGameState(persistentHashMapOf(player.id to player, receiver.id to receiver), tiles)
+  private val gameState = GameState(persistentHashMapOf(player.id to player, receiver.id to receiver), tiles)
 
 
   @BeforeEach
@@ -50,33 +50,33 @@ internal class GameStateManagerImplTest {
 
     val actual = gameStateManager.applyEvent(event, gameState)
 
-    assertEquals(movedPlayer.position, actual.getPlayer(player.id).position)
+    assertEquals(movedPlayer.position, actual.players.getValue(player.id).position)
   }
 
   @Test
   fun `apply TilePurchaseEvent should change the tile's owner`() {
     val event = TilePurchaseEvent(player.id, 2)
-    val tileOwnedByBuyer = gameState.getTile(event.tileIndex).copy(owner = player.id)
-    every { tileManager.buyTile(player, gameState.getTile(event.tileIndex)) } returns tileOwnedByBuyer
+    val tileOwnedByBuyer = gameState.tiles[event.tileIndex].copy(owner = player.id)
+    every { tileManager.buyTile(player, gameState.tiles[event.tileIndex]) } returns tileOwnedByBuyer
     val actual = gameStateManager.applyEvent(event, gameState)
-    assertEquals(tileOwnedByBuyer.owner, actual.getTile(event.tileIndex).owner)
+    assertEquals(tileOwnedByBuyer.owner, actual.tiles[event.tileIndex].owner)
   }
 
   @Test
   fun `apply TilePurchaseEvent should detract from the buyer's balance`() {
     val event = TilePurchaseEvent(player.id, 2)
-    val price = gameState.getTile(event.tileIndex).price
+    val price = gameState.tiles[event.tileIndex].price
     val buyerWithDetractedFunds = player.detractFunds(price)
     val actual = gameStateManager.applyEvent(event, gameState)
-    assertEquals(buyerWithDetractedFunds.balance, actual.getPlayer(player.id).balance)
+    assertEquals(buyerWithDetractedFunds.balance, actual.players.getValue(player.id).balance)
   }
 
   @Test
   fun `apply TilePurchaseEvent throws IllegalArgument if buyer has insufficient funds`() {
     val event = TilePurchaseEvent(player.id, 3)
-    val price = gameState.getTile(event.tileIndex).price
+    val price = gameState.tiles[event.tileIndex].price
     val buyer = player.copy(balance = price - BigInteger.TEN)
-    every { tileManager.buyTile(buyer, gameState.getTile(event.tileIndex)) } throws IllegalArgumentException()
+    every { tileManager.buyTile(buyer, gameState.tiles[event.tileIndex]) } throws IllegalArgumentException()
     assertThrows<IllegalArgumentException> {
       gameStateManager.applyEvent(event, gameState.update(player.id, buyer))
     }
@@ -85,7 +85,7 @@ internal class GameStateManagerImplTest {
   @Test
   fun `apply TilePurchaseEvent throws IllegalArgument if buyer already owns the tile`() {
     val event = TilePurchaseEvent(player.id, 3)
-    val tileToBeBought = gameState.getTile(event.tileIndex).copy(owner = event.playerId)
+    val tileToBeBought = gameState.tiles[event.tileIndex].copy(owner = event.playerId)
     every { tileManager.buyTile(player, tileToBeBought) } throws IllegalArgumentException()
     assertThrows<IllegalArgumentException> {
       gameStateManager.applyEvent(event, gameState.update(event.tileIndex, tileToBeBought))
@@ -96,7 +96,7 @@ internal class GameStateManagerImplTest {
   fun `apply PropertyPurchaseEvent should add a estate to the whereToBuy tile`() {
     val event = PropertyPurchaseEvent(player.id, BuildingType.HOUSE, 3)
 
-    val tile = gameState.getTile(event.tileIndex)
+    val tile = gameState.tiles[event.tileIndex]
     val tileWithEstate = tile.copy(buildings = tile.buildings.add(createHouse()))
     every {
       tileManager.buyProperty(player, tile, any())
@@ -104,7 +104,7 @@ internal class GameStateManagerImplTest {
 
     val actual = gameStateManager.applyEvent(event, gameState)
 
-    assertEquals(tileWithEstate.buildings, actual.getTile(event.tileIndex).buildings)
+    assertEquals(tileWithEstate.buildings, actual.tiles[event.tileIndex].buildings)
   }
 
   @Test
@@ -115,7 +115,7 @@ internal class GameStateManagerImplTest {
 
     val actual = gameStateManager.applyEvent(event, gameState)
 
-    assertEquals(playerWithDetractedFunds.balance, actual.getPlayer(player.id).balance)
+    assertEquals(playerWithDetractedFunds.balance, actual.players.getValue(player.id).balance)
   }
 
   @Test
@@ -125,7 +125,7 @@ internal class GameStateManagerImplTest {
 
     val actual = gameStateManager.applyEvent(event, gameState)
 
-    assertEquals(playerWithDetractedFunds.balance, actual.getPlayer(player.id).balance)
+    assertEquals(playerWithDetractedFunds.balance, actual.players.getValue(player.id).balance)
   }
 
   @Test
@@ -135,7 +135,7 @@ internal class GameStateManagerImplTest {
 
     val actual = gameStateManager.applyEvent(event, gameState)
 
-    assertEquals(receiverWithAddedFunds.balance, actual.getPlayer(receiver.id).balance)
+    assertEquals(receiverWithAddedFunds.balance, actual.players.getValue(receiver.id).balance)
   }
 
   @Test
@@ -146,7 +146,7 @@ internal class GameStateManagerImplTest {
 
     val actual = gameStateManager.applyEvent(event, gameState)
 
-    assertEquals(receiverWithAddedFunds.balance, actual.getPlayer(receiver.id).balance)
+    assertEquals(receiverWithAddedFunds.balance, actual.players.getValue(receiver.id).balance)
   }
 
 }
