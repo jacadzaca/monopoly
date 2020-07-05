@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate
 
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEvent
 import com.jacadzaca.monopoly.gamelogic.player.Player
 import com.jacadzaca.monopoly.gamelogic.player.PlayerID
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
@@ -9,7 +10,8 @@ import java.util.*
 
 data class GameState(
   val players: PersistentMap<PlayerID, Player>,
-  val tiles: PersistentList<Tile>
+  val tiles: PersistentList<Tile>,
+  val recentChanges: PersistentList<GameEvent>
 ) {
    val boardSize: Int
     get() = tiles.size
@@ -27,4 +29,7 @@ data class GameState(
 
    fun update(tileIndex: Int, updatedTile: Tile): GameState =
     copy(tiles = tiles.set(tileIndex, updatedTile))
+
+  fun addChange(event: GameEvent): GameState =
+    copy(recentChanges = recentChanges.add(event))
 }
