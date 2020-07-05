@@ -50,6 +50,7 @@ dependencies {
   testImplementation "io.vertx:vertx-junit5:$vertxVersion"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion"
   testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterEngineVersion"
+  testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterEngineVersion"
   testImplementation "io.mockk:mockk:1.9.3"
 }
 
