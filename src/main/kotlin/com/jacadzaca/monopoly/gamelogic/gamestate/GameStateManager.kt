@@ -1,23 +1,24 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate
 
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.MoveEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.PlayerPaysLiabilityEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.PropertyPurchaseEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.TilePurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.*
 
 interface GameStateManager {
-  fun applyEvent(event: MoveEvent, gameState: GameState): GameState
+  fun applyEvent(event: GameEvent, gameState: GameState): GameState {
+    return event.apply(this, gameState.addChange(event))
+  }
+
+  fun applyPlayerMove(event: MoveEvent, gameState: GameState): GameState
 
   /**
    * @throws IllegalArgumentException if @event.playerId cannot buy the tile
    */
-  fun applyEvent(event: TilePurchaseEvent, gameState: GameState): GameState
-  fun applyEvent(event: PropertyPurchaseEvent, gameState: GameState): GameState
+  fun applyTilePurchase(event: TilePurchaseEvent, gameState: GameState): GameState
+  fun applyEstatePurchase(event: PropertyPurchaseEvent, gameState: GameState): GameState
 
   /**
    * If the event.playerId has insufficient balance to pay his liabilities, ONLY the amount he has is to be
    * transferred to the liability receiver. The player, who cannot pay his debt,
    * should have his balance to be set to a non-positive value
    */
-  fun applyEvent(event: PlayerPaysLiabilityEvent, gameState: GameState): GameState
+  fun applyLiabilityPayment(event: PlayerPaysLiabilityEvent, gameState: GameState): GameState
 }
