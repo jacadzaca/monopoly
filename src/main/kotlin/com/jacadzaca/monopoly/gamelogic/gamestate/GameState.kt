@@ -6,12 +6,13 @@ import com.jacadzaca.monopoly.gamelogic.player.PlayerID
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentListOf
 import java.util.*
 
 data class GameState(
   val players: PersistentMap<PlayerID, Player>,
   val tiles: PersistentList<Tile>,
-  val recentChanges: PersistentList<GameEvent>
+  val recentChanges: PersistentList<GameEvent> = persistentListOf()
 ) {
    val boardSize: Int
     get() = tiles.size
