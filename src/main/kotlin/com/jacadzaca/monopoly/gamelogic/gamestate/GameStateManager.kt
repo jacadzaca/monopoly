@@ -3,6 +3,9 @@ package com.jacadzaca.monopoly.gamelogic.gamestate
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.*
 
 interface GameStateManager {
+  /**
+   * applies given @event to the @gameState, while adding the change to @gameState.recentChanges
+   */
   fun applyEvent(event: GameEvent, gameState: GameState): GameState {
     return event.apply(this, gameState.addChange(event))
   }
@@ -13,6 +16,9 @@ interface GameStateManager {
    * @throws IllegalArgumentException if @event.playerId cannot buy the tile
    */
   fun applyTilePurchase(event: TilePurchaseEvent, gameState: GameState): GameState
+  /**
+   * @throws IllegalArgumentException if @event.playerId cannot buy the tile
+   */
   fun applyEstatePurchase(event: PropertyPurchaseEvent, gameState: GameState): GameState
 
   /**
