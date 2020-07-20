@@ -5,7 +5,7 @@ import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 
 class GameEventVerifierImpl(private val estateFactory: BuildingFactory, private val requiredHousesForHotel: Int) : GameEventVerifier {
-  override fun verifyTilePurchaseEvent(event: TilePurchaseEvent, gameState: GameState): VerifiedTilePurchaseEvent? {
+  override fun verifyTilePurchaseEvent(event: TilePurchaseEvent, gameState: GameState): TilePurchaseEvent? {
     val tile = gameState.tiles[event.tileIndex]
     val buyer = gameState.players.getValue(event.playerId)
     return when {
@@ -18,7 +18,7 @@ class GameEventVerifierImpl(private val estateFactory: BuildingFactory, private 
   override fun verifyEstatePurchaseEvent(
     event: PropertyPurchaseEvent,
     gameState: GameState
-  ): VerifiedPropertyPurchaseEvent? {
+  ): PropertyPurchaseEvent? {
     val tile = gameState.tiles[event.tileIndex]
     val buyer = gameState.players.getValue(event.playerId)
     return when {
