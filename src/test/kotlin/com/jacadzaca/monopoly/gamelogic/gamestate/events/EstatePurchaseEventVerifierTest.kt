@@ -5,12 +5,13 @@ import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEventVerifier
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.VerifiedEstatePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
@@ -27,12 +28,14 @@ internal class EstatePurchaseEventVerifierTest {
       EstateType.HOTEL,
       tileIndex = 21
     )
+  private val verifiedBuyHotelEvent = VerifiedEstatePurchaseEvent(buyHotelEvent)
   private val buyHouseEvent =
     EstatePurchaseEvent(
       buyer.id,
       EstateType.HOUSE,
       tileIndex = 32
     )
+  private val verifiedBuyHouseEvent = VerifiedEstatePurchaseEvent(buyHouseEvent)
   private val eventVerifier =
     EstatePurchaseEventVerifier(
       estateFactory,
@@ -52,7 +55,7 @@ internal class EstatePurchaseEventVerifierTest {
   fun `verify returns the inputted event if the buyer is the tile's owner, the buyer has sufficient funds and the buyer wants a house`() {
     every { tile.owner } returns buyer.id
     every { estateFactory.getPriceFor(EstateType.HOUSE) } returns buyer.balance - 10.toBigInteger()
-    assertSame(buyHouseEvent, eventVerifier.verify(buyHouseEvent, gameState))
+    assertEquals(verifiedBuyHouseEvent, eventVerifier.verify(buyHouseEvent, gameState))
   }
 
   @Test
@@ -60,8 +63,8 @@ internal class EstatePurchaseEventVerifierTest {
     every { tile.owner } returns buyer.id
     every { estateFactory.getPriceFor(EstateType.HOTEL) } returns buyer.balance - 10.toBigInteger()
     every { tile.houseCount() } returnsMany listOf(requiredHousesForHotel, requiredHousesForHotel + 1)
-    assertSame(buyHotelEvent, eventVerifier.verify(buyHotelEvent, gameState))
-    assertSame(buyHotelEvent, eventVerifier.verify(buyHotelEvent, gameState))
+    assertEquals(verifiedBuyHotelEvent, eventVerifier.verify(buyHotelEvent, gameState))
+    assertEquals(verifiedBuyHotelEvent, eventVerifier.verify(buyHotelEvent, gameState))
   }
 
   @Test
