@@ -3,12 +3,13 @@ package com.jacadzaca.monopoly.gamelogic.gamestate.events
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEventVerifier
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.VerifiedTilePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertSame
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigInteger
@@ -23,6 +24,7 @@ internal class TilePurchaseEventVerifierTest {
       buyer.id,
       tileIndex = 0
     )
+  private val verifiedEvent = VerifiedTilePurchaseEvent(event)
   private val eventVerifier: TilePurchaseEventVerifier =
     TilePurchaseEventVerifier()
 
@@ -36,8 +38,8 @@ internal class TilePurchaseEventVerifierTest {
   fun `verify returns inputted event if the buyer has sufficient funds and the tile has no owner`() {
     every { tile.owner } returns null
     every { tile.price } returnsMany listOf(buyer.balance, buyer.balance - BigInteger.ONE)
-    assertSame(event, eventVerifier.verify(event, gameState))
-    assertSame(event, eventVerifier.verify(event, gameState))
+    assertEquals(verifiedEvent, eventVerifier.verify(event, gameState))
+    assertEquals(verifiedEvent, eventVerifier.verify(event, gameState))
   }
 
   @Test
