@@ -1,7 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate.events
 
-import com.jacadzaca.monopoly.gamelogic.buildings.BuildingFactory
-import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
+import com.jacadzaca.monopoly.gamelogic.estates.EstateFactory
+import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEventVerifier
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
@@ -20,17 +20,17 @@ internal class EstatePurchaseEventVerifierTest {
   private val buyer = getTestPlayer()
   private val requiredHousesForHotel = 2
   private val gameState = mockk<GameState>()
-  private val estateFactory = mockk<BuildingFactory>()
+  private val estateFactory = mockk<EstateFactory>()
   private val buyHotelEvent =
     EstatePurchaseEvent(
       buyer.id,
-      BuildingType.HOTEL,
+      EstateType.HOTEL,
       tileIndex = 21
     )
   private val buyHouseEvent =
     EstatePurchaseEvent(
       buyer.id,
-      BuildingType.HOUSE,
+      EstateType.HOUSE,
       tileIndex = 32
     )
   private val eventVerifier =
@@ -51,14 +51,14 @@ internal class EstatePurchaseEventVerifierTest {
   @Test
   fun `verify returns the inputted event if the buyer is the tile's owner, the buyer has sufficient funds and the buyer wants a house`() {
     every { tile.owner } returns buyer.id
-    every { estateFactory.getPriceFor(BuildingType.HOUSE) } returns buyer.balance - 10.toBigInteger()
+    every { estateFactory.getPriceFor(EstateType.HOUSE) } returns buyer.balance - 10.toBigInteger()
     assertSame(buyHouseEvent, eventVerifier.verify(buyHouseEvent, gameState))
   }
 
   @Test
   fun `verify returns the inputted event if the tile's owner is the buyer, the buyer has sufficient funds, there is sufficient number of houses and the buyer wants a hotel`() {
     every { tile.owner } returns buyer.id
-    every { estateFactory.getPriceFor(BuildingType.HOTEL) } returns buyer.balance - 10.toBigInteger()
+    every { estateFactory.getPriceFor(EstateType.HOTEL) } returns buyer.balance - 10.toBigInteger()
     every { tile.houseCount() } returnsMany listOf(requiredHousesForHotel, requiredHousesForHotel + 1)
     assertSame(buyHotelEvent, eventVerifier.verify(buyHotelEvent, gameState))
     assertSame(buyHotelEvent, eventVerifier.verify(buyHotelEvent, gameState))

@@ -1,9 +1,9 @@
 package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.createTile
-import com.jacadzaca.monopoly.gamelogic.buildings.Building
-import com.jacadzaca.monopoly.gamelogic.buildings.BuildingFactory
-import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
+import com.jacadzaca.monopoly.gamelogic.estates.Estate
+import com.jacadzaca.monopoly.gamelogic.estates.EstateFactory
+import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import com.jacadzaca.monopoly.gamelogic.player.Player
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.gamelogic.tiles.TileManagerImpl
@@ -22,18 +22,18 @@ internal class TileManagerImplTest {
   private lateinit var tile: Tile
   private lateinit var buyer: Player
   private val requiredHousesForHotel = 4
-  private lateinit var buildingFactory: BuildingFactory
+  private lateinit var estateFactory: EstateFactory
   private lateinit var tileManager: TileManagerImpl
 
   @BeforeEach
   fun setUp() {
     buyer = getTestPlayer()
-    buildingFactory = mockk()
+    estateFactory = mockk()
     tile = createTile(buyer.id)
-    tileManager = TileManagerImpl(buildingFactory, requiredHousesForHotel)
-    every { buildingFactory.getPriceFor(any()) } returns BigInteger.ZERO
-    every { buildingFactory.create(BuildingType.HOUSE) } returns Building(100.toBigInteger(), BuildingType.HOUSE)
-    every { buildingFactory.create(BuildingType.HOTEL) } returns Building(1000.toBigInteger(), BuildingType.HOTEL)
+    tileManager = TileManagerImpl(estateFactory, requiredHousesForHotel)
+    every { estateFactory.getPriceFor(any()) } returns BigInteger.ZERO
+    every { estateFactory.create(EstateType.HOUSE) } returns Estate(100.toBigInteger(), EstateType.HOUSE)
+    every { estateFactory.create(EstateType.HOTEL) } returns Estate(1000.toBigInteger(), EstateType.HOTEL)
   }
 
   @Test
@@ -61,15 +61,15 @@ internal class TileManagerImplTest {
 
   @Test
   fun `buyProperty should add the property to the tile's listing`() {
-    val tileWithProperty = tile.copy(buildings = persistentListOf(buildingFactory.create(BuildingType.HOUSE)))
-    assertEquals(tileWithProperty.buildings, tileManager.buyProperty(buyer, tile, BuildingType.HOUSE).buildings)
+    val tileWithProperty = tile.copy(estates = persistentListOf(estateFactory.create(EstateType.HOUSE)))
+    assertEquals(tileWithProperty.estates, tileManager.buyProperty(buyer, tile, EstateType.HOUSE).estates)
   }
 
   @Test
   fun `buyProperty throws an IllegalArgument if the buyer dose not own the tile`() {
     tile = createTile(null)
     assertThrows<IllegalArgumentException> {
-      tileManager.buyProperty(buyer, tile, BuildingType.HOUSE)
+      tileManager.buyProperty(buyer, tile, EstateType.HOUSE)
     }
   }
 
@@ -77,20 +77,20 @@ internal class TileManagerImplTest {
   fun `buyProperty throws IllegalArgument if the buyer dose not own enough houses and wants to buy a hotel`() {
     tile = tileWithNotEnoughHouses()
     assertThrows<IllegalArgumentException> {
-      tileManager.buyProperty(buyer, tile, BuildingType.HOTEL)
+      tileManager.buyProperty(buyer, tile, EstateType.HOTEL)
     }
   }
 
   private fun tileWithNotEnoughHouses(): Tile {
-    val houses = listOf(1 until requiredHousesForHotel).map { buildingFactory.create(BuildingType.HOUSE) }.toPersistentList()
-    return tile.copy(buildings = houses)
+    val houses = listOf(1 until requiredHousesForHotel).map { estateFactory.create(EstateType.HOUSE) }.toPersistentList()
+    return tile.copy(estates = houses)
   }
 
   @Test
   fun `buyProperty throws IllegalArgument if the buyer has insufficient funds`() {
-    every { buildingFactory.getPriceFor(BuildingType.HOUSE) } returns buyer.balance + 123.toBigInteger()
+    every { estateFactory.getPriceFor(EstateType.HOUSE) } returns buyer.balance + 123.toBigInteger()
     assertThrows<IllegalArgumentException> {
-      tileManager.buyProperty(buyer, tile, BuildingType.HOUSE)
+      tileManager.buyProperty(buyer, tile, EstateType.HOUSE)
     }
   }
 }

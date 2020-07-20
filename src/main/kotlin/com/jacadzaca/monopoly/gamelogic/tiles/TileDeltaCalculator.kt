@@ -1,7 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic.tiles
 
 import com.jacadzaca.monopoly.gamelogic.DeltaCalculator
-import com.jacadzaca.monopoly.gamelogic.buildings.Building
+import com.jacadzaca.monopoly.gamelogic.estates.Estate
 import com.jacadzaca.monopoly.gamelogic.player.PlayerID
 import kotlinx.collections.immutable.PersistentList
 import java.math.BigInteger
@@ -9,7 +9,7 @@ import java.math.BigInteger
 class TileDeltaCalculator : DeltaCalculator<Tile> {
   override fun calculate(current: Tile, previous: Tile): TileDelta {
     return TileDelta(
-      calculateChangeInBuildings(current.buildings, previous.buildings),
+      calculateChangeInBuildings(current.estates, previous.estates),
       calculateChangeInPrice(current.price, previous.price),
       calculateChangeInOwner(current.owner, previous.owner)
     )
@@ -36,9 +36,9 @@ class TileDeltaCalculator : DeltaCalculator<Tile> {
   }
 
   private fun calculateChangeInBuildings(
-    current: PersistentList<Building>,
-    previous: PersistentList<Building>
-  ): List<Building>? {
+      current: PersistentList<Estate>,
+      previous: PersistentList<Estate>
+  ): List<Estate>? {
     return when (current) {
       previous -> null
       else -> current

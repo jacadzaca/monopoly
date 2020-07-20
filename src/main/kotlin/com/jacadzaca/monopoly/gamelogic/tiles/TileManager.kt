@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic.tiles
 
-import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
+import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import com.jacadzaca.monopoly.gamelogic.player.Player
 
 interface TileManager {
@@ -19,5 +19,5 @@ interface TileManager {
    * @throws IllegalArgumentException, if @buildingType == BuildingType.HOTEL && @onTile.houseCount() != requiredHousesForHotel
    * @return a copy of @onTile with a new building of @buildingType
    */
-  fun buyProperty(buyer: Player, onTile: Tile, buildingType: BuildingType): Tile
+  fun buyProperty(buyer: Player, onTile: Tile, estateType: EstateType): Tile
 }

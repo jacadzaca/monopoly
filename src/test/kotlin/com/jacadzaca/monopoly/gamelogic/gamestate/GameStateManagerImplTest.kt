@@ -3,8 +3,8 @@ package com.jacadzaca.monopoly.gamelogic.gamestate
 import com.jacadzaca.monopoly.createHouse
 import com.jacadzaca.monopoly.createLiability
 import com.jacadzaca.monopoly.createTile
-import com.jacadzaca.monopoly.gamelogic.buildings.BuildingFactory
-import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
+import com.jacadzaca.monopoly.gamelogic.estates.EstateFactory
+import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.MoveEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.PlayerPaysLiabilityEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
@@ -26,7 +26,7 @@ internal class GameStateManagerImplTest {
   private val player = getTestPlayer()
   private val receiver = getTestPlayer()
   private lateinit var tileManager: TileManager
-  private lateinit var buildingFactory: BuildingFactory
+  private lateinit var estateFactory: EstateFactory
   private lateinit var gameStateManager: GameStateManagerImpl
   private lateinit var playerMover: PlayerMover
   private val tiles = (1..4).map { createTile() }.toPersistentList()
@@ -36,10 +36,10 @@ internal class GameStateManagerImplTest {
   @BeforeEach
   fun setUp() {
     tileManager = mockk(relaxed = true)
-    buildingFactory = mockk()
-    every { buildingFactory.getPriceFor(any()) } returns 100.toBigInteger()
+    estateFactory = mockk()
+    every { estateFactory.getPriceFor(any()) } returns 100.toBigInteger()
     playerMover = mockk()
-    gameStateManager = GameStateManagerImpl(tileManager, buildingFactory, playerMover)
+    gameStateManager = GameStateManagerImpl(tileManager, estateFactory, playerMover)
   }
 
   @Test
@@ -101,19 +101,19 @@ internal class GameStateManagerImplTest {
     val event =
       EstatePurchaseEvent(
         player.id,
-        BuildingType.HOUSE,
+        EstateType.HOUSE,
         3
       )
 
     val tile = gameState.tiles[event.tileIndex]
-    val tileWithEstate = tile.copy(buildings = tile.buildings.add(createHouse()))
+    val tileWithEstate = tile.copy(estates = tile.estates.add(createHouse()))
     every {
       tileManager.buyProperty(player, tile, any())
     } returns tileWithEstate
 
     val actual = gameStateManager.applyEstatePurchase(event, gameState)
 
-    assertEquals(tileWithEstate.buildings, actual.tiles[event.tileIndex].buildings)
+    assertEquals(tileWithEstate.estates, actual.tiles[event.tileIndex].estates)
   }
 
   @Test
@@ -121,11 +121,11 @@ internal class GameStateManagerImplTest {
     val event =
       EstatePurchaseEvent(
         player.id,
-        BuildingType.HOUSE,
+        EstateType.HOUSE,
         3
       )
 
-    val playerWithDetractedFunds = player.detractFunds(buildingFactory.getPriceFor(BuildingType.HOUSE))
+    val playerWithDetractedFunds = player.detractFunds(estateFactory.getPriceFor(EstateType.HOUSE))
 
     val actual = gameStateManager.applyEstatePurchase(event, gameState)
 

@@ -20,13 +20,13 @@ internal class TileTest {
   fun `getTotalRentFor should sum up the rents of individual buildings`() {
     val rent = 123.toBigInteger()
     val rent1 = 234.toBigInteger()
-    tile = tile.copy(buildings = persistentListOf(createHouse(rent), createHotel(rent1)))
+    tile = tile.copy(estates = persistentListOf(createHouse(rent), createHotel(rent1)))
     assertEquals(rent + rent1,  tile.totalRent())
   }
 
   @Test
   fun `houseCount should count the number of houses on a tile`() {
-    tile = tile.copy(buildings = persistentListOf(createHouse(), createHouse(), createHotel()))
+    tile = tile.copy(estates = persistentListOf(createHouse(), createHouse(), createHotel()))
     assertEquals(2, tile.houseCount())
   }
 }
