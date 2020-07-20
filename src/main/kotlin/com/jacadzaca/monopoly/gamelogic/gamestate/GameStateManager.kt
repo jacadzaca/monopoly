@@ -1,6 +1,8 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate
 
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.*
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.PropertyPurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
 
 interface GameStateManager {
   /**

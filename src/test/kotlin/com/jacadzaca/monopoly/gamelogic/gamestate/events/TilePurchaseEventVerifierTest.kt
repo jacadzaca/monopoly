@@ -1,6 +1,8 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate.events
 
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEventVerifier
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
@@ -16,8 +18,13 @@ internal class TilePurchaseEventVerifierTest {
   private val tile = mockk<Tile>()
   private val buyer = getTestPlayer()
   private val gameState = mockk<GameState>()
-  private val event = TilePurchaseEvent(buyer.id, tileIndex = 0)
-  private val eventVerifier: TilePurchaseEventVerifier = TilePurchaseEventVerifier()
+  private val event =
+    TilePurchaseEvent(
+      buyer.id,
+      tileIndex = 0
+    )
+  private val eventVerifier: TilePurchaseEventVerifier =
+    TilePurchaseEventVerifier()
 
   @BeforeEach
   fun setUp() {

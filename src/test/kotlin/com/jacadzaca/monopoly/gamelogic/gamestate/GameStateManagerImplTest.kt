@@ -7,8 +7,8 @@ import com.jacadzaca.monopoly.gamelogic.buildings.BuildingFactory
 import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.MoveEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.PlayerPaysLiabilityEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.PropertyPurchaseEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.TilePurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.PropertyPurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.player.PlayerMover
 import com.jacadzaca.monopoly.gamelogic.tiles.TileManager
 import com.jacadzaca.monopoly.getTestPlayer
@@ -55,7 +55,8 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply TilePurchaseEvent should change the tile's owner`() {
-    val event = TilePurchaseEvent(player.id, 2)
+    val event =
+      TilePurchaseEvent(player.id, 2)
     val tileOwnedByBuyer = gameState.tiles[event.tileIndex].copy(owner = player.id)
     every { tileManager.buyTile(player, gameState.tiles[event.tileIndex]) } returns tileOwnedByBuyer
     val actual = gameStateManager.applyTilePurchase(event, gameState)
@@ -64,7 +65,8 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply TilePurchaseEvent should detract from the buyer's balance`() {
-    val event = TilePurchaseEvent(player.id, 2)
+    val event =
+      TilePurchaseEvent(player.id, 2)
     val price = gameState.tiles[event.tileIndex].price
     val buyerWithDetractedFunds = player.detractFunds(price)
     val actual = gameStateManager.applyTilePurchase(event, gameState)
@@ -73,7 +75,8 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply TilePurchaseEvent throws IllegalArgument if buyer has insufficient funds`() {
-    val event = TilePurchaseEvent(player.id, 3)
+    val event =
+      TilePurchaseEvent(player.id, 3)
     val price = gameState.tiles[event.tileIndex].price
     val buyer = player.copy(balance = price - BigInteger.TEN)
     every { tileManager.buyTile(buyer, gameState.tiles[event.tileIndex]) } throws IllegalArgumentException()
@@ -84,7 +87,8 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply TilePurchaseEvent throws IllegalArgument if buyer already owns the tile`() {
-    val event = TilePurchaseEvent(player.id, 3)
+    val event =
+      TilePurchaseEvent(player.id, 3)
     val tileToBeBought = gameState.tiles[event.tileIndex].copy(owner = event.playerId)
     every { tileManager.buyTile(player, tileToBeBought) } throws IllegalArgumentException()
     assertThrows<IllegalArgumentException> {
@@ -94,7 +98,12 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply PropertyPurchaseEvent should add a estate to the whereToBuy tile`() {
-    val event = PropertyPurchaseEvent(player.id, BuildingType.HOUSE, 3)
+    val event =
+      PropertyPurchaseEvent(
+        player.id,
+        BuildingType.HOUSE,
+        3
+      )
 
     val tile = gameState.tiles[event.tileIndex]
     val tileWithEstate = tile.copy(buildings = tile.buildings.add(createHouse()))
@@ -109,7 +118,12 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply PropertyPurchaseEvent should detract from the buyer's balance`() {
-    val event = PropertyPurchaseEvent(player.id, BuildingType.HOUSE, 3)
+    val event =
+      PropertyPurchaseEvent(
+        player.id,
+        BuildingType.HOUSE,
+        3
+      )
 
     val playerWithDetractedFunds = player.detractFunds(buildingFactory.getPriceFor(BuildingType.HOUSE))
 

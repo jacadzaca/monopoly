@@ -3,6 +3,8 @@ package com.jacadzaca.monopoly.gamelogic.gamestate.events
 import com.jacadzaca.monopoly.gamelogic.buildings.BuildingFactory
 import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEventVerifier
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.PropertyPurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
@@ -19,9 +21,23 @@ internal class EstatePurchaseEventVerifierTest {
   private val requiredHousesForHotel = 2
   private val gameState = mockk<GameState>()
   private val estateFactory = mockk<BuildingFactory>()
-  private val buyHotelEvent = PropertyPurchaseEvent(buyer.id, BuildingType.HOTEL, tileIndex = 21)
-  private val buyHouseEvent = PropertyPurchaseEvent(buyer.id, BuildingType.HOUSE, tileIndex = 32)
-  private val eventVerifier = EstatePurchaseEventVerifier(estateFactory, requiredHousesForHotel)
+  private val buyHotelEvent =
+    PropertyPurchaseEvent(
+      buyer.id,
+      BuildingType.HOTEL,
+      tileIndex = 21
+    )
+  private val buyHouseEvent =
+    PropertyPurchaseEvent(
+      buyer.id,
+      BuildingType.HOUSE,
+      tileIndex = 32
+    )
+  private val eventVerifier =
+    EstatePurchaseEventVerifier(
+      estateFactory,
+      requiredHousesForHotel
+    )
 
   @BeforeEach
   fun setUp() {
