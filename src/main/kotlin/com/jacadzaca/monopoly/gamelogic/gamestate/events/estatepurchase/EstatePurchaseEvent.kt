@@ -6,7 +6,7 @@ import com.jacadzaca.monopoly.gamelogic.gamestate.GameStateManager
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEvent
 import com.jacadzaca.monopoly.gamelogic.player.PlayerID
 
-data class PropertyPurchaseEvent(
+data class EstatePurchaseEvent(
   override val playerId: PlayerID,
   val propertyType: BuildingType,
   val tileIndex: Int

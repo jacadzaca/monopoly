@@ -1,7 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate
 
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.*
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.PropertyPurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
 
 interface GameStateManager {
@@ -21,7 +21,7 @@ interface GameStateManager {
   /**
    * @throws IllegalArgumentException if @event.playerId cannot buy the tile
    */
-  fun applyEstatePurchase(event: PropertyPurchaseEvent, gameState: GameState): GameState
+  fun applyEstatePurchase(event: EstatePurchaseEvent, gameState: GameState): GameState
 
   /**
    * If the event.playerId has insufficient balance to pay his liabilities, ONLY the amount he has is to be

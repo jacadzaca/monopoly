@@ -7,7 +7,7 @@ import com.jacadzaca.monopoly.gamelogic.buildings.BuildingFactory
 import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.MoveEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.PlayerPaysLiabilityEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.PropertyPurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.player.PlayerMover
 import com.jacadzaca.monopoly.gamelogic.tiles.TileManager
@@ -99,7 +99,7 @@ internal class GameStateManagerImplTest {
   @Test
   fun `apply PropertyPurchaseEvent should add a estate to the whereToBuy tile`() {
     val event =
-      PropertyPurchaseEvent(
+      EstatePurchaseEvent(
         player.id,
         BuildingType.HOUSE,
         3
@@ -119,7 +119,7 @@ internal class GameStateManagerImplTest {
   @Test
   fun `apply PropertyPurchaseEvent should detract from the buyer's balance`() {
     val event =
-      PropertyPurchaseEvent(
+      EstatePurchaseEvent(
         player.id,
         BuildingType.HOUSE,
         3

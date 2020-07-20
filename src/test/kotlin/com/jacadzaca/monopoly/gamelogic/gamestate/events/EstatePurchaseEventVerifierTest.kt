@@ -4,7 +4,7 @@ import com.jacadzaca.monopoly.gamelogic.buildings.BuildingFactory
 import com.jacadzaca.monopoly.gamelogic.buildings.BuildingType
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEventVerifier
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.PropertyPurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
@@ -22,13 +22,13 @@ internal class EstatePurchaseEventVerifierTest {
   private val gameState = mockk<GameState>()
   private val estateFactory = mockk<BuildingFactory>()
   private val buyHotelEvent =
-    PropertyPurchaseEvent(
+    EstatePurchaseEvent(
       buyer.id,
       BuildingType.HOTEL,
       tileIndex = 21
     )
   private val buyHouseEvent =
-    PropertyPurchaseEvent(
+    EstatePurchaseEvent(
       buyer.id,
       BuildingType.HOUSE,
       tileIndex = 32
