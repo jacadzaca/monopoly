@@ -44,6 +44,7 @@ internal class TilePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns null if the the tile already has an owner`() {
+    every { tile.price } returns buyer.balance - BigInteger.ONE
     every { tile.owner } returnsMany listOf(UUID.randomUUID(), buyer.id)
     assertNull(eventVerifier.verify(event, gameState))
     assertNull(eventVerifier.verify(event, gameState))
