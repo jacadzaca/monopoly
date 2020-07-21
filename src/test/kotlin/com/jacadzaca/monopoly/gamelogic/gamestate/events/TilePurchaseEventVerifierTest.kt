@@ -4,6 +4,7 @@ import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEventVerifier
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.VerifiedTilePurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.player.PlayerID
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
@@ -25,13 +26,15 @@ internal class TilePurchaseEventVerifierTest {
       tileIndex = 0
     )
   private val verifiedEvent = VerifiedTilePurchaseEvent(event)
+  private val tileExists = mockk<(Int, GameState) -> Boolean>()
   private val eventVerifier: TilePurchaseEventVerifier =
-    TilePurchaseEventVerifier()
+    TilePurchaseEventVerifier(tileExists)
 
   @BeforeEach
   fun setUp() {
-    every { gameState.players.getValue(buyer.id) } returns buyer
+    every { gameState.players[buyer.id] } returns buyer
     every { gameState.tiles[event.tileIndex] } returns tile
+    every { tileExists(event.tileIndex, gameState) } returns true
   }
 
   @Test
@@ -54,6 +57,19 @@ internal class TilePurchaseEventVerifierTest {
   fun `verify returns null if the buyer's balance is less than the tile's price`() {
     every { tile.owner } returns null
     every { tile.price } returns buyer.balance + BigInteger.ONE
+    assertNull(eventVerifier.verify(event, gameState))
+  }
+
+  @Test
+  fun `verify returns null if the event references an non-existing player`() {
+    every { gameState.players[event.playerId] } returns null
+    assertNull(eventVerifier.verify(event, gameState))
+  }
+
+  @Test
+  fun `verify returns null if the event references a non-existing tile`() {
+    every { tileExists(event.tileIndex, gameState) } returns false
+    every { gameState.tiles[event.tileIndex] } throws IndexOutOfBoundsException()
     assertNull(eventVerifier.verify(event, gameState))
   }
 }
