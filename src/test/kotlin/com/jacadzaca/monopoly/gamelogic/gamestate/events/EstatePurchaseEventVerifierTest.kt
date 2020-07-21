@@ -80,7 +80,7 @@ internal class EstatePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns null if the buyer has insufficient funds`() {
-    every { estateFactory.getPriceFor(any()) } returns buyer.balance + 10.toBigInteger()
+    every { estateFactory.getPriceFor(any()) } returns buyer.balance + BigInteger.ONE
     assertNull(eventVerifier.verify(buyHouseEvent, gameState))
     assertNull(eventVerifier.verify(buyHotelEvent, gameState))
   }
