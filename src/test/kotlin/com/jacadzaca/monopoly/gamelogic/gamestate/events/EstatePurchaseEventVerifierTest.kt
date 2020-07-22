@@ -112,11 +112,9 @@ internal class EstatePurchaseEventVerifierTest {
   @Test
   fun `verify returns Failure if event references a tile that is not on the board`() {
     val failure = VerificationResult.Failure(GameEventVerifier.invalidTileIndex)
-    every { gameState.tiles[buyHouseEvent.tileIndex] } throws IndexOutOfBoundsException()
     every { tileExists(buyHouseEvent.tileIndex, gameState) } returns false
     assertEquals(failure, eventVerifier.verify(buyHouseEvent, gameState))
     every { tileExists(buyHotelEvent.tileIndex, gameState) } returns false
-    every { gameState.tiles[buyHotelEvent.tileIndex] } throws IndexOutOfBoundsException()
     assertEquals(failure, eventVerifier.verify(buyHotelEvent, gameState))
   }
 }
