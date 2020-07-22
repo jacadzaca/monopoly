@@ -77,7 +77,6 @@ internal class TilePurchaseEventVerifierTest {
   @Test
   fun `verify returns Failure if the event references a non-existing tile`() {
     every { tileExists(event.tileIndex, gameState) } returns false
-    every { gameState.tiles[event.tileIndex] } throws IndexOutOfBoundsException()
     assertEquals(
       VerificationResult.Failure(invalidTileIndex),
       eventVerifier.verify(event, gameState)
