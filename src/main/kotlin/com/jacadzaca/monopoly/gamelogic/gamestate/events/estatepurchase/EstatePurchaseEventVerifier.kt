@@ -17,7 +17,8 @@ internal class EstatePurchaseEventVerifier(
   }
 
   override fun verify(event: EstatePurchaseEvent, gameState: GameState): VerificationResult {
-    val buyer = gameState.players[event.playerId] ?: return VerificationResult.Failure(GameEventVerifier.invalidPlayerId)
+    val buyer =
+      gameState.players[event.playerId] ?: return VerificationResult.Failure(GameEventVerifier.invalidPlayerId)
     if (!tileExists(event.tileIndex, gameState)) {
       return VerificationResult.Failure(GameEventVerifier.invalidTileIndex)
     }
@@ -28,7 +29,13 @@ internal class EstatePurchaseEventVerifier(
       event.estateType == EstateType.HOTEL && tile.houseCount() < requiredHousesForHotel -> VerificationResult.Failure(
         notEnoughHouses
       )
-      else -> VerificationResult.VerifiedEstatePurchaseEvent(buyer, event.estateType, tile)
+      else -> VerificationResult.VerifiedEstatePurchaseEvent(
+        buyer,
+        event.playerId,
+        tile,
+        event.tileIndex,
+        event.estateType
+      )
     }
   }
 }

@@ -27,20 +27,23 @@ internal class EstatePurchaseEventVerifierTest {
       EstateType.HOTEL,
       tileIndex = 21
     )
-  private val verifiedBuyHotelEvent = VerificationResult.VerifiedEstatePurchaseEvent(buyer, EstateType.HOTEL, tile)
+  private val verifiedBuyHotelEvent =
+    VerificationResult.VerifiedEstatePurchaseEvent(buyer, buyer.id, tile, 21, EstateType.HOTEL)
   private val buyHouseEvent =
     EstatePurchaseEvent(
       buyer.id,
       EstateType.HOUSE,
       tileIndex = 32
     )
-  private val verifiedBuyHouseEvent = VerificationResult.VerifiedEstatePurchaseEvent(buyer, EstateType.HOUSE, tile)
+  private val verifiedBuyHouseEvent =
+    VerificationResult.VerifiedEstatePurchaseEvent(buyer, buyer.id, tile, 32, EstateType.HOUSE)
   private val tileExists = mockk<(Int, GameState) -> Boolean>()
   private val eventVerifier =
     EstatePurchaseEventVerifier(
       estateFactory,
       requiredHousesForHotel,
-      tileExists)
+      tileExists
+    )
 
   @BeforeEach
   fun setUp() {
@@ -97,7 +100,10 @@ internal class EstatePurchaseEventVerifierTest {
   @Test
   fun `verify returns Failure if the buyer wants a hotel and there are too few houses on tile`() {
     every { tile.houseCount() } returns requiredHousesForHotel - 1
-    assertEquals(VerificationResult.Failure(EstatePurchaseEventVerifier.notEnoughHouses), eventVerifier.verify(buyHotelEvent, gameState))
+    assertEquals(
+      VerificationResult.Failure(EstatePurchaseEventVerifier.notEnoughHouses),
+      eventVerifier.verify(buyHotelEvent, gameState)
+    )
   }
 
   @Test

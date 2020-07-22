@@ -23,7 +23,7 @@ internal class TilePurchaseEventVerifier(
     return when {
       tile.owner != null -> VerificationResult.Failure(tileAlreadyHasOwner)
       tile.price > buyer.balance -> VerificationResult.Failure(buyerHasInsufficientBalance)
-      else -> VerificationResult.VerifiedTilePurchaseEvent(buyer, tile)
+      else -> VerificationResult.VerifiedTilePurchaseEvent(buyer, event.playerId, tile, event.tileIndex)
     }
   }
 }

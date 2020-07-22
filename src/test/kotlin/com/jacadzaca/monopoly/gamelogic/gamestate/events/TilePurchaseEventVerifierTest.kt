@@ -26,7 +26,7 @@ internal class TilePurchaseEventVerifierTest {
       buyer.id,
       tileIndex = 0
     )
-  private val verifiedEvent = VerificationResult.VerifiedTilePurchaseEvent(buyer, tile)
+  private val verifiedEvent = VerificationResult.VerifiedTilePurchaseEvent(buyer, buyer.id, tile, 0)
   private val tileExists = mockk<(Int, GameState) -> Boolean>()
   private val eventVerifier: TilePurchaseEventVerifier =
     TilePurchaseEventVerifier(tileExists)
