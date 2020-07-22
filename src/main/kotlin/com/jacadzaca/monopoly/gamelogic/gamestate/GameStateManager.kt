@@ -2,6 +2,7 @@ package com.jacadzaca.monopoly.gamelogic.gamestate
 
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.*
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.move.MoveEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
 
 interface GameStateManager {

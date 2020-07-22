@@ -3,6 +3,7 @@ package com.jacadzaca.monopoly.gamelogic.gamestate
 import com.jacadzaca.monopoly.gamelogic.estates.EstateFactory
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.*
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.move.MoveEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.player.PlayerMover
 import com.jacadzaca.monopoly.gamelogic.tiles.TileManager

@@ -5,7 +5,7 @@ import com.jacadzaca.monopoly.createLiability
 import com.jacadzaca.monopoly.createTile
 import com.jacadzaca.monopoly.gamelogic.estates.EstateFactory
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.MoveEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.move.MoveEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.PlayerPaysLiabilityEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
