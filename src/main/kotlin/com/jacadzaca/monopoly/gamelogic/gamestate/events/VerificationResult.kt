@@ -21,5 +21,6 @@ sealed class VerificationResult {
     val estateType: EstateType
   ) : VerificationResult()
 
+  data class VerifiedMoveEvent(val player: Player, val playerId: PlayerID): VerificationResult()
   data class Failure(val reason: String) : VerificationResult()
 }
