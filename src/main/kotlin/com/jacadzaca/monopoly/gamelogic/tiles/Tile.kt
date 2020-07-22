@@ -10,6 +10,8 @@ data class Tile(val estates: PersistentList<Estate>,
                 val price: BigInteger,
                 val owner: PlayerID?) {
 
+  fun changeOwner(newOwner: PlayerID): Tile = copy(owner = newOwner)
+
   fun totalRent(): BigInteger {
     return estates.map(Estate::rent).reduce(BigInteger::add)
   }
