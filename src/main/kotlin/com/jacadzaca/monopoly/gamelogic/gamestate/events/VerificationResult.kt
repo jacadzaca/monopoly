@@ -6,8 +6,12 @@ import com.jacadzaca.monopoly.gamelogic.player.PlayerID
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 
 sealed class VerificationResult {
-  data class VerifiedTilePurchaseEvent(val player: Player, val playerId: PlayerID, val tile: Tile, val tileIndex: Int) :
-    VerificationResult()
+  data class VerifiedTilePurchaseEvent(
+    val player: Player,
+    val playerId: PlayerID,
+    val tile: Tile,
+    val tileIndex: Int
+  ) : VerificationResult()
 
   data class VerifiedEstatePurchaseEvent(
     val player: Player,
@@ -15,8 +19,7 @@ sealed class VerificationResult {
     val tile: Tile,
     val tileIndex: Int,
     val estateType: EstateType
-  ) :
-    VerificationResult()
+  ) : VerificationResult()
 
   data class Failure(val reason: String) : VerificationResult()
 }
