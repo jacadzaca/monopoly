@@ -1,10 +1,11 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate.events
 
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier.Companion.buyerHasInsufficientBalance
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier.Companion.invalidPlayerId
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier.Companion.invalidTileIndex
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEventVerifier
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.VerifiedTilePurchaseEvent
-import com.jacadzaca.monopoly.gamelogic.player.PlayerID
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
@@ -25,7 +26,7 @@ internal class TilePurchaseEventVerifierTest {
       buyer.id,
       tileIndex = 0
     )
-  private val verifiedEvent = VerifiedTilePurchaseEvent(event)
+  private val verifiedEvent = VerificationResult.VerifiedTilePurchaseEvent(buyer, tile)
   private val tileExists = mockk<(Int, GameState) -> Boolean>()
   private val eventVerifier: TilePurchaseEventVerifier =
     TilePurchaseEventVerifier(tileExists)
@@ -46,30 +47,40 @@ internal class TilePurchaseEventVerifierTest {
   }
 
   @Test
-  fun `verify returns null if the the tile already has an owner`() {
+  fun `verify returns Failure if the the tile already has an owner`() {
     every { tile.price } returns buyer.balance - BigInteger.ONE
     every { tile.owner } returnsMany listOf(UUID.randomUUID(), buyer.id)
-    assertNull(eventVerifier.verify(event, gameState))
-    assertNull(eventVerifier.verify(event, gameState))
+    val failure = VerificationResult.Failure(TilePurchaseEventVerifier.tileAlreadyHasOwner)
+    assertEquals(failure, eventVerifier.verify(event, gameState))
+    assertEquals(failure, eventVerifier.verify(event, gameState))
   }
 
   @Test
-  fun `verify returns null if the buyer's balance is less than the tile's price`() {
+  fun `verify returns Failure if the buyer's balance is less than the tile's price`() {
     every { tile.owner } returns null
     every { tile.price } returns buyer.balance + BigInteger.ONE
-    assertNull(eventVerifier.verify(event, gameState))
+    assertEquals(
+      VerificationResult.Failure(buyerHasInsufficientBalance),
+      eventVerifier.verify(event, gameState)
+    )
   }
 
   @Test
-  fun `verify returns null if the event references an non-existing player`() {
+  fun `verify returns Failure if the event references an non-existing player`() {
     every { gameState.players[event.playerId] } returns null
-    assertNull(eventVerifier.verify(event, gameState))
+    assertEquals(
+      VerificationResult.Failure(invalidPlayerId),
+      eventVerifier.verify(event, gameState)
+    )
   }
 
   @Test
-  fun `verify returns null if the event references a non-existing tile`() {
+  fun `verify returns Failure if the event references a non-existing tile`() {
     every { tileExists(event.tileIndex, gameState) } returns false
     every { gameState.tiles[event.tileIndex] } throws IndexOutOfBoundsException()
-    assertNull(eventVerifier.verify(event, gameState))
+    assertEquals(
+      VerificationResult.Failure(invalidTileIndex),
+      eventVerifier.verify(event, gameState)
+    )
   }
 }
