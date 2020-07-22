@@ -9,5 +9,5 @@ interface GameEventVerifier<T : GameEvent> {
     internal const val buyerHasInsufficientBalance = "Buyer dose not have enough funds to preform requested action"
   }
 
-  fun verify(event: T, gameState: GameState): VerificationResult?
+  fun verify(event: T, gameState: GameState): VerificationResult
 }
