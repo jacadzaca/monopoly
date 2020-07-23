@@ -11,6 +11,7 @@ data class Tile(
   val price: BigInteger,
   val owner: PlayerID?
 ) {
+  fun addEstate(newEstate: Estate): Tile = copy(estates = estates.add(newEstate))
 
   fun changeOwner(newOwner: PlayerID): Tile = copy(owner = newOwner)
 
