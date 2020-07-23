@@ -1,10 +1,10 @@
-package com.jacadzaca.monopoly.gamelogic.gamestate.events
+package com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase
 
 import com.jacadzaca.monopoly.gamelogic.estates.EstateFactory
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEventVerifier
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
@@ -28,7 +28,13 @@ internal class EstatePurchaseEventVerifierTest {
       tileIndex = 21
     )
   private val verifiedBuyHotelEvent =
-    VerificationResult.VerifiedEstatePurchaseEvent(buyer, buyer.id, tile, 21, EstateType.HOTEL)
+    VerificationResult.VerifiedEstatePurchaseEvent(
+      buyer,
+      buyer.id,
+      tile,
+      21,
+      EstateType.HOTEL
+    )
   private val buyHouseEvent =
     EstatePurchaseEvent(
       buyer.id,
@@ -36,7 +42,13 @@ internal class EstatePurchaseEventVerifierTest {
       tileIndex = 32
     )
   private val verifiedBuyHouseEvent =
-    VerificationResult.VerifiedEstatePurchaseEvent(buyer, buyer.id, tile, 32, EstateType.HOUSE)
+    VerificationResult.VerifiedEstatePurchaseEvent(
+      buyer,
+      buyer.id,
+      tile,
+      32,
+      EstateType.HOUSE
+    )
   private val tileExists = mockk<(Int, GameState) -> Boolean>()
   private val eventVerifier =
     EstatePurchaseEventVerifier(
@@ -84,7 +96,9 @@ internal class EstatePurchaseEventVerifierTest {
   fun `verify returns Failure if the buyer dose not own the tile`() {
     val otherOwner = UUID.randomUUID()
     every { tile.owner } returnsMany listOf(otherOwner, null)
-    val failure = VerificationResult.Failure(EstatePurchaseEventVerifier.tileNotOwnedByBuyer)
+    val failure = VerificationResult.Failure(
+      EstatePurchaseEventVerifier.tileNotOwnedByBuyer
+    )
     assertEquals(failure, eventVerifier.verify(buyHouseEvent, gameState))
     assertEquals(failure, eventVerifier.verify(buyHouseEvent, gameState))
   }
@@ -92,7 +106,8 @@ internal class EstatePurchaseEventVerifierTest {
   @Test
   fun `verify returns Failure if the buyer has insufficient funds`() {
     every { estateFactory.getPriceFor(any()) } returns buyer.balance + BigInteger.ONE
-    val failure = VerificationResult.Failure(GameEventVerifier.buyerHasInsufficientBalance)
+    val failure =
+      VerificationResult.Failure(GameEventVerifier.buyerHasInsufficientBalance)
     assertEquals(failure, eventVerifier.verify(buyHouseEvent, gameState))
     assertEquals(failure, eventVerifier.verify(buyHotelEvent, gameState))
   }
@@ -101,14 +116,17 @@ internal class EstatePurchaseEventVerifierTest {
   fun `verify returns Failure if the buyer wants a hotel and there are too few houses on tile`() {
     every { tile.houseCount() } returns requiredHousesForHotel - 1
     assertEquals(
-      VerificationResult.Failure(EstatePurchaseEventVerifier.notEnoughHouses),
+      VerificationResult.Failure(
+        EstatePurchaseEventVerifier.notEnoughHouses
+      ),
       eventVerifier.verify(buyHotelEvent, gameState)
     )
   }
 
   @Test
   fun `verify returns Failure if event references a player non-existing player`() {
-    val failure = VerificationResult.Failure(GameEventVerifier.invalidPlayerId)
+    val failure =
+      VerificationResult.Failure(GameEventVerifier.invalidPlayerId)
     every { gameState.players[buyHouseEvent.playerId] } returns null
     assertEquals(failure, eventVerifier.verify(buyHouseEvent, gameState))
     every { gameState.players[buyHotelEvent.playerId] } returns null
@@ -117,7 +135,8 @@ internal class EstatePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns Failure if event references a tile that is not on the board`() {
-    val failure = VerificationResult.Failure(GameEventVerifier.invalidTileIndex)
+    val failure =
+      VerificationResult.Failure(GameEventVerifier.invalidTileIndex)
     every { tileExists(buyHouseEvent.tileIndex, gameState) } returns false
     assertEquals(failure, eventVerifier.verify(buyHouseEvent, gameState))
     every { tileExists(buyHotelEvent.tileIndex, gameState) } returns false

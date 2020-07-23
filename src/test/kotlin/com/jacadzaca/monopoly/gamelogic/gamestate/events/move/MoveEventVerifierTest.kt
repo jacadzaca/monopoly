@@ -1,8 +1,8 @@
-package com.jacadzaca.monopoly.gamelogic.gamestate.events
+package com.jacadzaca.monopoly.gamelogic.gamestate.events.move
 
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.move.MoveEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.move.MoveEventVerifier
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
 import io.mockk.mockk
@@ -13,7 +13,11 @@ internal class MoveEventVerifierTest {
   private val player = getTestPlayer()
   private val gameState = mockk<GameState>()
   private val event = MoveEvent(player.id)
-  private val verifiedEvent = VerificationResult.VerifiedMoveEvent(player, event.playerId)
+  private val verifiedEvent =
+      VerificationResult.VerifiedMoveEvent(
+          player,
+          event.playerId
+      )
   private val eventVerifier = MoveEventVerifier()
 
   @Test
@@ -26,7 +30,9 @@ internal class MoveEventVerifierTest {
   fun `verify returns Failure if the event references a non-existing player`() {
     every { gameState.players[event.playerId] } returns null
     assertEquals(
-      VerificationResult.Failure(GameEventVerifier.invalidPlayerId),
+        VerificationResult.Failure(
+            GameEventVerifier.invalidPlayerId
+        ),
       eventVerifier.verify(event, gameState)
     )
   }
