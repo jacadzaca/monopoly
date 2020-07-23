@@ -8,37 +8,41 @@ import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.getTestPlayer
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class TilePurchaseEventApplierTest {
-  private val buyer = getTestPlayer()
   private val tile = createTile()
-  private val eventApplier = TilePurchaseEventApplier()
+  private val buyer = getTestPlayer()
+  private val tileSlot = slot<Tile>()
+  private val playerSlot = slot<Player>()
   private val gameState = mockk<GameState>()
-  private lateinit var updatedGameState: GameState
+  private val updatedGameState = mockk<GameState>()
+  private val eventApplier = TilePurchaseEventApplier()
   private val event = VerificationResult.VerifiedTilePurchaseEvent(buyer, buyer.id, tile, 0)
 
   @BeforeEach
   fun setUp() {
-    updatedGameState = mockk()
-    every { gameState.update(event.tileIndex, any()) } returns updatedGameState
-    every { updatedGameState.update(event.playerId, any()) } returns updatedGameState
+    // WARNING! this  makes the order of update a tested condition - first update the tile, then the player
+    every { gameState.update(event.tileIndex, capture(tileSlot)) } returns updatedGameState
+    every { updatedGameState.update(event.playerId, capture(playerSlot)) } returns updatedGameState
   }
 
   @Test
   fun `apply should set the tile's owner to buyer`() {
-    every { updatedGameState.tiles[event.tileIndex] } returns tile.copy(owner = buyer.id)
+    val tileOwnedByBuyer = tile.copy(owner = event.playerId)
     val actual = eventApplier.apply(event, gameState)
-    assertEquals(event.playerId, actual.tiles[event.tileIndex].owner)
+    every { updatedGameState.tiles[event.tileIndex] } returns tileSlot.captured
+    assertEquals(tileOwnedByBuyer.owner, actual.tiles[event.tileIndex].owner)
   }
 
   @Test
   fun `apply should detract the tile's price from the buyer's balance`() {
     val buyerWithDetractedFunds = buyer.copy(balance = buyer.balance - tile.price)
-    every { updatedGameState.players[event.playerId] } returns buyerWithDetractedFunds
     val actual = eventApplier.apply(event, gameState)
+    every { updatedGameState.players[event.playerId] } returns playerSlot.captured
     assertEquals(buyerWithDetractedFunds.balance, actual.players[buyer.id]!!.balance)
   }
 }
