@@ -135,10 +135,11 @@ internal class GameStateManagerImplTest {
   @Test
   fun `apply PlayerPayLiabilityEvent should detract from the payer's balance`() {
     val event =
-        PlayerPaysLiabilityEvent(
-            player.id,
-            createLiability(receiver.id, 100.toBigInteger())
-        )
+      PlayerPaysLiabilityEvent(
+        player.id,
+        player,
+        createLiability(receiver.id, 100.toBigInteger())
+      )
     val playerWithDetractedFunds = player.detractFunds(event.liability.howMuch)
 
     val actual = gameStateManager.applyLiabilityPayment(event, gameState)
@@ -149,10 +150,11 @@ internal class GameStateManagerImplTest {
   @Test
   fun `apply PlayerPayLiabilityEvent should add the amount to receiver's balance`() {
     val event =
-        PlayerPaysLiabilityEvent(
-            player.id,
-            createLiability(receiver.id, 100.toBigInteger())
-        )
+      PlayerPaysLiabilityEvent(
+        player.id,
+        player,
+        createLiability(receiver.id, 100.toBigInteger())
+      )
     val receiverWithAddedFunds = receiver.addFunds(event.liability.howMuch)
 
     val actual = gameStateManager.applyLiabilityPayment(event, gameState)
@@ -163,11 +165,11 @@ internal class GameStateManagerImplTest {
   @Test
   fun `apply PlayerPayLiabilityEvent should only transfer what the payer has`() {
     val event =
-        PlayerPaysLiabilityEvent(
-            player.id, createLiability(
-                receiver.id, player.balance + BigInteger.TEN
-            )
+      PlayerPaysLiabilityEvent(
+        player.id, player, createLiability(
+          receiver.id, player.balance + BigInteger.TEN
         )
+      )
     val receiverWithAddedFunds = receiver.addFunds(player.balance)
 
     val actual = gameStateManager.applyLiabilityPayment(event, gameState)
