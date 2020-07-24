@@ -7,11 +7,11 @@ class PlayerPaysLiabilityEventApplier : GameEventApplier<PlayerPaysLiabilityEven
   override fun apply(event: PlayerPaysLiabilityEvent, gameState: GameState): GameState {
     return if (event.liability.howMuch > event.payer.balance) {
       gameState
-        .update(event.playerId, event.payer.detractFunds(event.liability.howMuch))
+        .update(event.payerId, event.payer.detractFunds(event.liability.howMuch))
         .update(event.liability.recevierId, event.liability.recevier.addFunds(event.payer.balance))
     } else {
       gameState
-        .update(event.playerId, event.payer.detractFunds(event.liability.howMuch))
+        .update(event.payerId, event.payer.detractFunds(event.liability.howMuch))
         .update(event.liability.recevierId, event.liability.recevier.addFunds(event.liability.howMuch))
     }
   }

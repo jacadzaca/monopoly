@@ -18,7 +18,7 @@ internal class EstatePurchaseEventVerifier(
 
   override fun verify(event: EstatePurchaseEvent, gameState: GameState): VerificationResult {
     val buyer =
-      gameState.players[event.playerId] ?: return VerificationResult.Failure(GameEventVerifier.invalidPlayerId)
+      gameState.players[event.buyer] ?: return VerificationResult.Failure(GameEventVerifier.invalidPlayerId)
     if (!tileExists(event.tileIndex, gameState)) {
       return VerificationResult.Failure(GameEventVerifier.invalidTileIndex)
     }
@@ -31,7 +31,7 @@ internal class EstatePurchaseEventVerifier(
       )
       else -> VerificationResult.VerifiedEstatePurchaseEvent(
         buyer,
-        event.playerId,
+        event.buyer,
         tile,
         event.tileIndex,
         event.estateType

@@ -2,7 +2,7 @@ package com.jacadzaca.monopoly.gamelogic.gamestate.events
 
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 
-interface GameEventVerifier<T : GameEvent> {
+interface GameEventVerifier<in T> {
   companion object {
     internal const val invalidPlayerId = "No player with specified ID exist"
     internal const val invalidTileIndex = "There exist no tile at specified tile index"

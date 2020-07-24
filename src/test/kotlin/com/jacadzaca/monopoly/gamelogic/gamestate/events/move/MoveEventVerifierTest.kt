@@ -16,19 +16,19 @@ internal class MoveEventVerifierTest {
   private val verifiedEvent =
       VerificationResult.VerifiedMoveEvent(
           player,
-          event.playerId
+          event.moverId
       )
   private val eventVerifier = MoveEventVerifier()
 
   @Test
   fun `verify returns verifiedEvent if the player with given id exists`() {
-    every { gameState.players[event.playerId] } returns player
+    every { gameState.players[event.moverId] } returns player
     assertEquals(verifiedEvent, eventVerifier.verify(event, gameState))
   }
 
   @Test
   fun `verify returns Failure if the event references a non-existing player`() {
-    every { gameState.players[event.playerId] } returns null
+    every { gameState.players[event.moverId] } returns null
     assertEquals(
         VerificationResult.Failure(
             GameEventVerifier.invalidPlayerId

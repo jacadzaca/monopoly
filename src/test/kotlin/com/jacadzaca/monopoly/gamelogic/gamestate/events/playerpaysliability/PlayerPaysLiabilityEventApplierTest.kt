@@ -43,7 +43,7 @@ internal class PlayerPaysLiabilityEventApplierTest {
     val actual = eventApplier.apply(event, gameState)
     assertEquals(
       payerWithDetractedFunds.balance,
-      actual.players[event.playerId]!!.balance
+      actual.players[event.payerId]!!.balance
     )
   }
 

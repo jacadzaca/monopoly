@@ -127,9 +127,9 @@ internal class EstatePurchaseEventVerifierTest {
   fun `verify returns Failure if event references a player non-existing player`() {
     val failure =
       VerificationResult.Failure(GameEventVerifier.invalidPlayerId)
-    every { gameState.players[buyHouseEvent.playerId] } returns null
+    every { gameState.players[buyHouseEvent.buyer] } returns null
     assertEquals(failure, eventVerifier.verify(buyHouseEvent, gameState))
-    every { gameState.players[buyHotelEvent.playerId] } returns null
+    every { gameState.players[buyHotelEvent.buyer] } returns null
     assertEquals(failure, eventVerifier.verify(buyHotelEvent, gameState))
   }
 

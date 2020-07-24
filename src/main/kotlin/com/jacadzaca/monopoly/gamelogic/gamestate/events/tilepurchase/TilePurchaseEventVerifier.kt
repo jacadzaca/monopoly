@@ -15,7 +15,7 @@ internal class TilePurchaseEventVerifier(
   }
 
   override fun verify(event: TilePurchaseEvent, gameState: GameState): VerificationResult {
-    val buyer = gameState.players[event.playerId] ?: return VerificationResult.Failure(invalidPlayerId)
+    val buyer = gameState.players[event.buyerId] ?: return VerificationResult.Failure(invalidPlayerId)
     if (!tileExists(event.tileIndex, gameState)) {
       return VerificationResult.Failure(invalidTileIndex)
     }
@@ -23,7 +23,7 @@ internal class TilePurchaseEventVerifier(
     return when {
       tile.owner != null -> VerificationResult.Failure(tileAlreadyHasOwner)
       tile.price > buyer.balance -> VerificationResult.Failure(buyerHasInsufficientBalance)
-      else -> VerificationResult.VerifiedTilePurchaseEvent(buyer, event.playerId, tile, event.tileIndex)
+      else -> VerificationResult.VerifiedTilePurchaseEvent(buyer, event.buyerId, tile, event.tileIndex)
     }
   }
 }

@@ -75,7 +75,7 @@ internal class TilePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns Failure if the event references an non-existing player`() {
-    every { gameState.players[event.playerId] } returns null
+    every { gameState.players[event.buyerId] } returns null
     assertEquals(
       VerificationResult.Failure(invalidPlayerId),
       eventVerifier.verify(event, gameState)
