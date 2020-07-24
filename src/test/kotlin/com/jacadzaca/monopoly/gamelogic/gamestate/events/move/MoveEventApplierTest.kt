@@ -31,7 +31,7 @@ internal class MoveEventApplierTest {
   }
 
   @Test
-  fun `apply should update the mover's position`() {
+  fun `apply updates the mover's position`() {
     val movedPlayer = player.copy(position = Random.nextInt())
     every { playerMover.move(event.player, gameState.boardSize) } returns movedPlayer
     val actual = eventApplier.apply(event, gameState)
