@@ -10,9 +10,9 @@ import kotlinx.collections.immutable.persistentListOf
 import java.math.BigInteger
 import java.util.*
 
-fun getTestPlayer(startPosition: Int = 0, liability: Liability? = null): Player =
+fun getTestPlayer(startPosition: Int = 0, liability: Liability? = null, id: UUID = UUID.randomUUID()): Player =
     Player(
-        UUID.randomUUID(),
+        id,
         startPosition,
         123.toBigInteger(),
         liability
@@ -21,4 +21,4 @@ fun getTestGameEvent(): GameAction = GameAction(UUID.randomUUID(), 1)
 fun createHouse(rent: BigInteger = 100.toBigInteger()) = Estate(rent, EstateType.HOUSE)
 fun createHotel(rent: BigInteger = 120.toBigInteger()) = Estate(rent, EstateType.HOTEL)
 fun createTile(owner: UUID? = UUID.randomUUID()): Tile = Tile(persistentListOf(), 0.toBigInteger(), owner)
-fun createLiability(towards: UUID, howMuch: BigInteger): Liability = Liability(howMuch, towards)
+fun createLiability(towards: UUID, howMuch: BigInteger): Liability = Liability(howMuch, getTestPlayer(id = towards), towards)

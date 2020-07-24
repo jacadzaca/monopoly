@@ -34,15 +34,15 @@ internal class GameStateManagerImpl(private val tileManager: TileManager,
 
   override fun applyLiabilityPayment(event: PlayerPaysLiabilityEvent, gameState: GameState): GameState {
     val payer = gameState.players.getValue(event.playerId)
-    val receiver = gameState.players.getValue(event.liability.toWhom)
+    val receiver = gameState.players.getValue(event.liability.recevierId)
     return if (payer.balance < event.liability.howMuch) {
       gameState
         .update(event.playerId, payer.detractFunds(event.liability.howMuch))
-        .update(event.liability.toWhom, receiver.addFunds(payer.balance))
+        .update(event.liability.recevierId, receiver.addFunds(payer.balance))
     } else {
       gameState
         .update(event.playerId, payer.detractFunds(event.liability.howMuch))
-        .update(event.liability.toWhom, receiver.addFunds(event.liability.howMuch))
+        .update(event.liability.recevierId, receiver.addFunds(event.liability.howMuch))
     }
   }
 }
