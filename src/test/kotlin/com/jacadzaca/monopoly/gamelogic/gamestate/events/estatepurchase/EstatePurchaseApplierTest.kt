@@ -34,8 +34,8 @@ internal class EstatePurchaseApplierTest {
       every { gameState.tiles[event.tileIndex] } returns tileSlot.captured
       gameState
     }
-    every { gameState.update(event.playerId, capture(playerSlot)) } answers {
-      every { gameState.players[event.playerId] } returns playerSlot.captured
+    every { gameState.update(event.buyerId, capture(playerSlot)) } answers {
+      every { gameState.players[event.buyerId] } returns playerSlot.captured
       gameState
     }
   }

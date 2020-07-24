@@ -8,20 +8,20 @@ import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 
 sealed class VerificationResult {
   data class VerifiedTilePurchaseEvent(
-    val player: Player,
-    val playerId: PlayerID,
+    val buyer: Player,
+    val buyerId: PlayerID,
     val tile: Tile,
     val tileIndex: Int
   ) : VerificationResult(), GameStateChange
 
   data class VerifiedEstatePurchaseEvent(
-    val player: Player,
-    val playerId: PlayerID,
+    val buyer: Player,
+    val buyerId: PlayerID,
     val tile: Tile,
     val tileIndex: Int,
     val estateType: EstateType
   ) : VerificationResult(), GameStateChange
 
-  data class VerifiedMoveEvent(val player: Player, val playerId: PlayerID): VerificationResult(), GameStateChange
+  data class VerifiedMoveEvent(val mover: Player, val moverId: PlayerID): VerificationResult(), GameStateChange
   data class Failure(val reason: String) : VerificationResult()
 }

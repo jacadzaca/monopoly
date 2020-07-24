@@ -29,15 +29,15 @@ internal class TilePurchaseEventApplierTest {
       every { gameState.tiles[event.tileIndex] } returns tileSlot.captured
       gameState
     }
-    every { gameState.update(event.playerId, capture(buyerSlot)) } answers {
-      every { gameState.players[event.playerId] } returns buyerSlot.captured
+    every { gameState.update(event.buyerId, capture(buyerSlot)) } answers {
+      every { gameState.players[event.buyerId] } returns buyerSlot.captured
       gameState
     }
   }
 
   @Test
   fun `apply sets the tile's owner to buyer`() {
-    val tileOwnedByBuyer = tile.copy(owner = event.playerId)
+    val tileOwnedByBuyer = tile.copy(owner = event.buyerId)
     val actual = eventApplier.apply(event, gameState)
     assertEquals(tileOwnedByBuyer.owner, actual.tiles[event.tileIndex].owner)
   }

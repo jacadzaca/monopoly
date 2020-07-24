@@ -7,7 +7,7 @@ import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult.Veri
 class TilePurchaseEventApplier : GameEventApplier<VerifiedTilePurchaseEvent> {
   override fun apply(event: VerifiedTilePurchaseEvent, gameState: GameState): GameState {
     return gameState
-      .update(event.tileIndex, event.tile.changeOwner(event.playerId))
-      .update(event.playerId, event.player.detractFunds(event.tile.price))
+      .update(event.tileIndex, event.tile.changeOwner(event.buyerId))
+      .update(event.buyerId, event.buyer.detractFunds(event.tile.price))
   }
 }
