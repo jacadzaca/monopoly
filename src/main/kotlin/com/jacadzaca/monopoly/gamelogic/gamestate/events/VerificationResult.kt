@@ -1,6 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate.events
 
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
+import com.jacadzaca.monopoly.gamelogic.player.Liability
 import com.jacadzaca.monopoly.gamelogic.player.Player
 import com.jacadzaca.monopoly.gamelogic.player.PlayerID
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile

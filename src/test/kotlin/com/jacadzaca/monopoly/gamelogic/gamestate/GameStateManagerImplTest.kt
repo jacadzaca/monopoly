@@ -6,7 +6,7 @@ import com.jacadzaca.monopoly.createTile
 import com.jacadzaca.monopoly.gamelogic.estates.EstateFactory
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.move.MoveEvent
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.PlayerPaysLiabilityEvent
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.playerpaysliability.PlayerPaysLiabilityEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase.EstatePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase.TilePurchaseEvent
 import com.jacadzaca.monopoly.gamelogic.player.PlayerMover
@@ -134,7 +134,11 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply PlayerPayLiabilityEvent should detract from the payer's balance`() {
-    val event = PlayerPaysLiabilityEvent(player.id, createLiability(receiver.id, 100.toBigInteger()))
+    val event =
+        PlayerPaysLiabilityEvent(
+            player.id,
+            createLiability(receiver.id, 100.toBigInteger())
+        )
     val playerWithDetractedFunds = player.detractFunds(event.liability.howMuch)
 
     val actual = gameStateManager.applyLiabilityPayment(event, gameState)
@@ -144,7 +148,11 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply PlayerPayLiabilityEvent should add the amount to receiver's balance`() {
-    val event = PlayerPaysLiabilityEvent(player.id, createLiability(receiver.id, 100.toBigInteger()))
+    val event =
+        PlayerPaysLiabilityEvent(
+            player.id,
+            createLiability(receiver.id, 100.toBigInteger())
+        )
     val receiverWithAddedFunds = receiver.addFunds(event.liability.howMuch)
 
     val actual = gameStateManager.applyLiabilityPayment(event, gameState)
@@ -154,8 +162,12 @@ internal class GameStateManagerImplTest {
 
   @Test
   fun `apply PlayerPayLiabilityEvent should only transfer what the payer has`() {
-    val event = PlayerPaysLiabilityEvent(player.id, createLiability(
-      receiver.id, player.balance + BigInteger.TEN))
+    val event =
+        PlayerPaysLiabilityEvent(
+            player.id, createLiability(
+                receiver.id, player.balance + BigInteger.TEN
+            )
+        )
     val receiverWithAddedFunds = receiver.addFunds(player.balance)
 
     val actual = gameStateManager.applyLiabilityPayment(event, gameState)
