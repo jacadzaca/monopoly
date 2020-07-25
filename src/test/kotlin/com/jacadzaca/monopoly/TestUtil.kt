@@ -12,7 +12,6 @@ import java.util.*
 
 fun getTestPlayer(startPosition: Int = 0, liability: Liability? = null, id: UUID = UUID.randomUUID()): Player =
     Player(
-        id,
         startPosition,
         123.toBigInteger(),
         liability

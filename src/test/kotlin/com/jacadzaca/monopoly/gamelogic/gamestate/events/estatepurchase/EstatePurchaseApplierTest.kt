@@ -15,6 +15,7 @@ import io.mockk.slot
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.*
 
 internal class EstatePurchaseApplierTest {
   private val tile = createTile()
@@ -22,7 +23,7 @@ internal class EstatePurchaseApplierTest {
   private val gameState = mockk<GameState>()
   private val estateFactory = mockk<EstateFactory>()
   private val eventApplier = EstatePurchaseApplier(estateFactory)
-  private val event = VerificationResult.VerifiedEstatePurchaseEvent(buyer, buyer.id, tile, 0, EstateType.HOUSE)
+  private val event = VerificationResult.VerifiedEstatePurchaseEvent(buyer, UUID.randomUUID(), tile, 0, EstateType.HOUSE)
 
   @BeforeEach
   fun setUp() {
@@ -51,6 +52,6 @@ internal class EstatePurchaseApplierTest {
   fun `apply detracts from the buyer's balance`() {
     val playerWithDetractedFunds = buyer.copy(balance = buyer.balance - estateFactory.getPriceFor(event.estateType))
     val actual = eventApplier.apply(event, gameState)
-    assertEquals(playerWithDetractedFunds.balance, actual.players[buyer.id]!!.balance)
+    assertEquals(playerWithDetractedFunds.balance, actual.players[event.buyerId]!!.balance)
   }
 }

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigInteger
+import java.util.*
 
 internal class PlayerPaysLiabilityEventApplierTest {
   private val payer = getTestPlayer()
@@ -18,23 +19,23 @@ internal class PlayerPaysLiabilityEventApplierTest {
   private val liability = mockk<Liability>()
   private val gameState = mockk<GameState>()
   private val eventApplier = PlayerPaysLiabilityEventApplier()
-  private val event = PlayerPaysLiabilityEvent(payer.id, payer, liability)
+  private val event = PlayerPaysLiabilityEvent(UUID.randomUUID(), payer, liability)
 
   @BeforeEach
   fun setUp() {
+    every { liability.recevier } returns receiver
+    every { liability.recevierId } returns UUID.randomUUID()
+    every { liability.amount } returns payer.balance / 2.toBigInteger()
     val payerSlot = slot<Player>()
     val recevierSlot = slot<Player>()
-    every { gameState.update(payer.id, capture(payerSlot)) } answers {
-      every { gameState.players[payer.id] } returns payerSlot.captured
+    every { gameState.update(event.payerId, capture(payerSlot)) } answers {
+      every { gameState.players[event.payerId] } returns payerSlot.captured
       gameState
     }
-    every { gameState.update(receiver.id, capture(recevierSlot)) } answers {
-      every { gameState.players[receiver.id] } returns recevierSlot.captured
+    every { gameState.update(event.liability.recevierId, capture(recevierSlot)) } answers {
+      every { gameState.players[event.liability.recevierId] } returns recevierSlot.captured
       gameState
     }
-    every { liability.recevier } returns receiver
-    every { liability.recevierId } returns receiver.id
-    every { liability.amount } returns payer.balance / 2.toBigInteger()
   }
 
   @Test

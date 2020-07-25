@@ -21,13 +21,13 @@ internal class TilePurchaseEventVerifierTest {
   private val gameState = mockk<GameState>()
   private val event =
     TilePurchaseEvent(
-      buyer.id,
+      UUID.randomUUID(),
       tileIndex = 0
     )
   private val verifiedEvent =
     VerificationResult.VerifiedTilePurchaseEvent(
       buyer,
-      buyer.id,
+      event.buyerId,
       tile,
       0
     )
@@ -37,7 +37,7 @@ internal class TilePurchaseEventVerifierTest {
 
   @BeforeEach
   fun setUp() {
-    every { gameState.players[buyer.id] } returns buyer
+    every { gameState.players[event.buyerId] } returns buyer
     every { gameState.tiles[event.tileIndex] } returns tile
     every { tileExists(event.tileIndex, gameState) } returns true
   }
@@ -53,7 +53,7 @@ internal class TilePurchaseEventVerifierTest {
   @Test
   fun `verify returns Failure if the the tile already has an owner`() {
     every { tile.price } returns buyer.balance - BigInteger.ONE
-    every { tile.owner } returnsMany listOf(UUID.randomUUID(), buyer.id)
+    every { tile.owner } returnsMany listOf(UUID.randomUUID(), event.buyerId)
     val failure = VerificationResult.Failure(
       TilePurchaseEventVerifier.tileAlreadyHasOwner
     )

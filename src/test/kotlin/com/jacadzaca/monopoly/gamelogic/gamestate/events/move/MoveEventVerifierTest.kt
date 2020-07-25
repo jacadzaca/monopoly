@@ -8,11 +8,12 @@ import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.util.*
 
 internal class MoveEventVerifierTest {
   private val player = getTestPlayer()
   private val gameState = mockk<GameState>()
-  private val event = MoveEvent(player.id)
+  private val event = MoveEvent(UUID.randomUUID())
   private val verifiedEvent =
       VerificationResult.VerifiedMoveEvent(
           player,

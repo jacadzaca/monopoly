@@ -11,6 +11,7 @@ import io.mockk.slot
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.*
 import kotlin.random.Random
 
 internal class MoveEventApplierTest {
@@ -18,7 +19,7 @@ internal class MoveEventApplierTest {
   private val gameState = mockk<GameState>()
   private val playerMover = mockk<PlayerMover>()
   private val eventApplier = MoveEventApplier(playerMover)
-  private val event = VerificationResult.VerifiedMoveEvent(player, player.id)
+  private val event = VerificationResult.VerifiedMoveEvent(player, UUID.randomUUID())
 
   @BeforeEach
   fun setUp() {

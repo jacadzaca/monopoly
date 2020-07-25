@@ -23,28 +23,28 @@ internal class EstatePurchaseEventVerifierTest {
   private val estateFactory = mockk<EstateFactory>()
   private val buyHotelEvent =
     EstatePurchaseEvent(
-      buyer.id,
+      UUID.randomUUID(),
       EstateType.HOTEL,
       tileIndex = 21
     )
   private val verifiedBuyHotelEvent =
     VerificationResult.VerifiedEstatePurchaseEvent(
       buyer,
-      buyer.id,
+      buyHotelEvent.buyer,
       tile,
       21,
       EstateType.HOTEL
     )
   private val buyHouseEvent =
     EstatePurchaseEvent(
-      buyer.id,
+      buyHotelEvent.buyer,
       EstateType.HOUSE,
       tileIndex = 32
     )
   private val verifiedBuyHouseEvent =
     VerificationResult.VerifiedEstatePurchaseEvent(
       buyer,
-      buyer.id,
+      buyHotelEvent.buyer,
       tile,
       32,
       EstateType.HOUSE
@@ -59,8 +59,9 @@ internal class EstatePurchaseEventVerifierTest {
 
   @BeforeEach
   fun setUp() {
-    every { tile.owner } returns buyer.id
-    every { gameState.players[buyer.id] } returns buyer
+    every { tile.owner } returns buyHotelEvent.buyer
+    val tileOwner = tile.owner
+    every { gameState.players[tileOwner] } returns buyer
     every { tile.houseCount() } returns requiredHousesForHotel
     every { gameState.tiles[buyHouseEvent.tileIndex] } returns tile
     every { gameState.tiles[buyHotelEvent.tileIndex] } returns tile
@@ -71,7 +72,7 @@ internal class EstatePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns the inputted event if the buyer is the tile's owner, the buyer has sufficient funds and the buyer wants a house`() {
-    every { tile.owner } returns buyer.id
+    every { tile.owner } returns buyHouseEvent.buyer
     every { estateFactory.getPriceFor(EstateType.HOUSE) } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
@@ -82,7 +83,7 @@ internal class EstatePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns the inputted event if the tile's owner is the buyer, the buyer has sufficient funds, there is sufficient number of houses and the buyer wants a hotel`() {
-    every { tile.owner } returns buyer.id
+    every { tile.owner } returns buyHotelEvent.buyer
     every { estateFactory.getPriceFor(EstateType.HOTEL) } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
