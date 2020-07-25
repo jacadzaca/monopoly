@@ -17,5 +17,5 @@ data class Tile(
 
   fun totalRent(): BigInteger = estates.map(Estate::rent).reduce(BigInteger::add)
 
-  fun houseCount(): Int = estates.filter { it.estateType == EstateType.HOUSE }.count()
+  fun houseCount(): Int = estates.count { it.estateType == EstateType.HOUSE }
 }
