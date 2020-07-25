@@ -1,6 +1,5 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.gamelogic.GameAction
 import io.vertx.core.Promise
 import io.vertx.core.impl.logging.LoggerFactory
 import io.vertx.reactivex.core.AbstractVerticle
@@ -14,16 +13,11 @@ class MainVerticle : AbstractVerticle() {
   override fun start(startPromise: Promise<Void>) {
     val server = vertx.createHttpServer()
 
-    val gameActionCodec = GameActionCodec()
-    vertx
-      .eventBus()
-      .registerCodec(gameActionCodec)
-
     server
       .websocketStream()
       .toFlowable()
       .subscribe(
-        { handleWebSocketConnection(it, gameActionCodec) },
+        ::handleWebSocketConnection,
         logger::error)
     server
       .rxListen(8080)
@@ -32,24 +26,7 @@ class MainVerticle : AbstractVerticle() {
         { failStart(it, startPromise) })
   }
 
-  private fun handleWebSocketConnection(connection: ServerWebSocket, gameActionCodec: GameActionCodec) {
-    val test = connection
-      .toFlowable()
-      .map(Buffer::toJsonObject)
-      .filter { GameAction.isValidJson(it) }
-      .map(::GameAction)
-      .subscribe(
-        { handleIncomingAction(it, connection, gameActionCodec) },
-        { handleWrongIncomingAction(it, connection) })
-    connection.endHandler { test.dispose() }
-  }
-
-  private fun handleWrongIncomingAction(error: Throwable, connection: ServerWebSocket) {
-    logger.info("Invalid input to WebsSocket", error)
-    connection.writeTextMessage("Invalid input")
-  }
-
-  private fun handleIncomingAction(action: GameAction, connection: ServerWebSocket, gameActionCodec: GameActionCodec) {
+  private fun handleWebSocketConnection(connection: ServerWebSocket) {
   }
 
   private fun successfulStart(startPromise: Promise<Void>) {
