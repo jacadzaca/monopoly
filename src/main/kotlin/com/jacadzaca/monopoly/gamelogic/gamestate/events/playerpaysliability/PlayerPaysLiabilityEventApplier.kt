@@ -3,7 +3,7 @@ package com.jacadzaca.monopoly.gamelogic.gamestate.events.playerpaysliability
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventApplier
 
-class PlayerPaysLiabilityEventApplier : GameEventApplier<PlayerPaysLiabilityEvent> {
+internal class PlayerPaysLiabilityEventApplier : GameEventApplier<PlayerPaysLiabilityEvent> {
   override fun apply(event: PlayerPaysLiabilityEvent, gameState: GameState): GameState {
     return if (event.liability.amount > event.payer.balance) {
       gameState
