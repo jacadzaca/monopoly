@@ -4,7 +4,7 @@ import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult
 import com.jacadzaca.monopoly.gamelogic.player.Player
 import com.jacadzaca.monopoly.gamelogic.player.PlayerMover
-import com.jacadzaca.monopoly.getTestPlayer
+import com.jacadzaca.monopoly.createPlayer
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -15,7 +15,7 @@ import java.util.*
 import kotlin.random.Random
 
 internal class MoveEventApplierTest {
-  private val player = getTestPlayer()
+  private val player = createPlayer()
   private val gameState = mockk<GameState>()
   private val playerMover = mockk<PlayerMover>()
   private val eventApplier = MoveEventApplier(playerMover)

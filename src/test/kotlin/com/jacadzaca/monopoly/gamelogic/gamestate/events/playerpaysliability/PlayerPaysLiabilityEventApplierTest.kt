@@ -3,7 +3,7 @@ package com.jacadzaca.monopoly.gamelogic.gamestate.events.playerpaysliability
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.player.Liability
 import com.jacadzaca.monopoly.gamelogic.player.Player
-import com.jacadzaca.monopoly.getTestPlayer
+import com.jacadzaca.monopoly.createPlayer
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -14,8 +14,8 @@ import java.math.BigInteger
 import java.util.*
 
 internal class PlayerPaysLiabilityEventApplierTest {
-  private val payer = getTestPlayer()
-  private val receiver = getTestPlayer()
+  private val payer = createPlayer()
+  private val receiver = createPlayer()
   private val liability = mockk<Liability>()
   private val gameState = mockk<GameState>()
   private val eventApplier = PlayerPaysLiabilityEventApplier()

@@ -9,7 +9,7 @@ import kotlinx.collections.immutable.persistentListOf
 import java.math.BigInteger
 import java.util.*
 
-fun getTestPlayer(startPosition: Int = 0, liability: Liability? = null): Player =
+fun createPlayer(startPosition: Int = 0, liability: Liability? = null): Player =
     Player(
         startPosition,
         123.toBigInteger(),

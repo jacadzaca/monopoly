@@ -8,7 +8,7 @@ import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult
 import com.jacadzaca.monopoly.gamelogic.player.Player
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
-import com.jacadzaca.monopoly.getTestPlayer
+import com.jacadzaca.monopoly.createPlayer
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -19,7 +19,7 @@ import java.util.*
 
 internal class EstatePurchaseApplierTest {
   private val tile = createTile()
-  private val buyer = getTestPlayer()
+  private val buyer = createPlayer()
   private val gameState = mockk<GameState>()
   private val estateFactory = mockk<EstateFactory>()
   private val eventApplier = EstatePurchaseApplier(estateFactory)

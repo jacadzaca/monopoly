@@ -6,7 +6,7 @@ import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier.Compa
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier.Companion.invalidTileIndex
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
-import com.jacadzaca.monopoly.getTestPlayer
+import com.jacadzaca.monopoly.createPlayer
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -17,7 +17,7 @@ import java.util.*
 
 internal class TilePurchaseEventVerifierTest {
   private val tile = mockk<Tile>()
-  private val buyer = getTestPlayer()
+  private val buyer = createPlayer()
   private val gameState = mockk<GameState>()
   private val event =
     TilePurchaseEvent(

@@ -3,7 +3,7 @@ package com.jacadzaca.monopoly.gamelogic.gamestate.events.move
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult
-import com.jacadzaca.monopoly.getTestPlayer
+import com.jacadzaca.monopoly.createPlayer
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 internal class MoveEventVerifierTest {
-  private val player = getTestPlayer()
+  private val player = createPlayer()
   private val gameState = mockk<GameState>()
   private val event = MoveEvent(UUID.randomUUID())
   private val verifiedEvent =

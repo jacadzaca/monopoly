@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic.player
 
-import com.jacadzaca.monopoly.getTestPlayer
+import com.jacadzaca.monopoly.createPlayer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -13,7 +13,7 @@ internal class DiceRollPlayerMoverTest {
 
   @Test
   fun `move should add increase toMove position`() {
-    val toMove = getTestPlayer()
+    val toMove = createPlayer()
     val expected = toMove.copy(position = toMove.position + dieRoller())
     val actual = playerMover.move(toMove, boardSize)
 
@@ -22,7 +22,7 @@ internal class DiceRollPlayerMoverTest {
 
   @Test
   fun `move should wrap position`() {
-    val toMove = getTestPlayer().copy(position = boardSize - 1)
+    val toMove = createPlayer().copy(position = boardSize - 1)
 
     val expected = toMove.copy(position = dieRoller() - 1)
     val actual = playerMover.move(toMove, boardSize)
