@@ -7,6 +7,7 @@ import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier.Compa
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult
 import com.jacadzaca.monopoly.gamelogic.tiles.Tile
 import com.jacadzaca.monopoly.createPlayer
+import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEvent
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -20,7 +21,7 @@ internal class TilePurchaseEventVerifierTest {
   private val buyer = createPlayer()
   private val gameState = mockk<GameState>()
   private val event =
-    TilePurchaseEvent(
+    GameEvent.TilePurchaseEvent(
       UUID.randomUUID(),
       tileIndex = 0
     )
