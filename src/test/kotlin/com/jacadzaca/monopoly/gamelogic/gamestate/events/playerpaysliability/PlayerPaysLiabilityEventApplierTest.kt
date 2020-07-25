@@ -34,12 +34,12 @@ internal class PlayerPaysLiabilityEventApplierTest {
     }
     every { liability.recevier } returns receiver
     every { liability.recevierId } returns receiver.id
-    every { liability.howMuch } returns payer.balance / 2.toBigInteger()
+    every { liability.amount } returns payer.balance / 2.toBigInteger()
   }
 
   @Test
   fun `apply detracts from the payer's balance`() {
-    val payerWithDetractedFunds = payer.copy(balance = payer.balance - event.liability.howMuch)
+    val payerWithDetractedFunds = payer.copy(balance = payer.balance - event.liability.amount)
     val actual = eventApplier.apply(event, gameState)
     assertEquals(
       payerWithDetractedFunds.balance,
@@ -49,7 +49,7 @@ internal class PlayerPaysLiabilityEventApplierTest {
 
   @Test
   fun `apply adds the amount to the receiver's balance`() {
-    val receiverWithAddedFunds = receiver.copy(balance = receiver.balance + event.liability.howMuch)
+    val receiverWithAddedFunds = receiver.copy(balance = receiver.balance + event.liability.amount)
     val actual = eventApplier.apply(event, gameState)
     assertEquals(
       receiverWithAddedFunds.balance,
@@ -59,7 +59,7 @@ internal class PlayerPaysLiabilityEventApplierTest {
 
   @Test
   fun `apply only transfers what the payer has`() {
-    every { liability.howMuch } returns payer.balance + BigInteger.ONE
+    every { liability.amount } returns payer.balance + BigInteger.ONE
     val receiverWithAddedFunds = receiver.copy(balance = receiver.balance + payer.balance)
     val actual = eventApplier.apply(event, gameState)
     assertEquals(receiverWithAddedFunds.balance, actual.players[event.liability.recevierId]!!.balance)
