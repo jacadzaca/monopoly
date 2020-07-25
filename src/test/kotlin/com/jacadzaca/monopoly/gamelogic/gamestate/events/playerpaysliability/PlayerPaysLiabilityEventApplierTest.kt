@@ -4,7 +4,6 @@ import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.player.Liability
 import com.jacadzaca.monopoly.gamelogic.player.Player
 import com.jacadzaca.monopoly.createPlayer
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEvent
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -20,7 +19,7 @@ internal class PlayerPaysLiabilityEventApplierTest {
   private val liability = mockk<Liability>()
   private val gameState = mockk<GameState>()
   private val eventApplier = PlayerPaysLiabilityEventApplier()
-  private val event = GameEvent.PlayerPaysLiabilityEvent(payer, UUID.randomUUID(), liability)
+  private val event = PlayerPaysLiabilityEvent(UUID.randomUUID(), payer, liability)
 
   @BeforeEach
   fun setUp() {
