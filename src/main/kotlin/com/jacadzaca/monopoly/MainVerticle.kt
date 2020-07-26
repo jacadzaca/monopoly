@@ -10,23 +10,20 @@ class MainVerticle : AbstractVerticle() {
   private companion object {
     private val logger = LoggerFactory.getLogger(this::class.java)
   }
+
   override fun start(startPromise: Promise<Void>) {
     val server = vertx.createHttpServer()
-
     server
       .websocketStream()
       .toFlowable()
-      .subscribe(
-        ::handleWebSocketConnection,
-        logger::error)
+      .flatMap(ServerWebSocket::toFlowable)
+      .map(Buffer::toJsonObject)
+
     server
       .rxListen(8080)
       .subscribe(
         { successfulStart(startPromise) },
         { failStart(it, startPromise) })
-  }
-
-  private fun handleWebSocketConnection(connection: ServerWebSocket) {
   }
 
   private fun successfulStart(startPromise: Promise<Void>) {
