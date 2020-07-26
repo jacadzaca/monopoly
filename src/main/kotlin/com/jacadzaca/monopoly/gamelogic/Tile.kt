@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.gamelogic.tiles
+package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.gamelogic.estates.Estate
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType

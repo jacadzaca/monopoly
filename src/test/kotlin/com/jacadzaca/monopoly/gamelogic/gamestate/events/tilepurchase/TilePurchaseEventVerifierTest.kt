@@ -5,7 +5,7 @@ import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier.Compa
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier.Companion.invalidPlayerId
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier.Companion.invalidTileIndex
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult
-import com.jacadzaca.monopoly.gamelogic.tiles.Tile
+import com.jacadzaca.monopoly.gamelogic.Tile
 import com.jacadzaca.monopoly.createPlayer
 import io.mockk.every
 import io.mockk.mockk

@@ -4,7 +4,7 @@ import com.jacadzaca.monopoly.createTile
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult
 import com.jacadzaca.monopoly.gamelogic.player.Player
-import com.jacadzaca.monopoly.gamelogic.tiles.Tile
+import com.jacadzaca.monopoly.gamelogic.Tile
 import com.jacadzaca.monopoly.createPlayer
 import io.mockk.every
 import io.mockk.mockk

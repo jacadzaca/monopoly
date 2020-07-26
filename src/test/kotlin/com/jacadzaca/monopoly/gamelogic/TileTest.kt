@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.gamelogic.tiles
+package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.createHotel
 import com.jacadzaca.monopoly.createHouse

@@ -4,7 +4,7 @@ import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import com.jacadzaca.monopoly.gamelogic.gamestate.GameStateChange
 import com.jacadzaca.monopoly.gamelogic.player.Player
 import com.jacadzaca.monopoly.gamelogic.player.PlayerID
-import com.jacadzaca.monopoly.gamelogic.tiles.Tile
+import com.jacadzaca.monopoly.gamelogic.Tile
 
 sealed class VerificationResult {
   data class VerifiedTilePurchaseEvent(
