@@ -1,8 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic.playerpaysliability
 
 import com.jacadzaca.monopoly.gamelogic.GameState
-import com.jacadzaca.monopoly.gamelogic.player.Liability
-import com.jacadzaca.monopoly.gamelogic.player.Player
+import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.createPlayer
 import io.mockk.every
 import io.mockk.mockk

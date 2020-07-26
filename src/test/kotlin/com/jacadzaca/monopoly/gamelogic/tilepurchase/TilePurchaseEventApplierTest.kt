@@ -3,7 +3,7 @@ package com.jacadzaca.monopoly.gamelogic.tilepurchase
 import com.jacadzaca.monopoly.createTile
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.VerificationResult
-import com.jacadzaca.monopoly.gamelogic.player.Player
+import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
 import com.jacadzaca.monopoly.createPlayer
 import io.mockk.every

@@ -2,7 +2,7 @@ package com.jacadzaca.monopoly.gamelogic.move
 
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.VerificationResult
-import com.jacadzaca.monopoly.gamelogic.player.Player
+import com.jacadzaca.monopoly.gamelogic.Player
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot

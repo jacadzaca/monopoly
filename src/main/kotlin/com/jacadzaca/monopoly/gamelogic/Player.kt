@@ -1,5 +1,6 @@
-package com.jacadzaca.monopoly.gamelogic.player
+package com.jacadzaca.monopoly.gamelogic
 
+import com.jacadzaca.monopoly.gamelogic.playerpaysliability.Liability
 import java.math.BigInteger
 
 data class Player(

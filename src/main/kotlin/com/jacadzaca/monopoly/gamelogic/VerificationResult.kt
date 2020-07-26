@@ -1,7 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
-import com.jacadzaca.monopoly.gamelogic.player.Player
 import java.util.*
 
 sealed class VerificationResult {
