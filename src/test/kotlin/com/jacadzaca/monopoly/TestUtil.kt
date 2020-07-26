@@ -9,11 +9,10 @@ import kotlinx.collections.immutable.persistentListOf
 import java.math.BigInteger
 import java.util.*
 
-fun createPlayer(startPosition: Int = 0, liability: Liability? = null): Player =
+fun createPlayer(startPosition: Int = 0): Player =
   Player(
     startPosition,
-    123.toBigInteger(),
-    liability
+    123.toBigInteger()
   )
 fun createHouse(rent: BigInteger = 100.toBigInteger()) = Estate(rent, EstateType.HOUSE)
 fun createHotel(rent: BigInteger = 120.toBigInteger()) = Estate(rent, EstateType.HOTEL)
