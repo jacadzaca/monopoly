@@ -1,16 +1,16 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate
 
-import com.jacadzaca.monopoly.gamelogic.player.Player
-import com.jacadzaca.monopoly.gamelogic.player.PlayerID
 import com.jacadzaca.monopoly.gamelogic.Tile
+import com.jacadzaca.monopoly.gamelogic.player.Player
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
+import java.util.*
 
 data class GameState(
-    val players: PersistentMap<PlayerID, Player>,
-    val tiles: PersistentList<Tile>,
-    val recentChanges: PersistentList<GameStateChange> = persistentListOf()
+  val players: PersistentMap<UUID, Player>,
+  val tiles: PersistentList<Tile>,
+  val recentChanges: PersistentList<GameStateChange> = persistentListOf()
 ) {
    val boardSize: Int
     get() = tiles.size
@@ -18,7 +18,7 @@ data class GameState(
   /**
    * @return a copy of this, where the player under @playersId is @updatedPlayer
    */
-   fun update(playersId: PlayerID, updatedPlayer: Player): GameState =
+   fun update(playersId: UUID, updatedPlayer: Player): GameState =
     copy(players = players.put(playersId, updatedPlayer))
 
   /**

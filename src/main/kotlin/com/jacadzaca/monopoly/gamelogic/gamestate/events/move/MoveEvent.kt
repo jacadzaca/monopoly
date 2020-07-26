@@ -1,5 +1,5 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate.events.move
 
-import com.jacadzaca.monopoly.gamelogic.player.PlayerID
+import java.util.*
 
-data class MoveEvent(val moverId: PlayerID)
+data class MoveEvent(val moverId: UUID)

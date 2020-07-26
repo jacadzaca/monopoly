@@ -1,8 +1,8 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate.events.tilepurchase
 
-import com.jacadzaca.monopoly.gamelogic.player.PlayerID
+import java.util.*
 
 data class TilePurchaseEvent(
-  val buyerId: PlayerID,
+  val buyerId: UUID,
   val tileIndex: Int
 )

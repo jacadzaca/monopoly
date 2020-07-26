@@ -1,10 +1,10 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate.events.estatepurchase
 
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
-import com.jacadzaca.monopoly.gamelogic.player.PlayerID
+import java.util.*
 
 data class EstatePurchaseEvent(
-  val buyerId: PlayerID,
+  val buyerId: UUID,
   val estateType: EstateType,
   val tileIndex: Int
 )
