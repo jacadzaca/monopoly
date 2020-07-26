@@ -4,7 +4,7 @@ import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import com.jacadzaca.monopoly.gamelogic.player.PlayerID
 
 data class EstatePurchaseEvent(
-  val buyer: PlayerID,
+  val buyerId: PlayerID,
   val estateType: EstateType,
   val tileIndex: Int
 )
