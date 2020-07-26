@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.gamelogic.move
+package com.jacadzaca.monopoly.gamelogic.moving
 
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.GameEventVerifier
