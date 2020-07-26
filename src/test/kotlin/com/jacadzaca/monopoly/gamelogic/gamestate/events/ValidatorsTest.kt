@@ -1,6 +1,7 @@
 package com.jacadzaca.monopoly.gamelogic.gamestate.events
 
-import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
+import com.jacadzaca.monopoly.gamelogic.GameState
+import com.jacadzaca.monopoly.gamelogic.tileExists
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertFalse
