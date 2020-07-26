@@ -4,7 +4,6 @@ import com.jacadzaca.monopoly.gamelogic.gamestate.GameState
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEventVerifier
 import com.jacadzaca.monopoly.gamelogic.gamestate.events.VerificationResult
 import com.jacadzaca.monopoly.createPlayer
-import com.jacadzaca.monopoly.gamelogic.gamestate.events.GameEvent
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.*
@@ -14,7 +13,7 @@ import java.util.*
 internal class MoveEventVerifierTest {
   private val player = createPlayer()
   private val gameState = mockk<GameState>()
-  private val event = GameEvent.MoveEvent(UUID.randomUUID())
+  private val event = MoveEvent(UUID.randomUUID())
   private val verifiedEvent =
       VerificationResult.VerifiedMoveEvent(
           player,
