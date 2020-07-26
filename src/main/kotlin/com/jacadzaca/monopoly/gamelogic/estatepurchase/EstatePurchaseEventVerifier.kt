@@ -1,13 +1,13 @@
 package com.jacadzaca.monopoly.gamelogic.estatepurchase
 
-import com.jacadzaca.monopoly.gamelogic.estates.EstateFactory
-import com.jacadzaca.monopoly.gamelogic.estates.EstateType
-import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.GameEventVerifier
+import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.VerificationResult
+import com.jacadzaca.monopoly.gamelogic.estates.EstateType
+import java.math.BigInteger
 
 internal class EstatePurchaseEventVerifier(
-  private val estateFactory: EstateFactory,
+  private val priceOf: (EstateType) -> BigInteger,
   private val requiredHousesForHotel: Int,
   private val tileExists: (Int, GameState) -> Boolean
 ) : GameEventVerifier<EstatePurchaseEvent> {
@@ -25,7 +25,7 @@ internal class EstatePurchaseEventVerifier(
     val tile = gameState.tiles[event.tileIndex]
     return when {
       tile.ownersId != event.buyerId -> VerificationResult.Failure(tileNotOwnedByBuyer)
-      estateFactory.getPriceFor(event.estateType) > buyer.balance -> VerificationResult.Failure(GameEventVerifier.buyerHasInsufficientBalance)
+      priceOf(event.estateType) > buyer.balance -> VerificationResult.Failure(GameEventVerifier.buyerHasInsufficientBalance)
       event.estateType == EstateType.HOTEL && tile.houseCount() < requiredHousesForHotel -> VerificationResult.Failure(
         notEnoughHouses
       )

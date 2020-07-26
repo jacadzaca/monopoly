@@ -1,12 +1,12 @@
 package com.jacadzaca.monopoly.gamelogic.estatepurchase
 
-import com.jacadzaca.monopoly.gamelogic.estates.EstateFactory
-import com.jacadzaca.monopoly.gamelogic.estates.EstateType
-import com.jacadzaca.monopoly.gamelogic.GameState
-import com.jacadzaca.monopoly.gamelogic.GameEventVerifier
-import com.jacadzaca.monopoly.gamelogic.VerificationResult
-import com.jacadzaca.monopoly.gamelogic.Tile
 import com.jacadzaca.monopoly.createPlayer
+import com.jacadzaca.monopoly.gamelogic.GameEventVerifier
+import com.jacadzaca.monopoly.gamelogic.GameState
+import com.jacadzaca.monopoly.gamelogic.Tile
+import com.jacadzaca.monopoly.gamelogic.VerificationResult
+import com.jacadzaca.monopoly.gamelogic.estates.EstateType
+import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -20,7 +20,7 @@ internal class EstatePurchaseEventVerifierTest {
   private val buyer = createPlayer()
   private val requiredHousesForHotel = 2
   private val gameState = mockk<GameState>()
-  private val estateFactory = mockk<EstateFactory>()
+  private val priceOf = mockk<(EstateType) -> BigInteger>()
   private val buyHotelEvent =
     EstatePurchaseEvent(
       UUID.randomUUID(),
@@ -52,7 +52,7 @@ internal class EstatePurchaseEventVerifierTest {
   private val tileExists = mockk<(Int, GameState) -> Boolean>()
   private val eventVerifier =
     EstatePurchaseEventVerifier(
-      estateFactory,
+      priceOf,
       requiredHousesForHotel,
       tileExists
     )
@@ -67,13 +67,13 @@ internal class EstatePurchaseEventVerifierTest {
     every { gameState.tiles[buyHotelEvent.tileIndex] } returns tile
     every { tileExists(buyHouseEvent.tileIndex, gameState) } returns true
     every { tileExists(buyHotelEvent.tileIndex, gameState) } returns true
-    every { estateFactory.getPriceFor(any()) } returns buyer.balance - BigInteger.ONE
+    every { priceOf(any()) } returns buyer.balance - BigInteger.ONE
   }
 
   @Test
   fun `verify returns the inputted event if the buyer is the tile's owner, the buyer has sufficient funds and the buyer wants a house`() {
     every { tile.ownersId } returns buyHouseEvent.buyerId
-    every { estateFactory.getPriceFor(EstateType.HOUSE) } returnsMany listOf(
+    every { priceOf(verifiedBuyHouseEvent.estateType) } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
     )
@@ -84,7 +84,7 @@ internal class EstatePurchaseEventVerifierTest {
   @Test
   fun `verify returns the inputted event if the tile's owner is the buyer, the buyer has sufficient funds, there is sufficient number of houses and the buyer wants a hotel`() {
     every { tile.ownersId } returns buyHotelEvent.buyerId
-    every { estateFactory.getPriceFor(EstateType.HOTEL) } returnsMany listOf(
+    every { priceOf(verifiedBuyHotelEvent.estateType) } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
     )
@@ -106,10 +106,12 @@ internal class EstatePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns Failure if the buyer has insufficient funds`() {
-    every { estateFactory.getPriceFor(any()) } returns buyer.balance + BigInteger.ONE
     val failure =
       VerificationResult.Failure(GameEventVerifier.buyerHasInsufficientBalance)
+    every { priceOf(EstateType.HOUSE) } returns buyer.balance + BigInteger.ONE
     assertEquals(failure, eventVerifier.verify(buyHouseEvent, gameState))
+    clearMocks(priceOf)
+    every { priceOf(EstateType.HOTEL) } returns buyer.balance + BigInteger.ONE
     assertEquals(failure, eventVerifier.verify(buyHotelEvent, gameState))
   }
 
@@ -136,6 +138,7 @@ internal class EstatePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns Failure if event references a tile that is not on the board`() {
+    clearMocks(tileExists)
     val failure =
       VerificationResult.Failure(GameEventVerifier.invalidTileIndex)
     every { tileExists(buyHouseEvent.tileIndex, gameState) } returns false
