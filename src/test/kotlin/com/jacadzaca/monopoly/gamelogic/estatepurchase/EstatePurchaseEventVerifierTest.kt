@@ -59,8 +59,8 @@ internal class EstatePurchaseEventVerifierTest {
 
   @BeforeEach
   fun setUp() {
-    every { tile.owner } returns buyHotelEvent.buyerId
-    val tileOwner = tile.owner
+    every { tile.ownersId } returns buyHotelEvent.buyerId
+    val tileOwner = tile.ownersId
     every { gameState.players[tileOwner] } returns buyer
     every { tile.houseCount() } returns requiredHousesForHotel
     every { gameState.tiles[buyHouseEvent.tileIndex] } returns tile
@@ -72,7 +72,7 @@ internal class EstatePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns the inputted event if the buyer is the tile's owner, the buyer has sufficient funds and the buyer wants a house`() {
-    every { tile.owner } returns buyHouseEvent.buyerId
+    every { tile.ownersId } returns buyHouseEvent.buyerId
     every { estateFactory.getPriceFor(EstateType.HOUSE) } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
@@ -83,7 +83,7 @@ internal class EstatePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns the inputted event if the tile's owner is the buyer, the buyer has sufficient funds, there is sufficient number of houses and the buyer wants a hotel`() {
-    every { tile.owner } returns buyHotelEvent.buyerId
+    every { tile.ownersId } returns buyHotelEvent.buyerId
     every { estateFactory.getPriceFor(EstateType.HOTEL) } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
@@ -96,7 +96,7 @@ internal class EstatePurchaseEventVerifierTest {
   @Test
   fun `verify returns Failure if the buyer dose not own the tile`() {
     val otherOwner = UUID.randomUUID()
-    every { tile.owner } returnsMany listOf(otherOwner, null)
+    every { tile.ownersId } returnsMany listOf(otherOwner, null)
     val failure = VerificationResult.Failure(
       EstatePurchaseEventVerifier.tileNotOwnedByBuyer
     )

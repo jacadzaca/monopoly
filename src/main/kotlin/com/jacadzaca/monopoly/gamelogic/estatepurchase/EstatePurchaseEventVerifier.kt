@@ -24,7 +24,7 @@ internal class EstatePurchaseEventVerifier(
     }
     val tile = gameState.tiles[event.tileIndex]
     return when {
-      tile.owner != event.buyerId -> VerificationResult.Failure(tileNotOwnedByBuyer)
+      tile.ownersId != event.buyerId -> VerificationResult.Failure(tileNotOwnedByBuyer)
       estateFactory.getPriceFor(event.estateType) > buyer.balance -> VerificationResult.Failure(GameEventVerifier.buyerHasInsufficientBalance)
       event.estateType == EstateType.HOTEL && tile.houseCount() < requiredHousesForHotel -> VerificationResult.Failure(
         notEnoughHouses

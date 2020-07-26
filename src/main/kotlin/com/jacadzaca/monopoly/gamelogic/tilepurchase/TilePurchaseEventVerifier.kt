@@ -21,7 +21,7 @@ internal class TilePurchaseEventVerifier(
     }
     val tile = gameState.tiles[event.tileIndex]
     return when {
-      tile.owner != null -> VerificationResult.Failure(tileAlreadyHasOwner)
+      tile.ownersId != null -> VerificationResult.Failure(tileAlreadyHasOwner)
       tile.price > buyer.balance -> VerificationResult.Failure(buyerHasInsufficientBalance)
       else -> VerificationResult.VerifiedTilePurchaseEvent(buyer, event.buyerId, tile, event.tileIndex)
     }

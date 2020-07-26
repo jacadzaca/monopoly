@@ -9,11 +9,11 @@ import java.util.*
 data class Tile(
   val estates: PersistentList<Estate>,
   val price: BigInteger,
-  val owner: UUID?
+  val ownersId: UUID?
 ) {
   fun addEstate(newEstate: Estate): Tile = copy(estates = estates.add(newEstate))
 
-  fun changeOwner(newOwner: UUID): Tile = copy(owner = newOwner)
+  fun changeOwner(newOwner: UUID): Tile = copy(ownersId = newOwner)
 
   fun totalRent(): BigInteger = estates.map(Estate::rent).reduce(BigInteger::add)
 

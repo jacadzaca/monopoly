@@ -44,7 +44,7 @@ internal class TilePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns inputted event if the buyer has sufficient funds and the tile has no owner`() {
-    every { tile.owner } returns null
+    every { tile.ownersId } returns null
     every { tile.price } returnsMany listOf(buyer.balance, buyer.balance - BigInteger.ONE)
     assertEquals(verifiedEvent, eventVerifier.verify(event, gameState))
     assertEquals(verifiedEvent, eventVerifier.verify(event, gameState))
@@ -53,7 +53,7 @@ internal class TilePurchaseEventVerifierTest {
   @Test
   fun `verify returns Failure if the the tile already has an owner`() {
     every { tile.price } returns buyer.balance - BigInteger.ONE
-    every { tile.owner } returnsMany listOf(UUID.randomUUID(), event.buyerId)
+    every { tile.ownersId } returnsMany listOf(UUID.randomUUID(), event.buyerId)
     val failure = VerificationResult.Failure(
       TilePurchaseEventVerifier.tileAlreadyHasOwner
     )
@@ -63,7 +63,7 @@ internal class TilePurchaseEventVerifierTest {
 
   @Test
   fun `verify returns Failure if the buyer's balance is less than the tile's price`() {
-    every { tile.owner } returns null
+    every { tile.ownersId } returns null
     every { tile.price } returns buyer.balance + BigInteger.ONE
     assertEquals(
       VerificationResult.Failure(

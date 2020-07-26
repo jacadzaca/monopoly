@@ -38,9 +38,9 @@ internal class TilePurchaseEventApplierTest {
 
   @Test
   fun `apply sets the tile's owner to buyer`() {
-    val tileOwnedByBuyer = tile.copy(owner = event.buyerId)
+    val tileOwnedByBuyer = tile.copy(ownersId = event.buyerId)
     val actual = eventApplier.apply(event, gameState)
-    assertEquals(tileOwnedByBuyer.owner, actual.tiles[event.tileIndex].owner)
+    assertEquals(tileOwnedByBuyer.ownersId, actual.tiles[event.tileIndex].ownersId)
   }
 
   @Test
