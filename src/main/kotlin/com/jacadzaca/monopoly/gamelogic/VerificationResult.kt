@@ -9,7 +9,7 @@ sealed class VerificationResult {
     val buyerId: UUID,
     val tile: Tile,
     val tileIndex: Int
-  ) : VerificationResult(), GameStateChange
+  ) : VerificationResult(), Transformation
 
   data class VerifiedEstatePurchaseEvent(
     val buyer: Player,
@@ -17,9 +17,9 @@ sealed class VerificationResult {
     val tile: Tile,
     val tileIndex: Int,
     val estateType: EstateType
-  ) : VerificationResult(), GameStateChange
+  ) : VerificationResult(), Transformation
 
   data class VerifiedMoveEvent(val mover: Player, val moverId: UUID): VerificationResult(),
-    GameStateChange
+    Transformation
   data class Failure(val reason: String) : VerificationResult()
 }
