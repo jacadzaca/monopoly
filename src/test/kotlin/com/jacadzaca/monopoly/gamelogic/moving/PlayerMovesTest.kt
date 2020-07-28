@@ -1,30 +1,30 @@
 package com.jacadzaca.monopoly.gamelogic.moving
 
 import com.jacadzaca.monopoly.gamelogic.GameState
-import com.jacadzaca.monopoly.gamelogic.VerificationResult
 import com.jacadzaca.monopoly.gamelogic.Player
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.random.Random
 
-internal class MoveEventApplierTest {
+internal class PlayerMovesTest {
   private val player = mockk<Player>()
   private val gameState = mockk<GameState>()
   private val rollDice = mockk<() -> Int>()
-  private val eventApplier = MoveEventApplier(rollDice)
-  private val event = VerificationResult.VerifiedMoveEvent(player, UUID.randomUUID())
+  private val playersId = UUID.randomUUID()
+  private val transformation = PlayerMoves(player, playersId, rollDice)
 
   @BeforeEach
   fun setUp() {
     val calculatedPositionSlot = slot<Int>()
-    every { gameState.boardSize } returns 20
-    every { gameState.update(event.moverId, any()) } returns gameState
-    every { gameState.players[event.moverId] } returns player
+    // game boards will probably not be THAT big - no need to check for integer overflows etc.
+    every { gameState.boardSize } returns Random.nextInt(2, 10_000)
+    every { gameState.update(playersId, any()) } returns gameState
+    every { gameState.players[playersId] } returns player
     every { rollDice() } returns Random.nextInt(1, gameState.boardSize - 1)
     every { player.position } returns gameState.boardSize - rollDice() - 1
     every { player.copy(position = capture(calculatedPositionSlot)) } answers {
@@ -34,13 +34,13 @@ internal class MoveEventApplierTest {
   }
 
   @Test
-  fun `apply add dieRoller to the player's position`() {
+  fun `apply adds dieRoller result to the player's position`() {
     val previousPosition = player.position
     val expected = previousPosition + rollDice()
-    val actual = eventApplier.apply(event, gameState)
+    val actual = transformation.apply(gameState)
     assertEquals(
       expected,
-      actual.players[event.moverId]!!.position
+      actual.players[playersId]!!.position
     )
   }
 
@@ -48,10 +48,10 @@ internal class MoveEventApplierTest {
   fun `apply wraps position calculation`() {
     every { player.position } returns gameState.boardSize - 1
     val expected = rollDice() - 1
-    val actual = eventApplier.apply(event, gameState)
+    val actual = transformation.apply(gameState)
     assertEquals(
       expected,
-      actual.players[event.moverId]!!.position
+      actual.players[playersId]!!.position
     )
   }
 }
