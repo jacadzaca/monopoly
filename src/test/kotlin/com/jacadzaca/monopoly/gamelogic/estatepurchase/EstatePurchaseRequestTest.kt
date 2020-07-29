@@ -49,7 +49,7 @@ internal class EstatePurchaseRequestTest {
   }
 
   @Test
-  fun `validate returns the inputted event if the buyer is the tile's owner, has sufficient funds, the tile has sufficient number of houses and the buyer wants a hotel`() {
+  fun `validate returns Success if the buyer is the tile's owner, has sufficient funds, the tile has sufficient number of houses and the buyer wants a hotel`() {
     clearMocks(priceOf)
     every { tile.ownersId } returns buyersId
     every { priceOf(EstateType.HOTEL) } returnsMany listOf(
