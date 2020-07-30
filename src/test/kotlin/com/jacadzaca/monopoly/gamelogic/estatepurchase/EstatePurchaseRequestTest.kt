@@ -2,9 +2,9 @@ package com.jacadzaca.monopoly.gamelogic.estatepurchase
 
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
-import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -36,7 +36,6 @@ internal class EstatePurchaseRequestTest {
 
   @Test
   fun `validate returns Success if the buyer is the tile's owner, has sufficient funds and wants a house`() {
-    clearMocks(priceOf)
     every { tile.ownersId } returns buyersId
     every { priceOf(EstateType.HOUSE) } returnsMany listOf(
       buyer.balance,
@@ -46,11 +45,11 @@ internal class EstatePurchaseRequestTest {
       ValidationResult.Success(EstatePurchase.create(buyer, buyersId, tile, buyer.position, EstateType.HOUSE))
     assertEquals(success, housePurchaseRequest.validate(gameState))
     assertEquals(success, housePurchaseRequest.validate(gameState))
+    verify { priceOf(EstateType.HOUSE) }
   }
 
   @Test
   fun `validate returns Success if the buyer is the tile's owner, has sufficient funds, the tile has sufficient number of houses and the buyer wants a hotel`() {
-    clearMocks(priceOf)
     every { tile.ownersId } returns buyersId
     every { priceOf(EstateType.HOTEL) } returnsMany listOf(
       buyer.balance,
@@ -61,6 +60,7 @@ internal class EstatePurchaseRequestTest {
       ValidationResult.Success(EstatePurchase.create(buyer, buyersId, tile, buyer.position, EstateType.HOTEL))
     assertEquals(success, hotelPurchaseRequest.validate(gameState))
     assertEquals(success, hotelPurchaseRequest.validate(gameState))
+    verify { priceOf(EstateType.HOTEL) }
   }
 
   @Test
@@ -75,10 +75,8 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Failure if the buyer has insufficient funds`() {
     val failure = ValidationResult.Failure(Request.buyerHasInsufficientBalance)
-    every { priceOf(EstateType.HOUSE) } returns buyer.balance + BigInteger.ONE
+    every { priceOf(any()) } returns buyer.balance + BigInteger.ONE
     assertEquals(failure, housePurchaseRequest.validate(gameState))
-    clearMocks(priceOf)
-    every { priceOf(EstateType.HOTEL) } returns buyer.balance + BigInteger.ONE
     assertEquals(failure, hotelPurchaseRequest.validate(gameState))
   }
 
