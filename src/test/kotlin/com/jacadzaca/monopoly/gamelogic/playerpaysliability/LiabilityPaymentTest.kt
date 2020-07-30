@@ -12,13 +12,13 @@ import org.junit.jupiter.api.Test
 import java.math.BigInteger
 import java.util.*
 
-internal class PlayerPaysLiabilityTest {
+internal class LiabilityPaymentTest {
   private val payer = createPlayer()
   private val receiver = createPlayer()
   private val liability = mockk<Liability>()
   private val gameState = mockk<GameState>()
   private val payersId = UUID.randomUUID()
-  private val transformation = PlayerPaysLiability(payer, payersId, liability)
+  private val transformation = LiabilityPayment(payer, payersId, liability)
 
   @BeforeEach
   fun setUp() {
