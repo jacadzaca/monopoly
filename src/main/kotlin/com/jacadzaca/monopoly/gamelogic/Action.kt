@@ -1,5 +1,5 @@
 package com.jacadzaca.monopoly.gamelogic
 
-interface Transformation {
+interface Action {
   fun apply(target: GameState): GameState
 }
