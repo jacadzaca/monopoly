@@ -29,7 +29,7 @@ internal class PlayerMovesTest {
     every { gameState.addTransformation(any()) } returns gameState
     every { gameState.players[playersId] } returns player
     every { rollDice() } returns Random.nextInt(1, gameState.boardSize - 1)
-    every { player.position } returns Random.nextInt(0, gameState.boardSize - 1)
+    every { player.position } returns gameState.boardSize - rollDice() - 1
     every { player.copy(position = capture(calculatedPositionSlot)) } answers {
       every { player.position } returns calculatedPositionSlot.captured
       player
