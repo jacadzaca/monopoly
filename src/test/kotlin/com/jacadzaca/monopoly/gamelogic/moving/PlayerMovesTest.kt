@@ -34,7 +34,7 @@ internal class PlayerMovesTest {
   }
 
   @Test
-  fun `apply adds dieRoller result to the player's position`() {
+  fun `apply adds rollDice's result to the player's position`() {
     val previousPosition = player.position
     val expected = previousPosition + rollDice()
     val actual = transformation.apply(gameState)
@@ -45,7 +45,7 @@ internal class PlayerMovesTest {
   }
 
   @Test
-  fun `apply wraps position calculation`() {
+  fun `apply wraps the position calculation`() {
     every { player.position } returns gameState.boardSize - 1
     val expected = rollDice() - 1
     val actual = transformation.apply(gameState)
