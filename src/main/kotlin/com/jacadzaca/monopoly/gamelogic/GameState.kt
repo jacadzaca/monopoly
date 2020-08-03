@@ -8,7 +8,7 @@ import java.util.*
 data class GameState(
   val players: PersistentMap<UUID, Player>,
   val tiles: PersistentList<Tile>,
-  val recentChanges: PersistentList<Transformation> = persistentListOf()
+  val transformations: PersistentList<Transformation> = persistentListOf()
 ) {
    val boardSize: Int
     get() = tiles.size
@@ -27,6 +27,6 @@ data class GameState(
    fun update(tileIndex: Int, updatedTile: Tile): GameState =
     copy(tiles = tiles.set(tileIndex, updatedTile))
 
-  fun addChange(transformation: Transformation): GameState =
-    copy(recentChanges = recentChanges.add(transformation))
+  fun addTransformation(transformation: Transformation): GameState =
+    copy(transformations = transformations.add(transformation))
 }
