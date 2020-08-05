@@ -25,6 +25,7 @@ internal class EstatePurchaseRequestTest {
 
   @BeforeEach
   fun setUp() {
+    clearAllMocks()
     val buyersPosition = Random.nextInt()
     every { tile.ownersId } returns buyersId
     every { buyer.position } returns buyersPosition
