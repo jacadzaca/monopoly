@@ -19,13 +19,6 @@ data class EstatePurchase(
   private val create: (EstateType) -> Estate,
   private val priceOf: (EstateType) -> BigInteger
 ) : Action {
-  companion object {
-    fun create(buyer: Player, buyersId: UUID, tile: Tile, tileIndex: Int, estateType: EstateType): EstatePurchase {
-      val estateFactory = EstateFactory.standardEstateFactory
-      return EstatePurchase(buyer, buyersId, tile, tileIndex, estateType, estateFactory::create, estateFactory::getPriceFor)
-    }
-  }
-
   override fun apply(target: GameState): GameState {
     return target
       .update(tileIndex, tile.addEstate(create(estateType)))
