@@ -2,9 +2,11 @@ package com.jacadzaca.monopoly.gamelogic.moving
 
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
+import com.jacadzaca.monopoly.gamelogic.Transformation
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,6 +26,7 @@ internal class PlayerMovesTest {
     // game boards will probably not be THAT big - no need to check for integer overflows etc.
     every { gameState.boardSize } returns Random.nextInt(2, 10_000)
     every { gameState.update(playersId, any()) } returns gameState
+    every { gameState.addTransformation(any()) } returns gameState
     every { gameState.players[playersId] } returns player
     every { rollDice() } returns Random.nextInt(1, gameState.boardSize - 1)
     every { player.copy(position = capture(calculatedPositionSlot)) } answers {
@@ -45,5 +48,20 @@ internal class PlayerMovesTest {
     every { player.position } returns gameState.boardSize - 1
     val actual = action.apply(gameState).players[playersId]!!.position
     assertEquals(rollDice() - 1, actual)
+  }
+
+  @Test
+  fun `apply adds PlayerMovement transformation`() {
+    val transformation = Transformation.PlayerMovement(playersId, rollDice())
+    action.apply(gameState)
+    verify { gameState.addTransformation(transformation) }
+  }
+
+  @Test
+  fun `rollDice's randomness is taken into account when adding transformation`() {
+    val transformation = Transformation.PlayerMovement(playersId, Random.nextInt())
+    every { rollDice() } returnsMany listOf(transformation.movedBy, 3)
+    action.apply(gameState)
+    verify { gameState.addTransformation(transformation) }
   }
 }
