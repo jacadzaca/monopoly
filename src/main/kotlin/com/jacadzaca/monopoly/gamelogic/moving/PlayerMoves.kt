@@ -12,13 +12,6 @@ data class PlayerMoves(
   private val playersId: UUID,
   private val rollDice: () -> Int
 ) : Action {
-  companion object {
-    private val roll6SidedDie = { Random.nextInt(1, 6) }
-    fun create(player: Player, playersId: UUID): PlayerMoves {
-      return PlayerMoves(player, playersId, roll6SidedDie)
-    }
-  }
-
   override fun apply(target: GameState): GameState {
     val diceRoll = rollDice()
     return target
