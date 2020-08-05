@@ -11,7 +11,8 @@ data class EstatePurchaseRequest(
   private val buyersId: UUID,
   private val estateType: EstateType,
   private val priceOf: (EstateType) -> BigInteger,
-  private val requiredHousesForHotel: Int
+  private val requiredHousesForHotel: Int,
+  private val createAction: (Player, UUID, Tile, Int, EstateType) -> EstatePurchase
 ) : Request {
   internal companion object {
     internal const val tileNotOwnedByBuyer = "Buyer dose not own the tile where he wants to buy a estate"
@@ -25,7 +26,7 @@ data class EstatePurchaseRequest(
       tile.ownersId != buyersId -> ValidationResult.Failure(tileNotOwnedByBuyer)
       priceOf(estateType) > buyer.balance -> ValidationResult.Failure(buyerHasInsufficientBalance)
       estateType == EstateType.HOTEL && tile.houseCount() < requiredHousesForHotel -> ValidationResult.Failure(notEnoughHouses)
-      else -> ValidationResult.Success(EstatePurchase.create(buyer, buyersId, tile, buyer.position, estateType))
+      else -> ValidationResult.Success(createAction(buyer, buyersId, tile, buyer.position, estateType))
     }
   }
 }

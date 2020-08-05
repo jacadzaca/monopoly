@@ -2,9 +2,7 @@ package com.jacadzaca.monopoly.gamelogic.estatepurchase
 
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -19,8 +17,11 @@ internal class EstatePurchaseRequestTest {
   private val gameState = mockk<GameState>()
   private val requiredHousesForHotel = Random.nextInt()
   private val priceOf = mockk<(EstateType) -> BigInteger>()
-  private val housePurchaseRequest = EstatePurchaseRequest(buyersId, EstateType.HOUSE, priceOf, requiredHousesForHotel)
-  private val hotelPurchaseRequest = EstatePurchaseRequest(buyersId, EstateType.HOTEL, priceOf, requiredHousesForHotel)
+  private val actionCreator = mockk<(Player, UUID, Tile, Int, EstateType) -> EstatePurchase>()
+  private val housePurchaseRequest =
+    EstatePurchaseRequest(buyersId, EstateType.HOUSE, priceOf, requiredHousesForHotel, actionCreator)
+  private val hotelPurchaseRequest =
+    EstatePurchaseRequest(buyersId, EstateType.HOTEL, priceOf, requiredHousesForHotel, actionCreator)
 
   @BeforeEach
   fun setUp() {
@@ -37,12 +38,14 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Success if the buyer is the tile's owner, has sufficient funds and wants a house`() {
     every { tile.ownersId } returns buyersId
+    val createdEstatePurchase = mockk<EstatePurchase>(name = "estate purchase")
+    val buyersPosition = buyer.position
+    every { actionCreator(buyer, buyersId, tile, buyersPosition, EstateType.HOUSE) } returns createdEstatePurchase
     every { priceOf(EstateType.HOUSE) } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
     )
-    val success =
-      ValidationResult.Success(EstatePurchase.create(buyer, buyersId, tile, buyer.position, EstateType.HOUSE))
+    val success = ValidationResult.Success(createdEstatePurchase)
     assertEquals(success, housePurchaseRequest.validate(gameState))
     assertEquals(success, housePurchaseRequest.validate(gameState))
     verify { priceOf(EstateType.HOUSE) }
@@ -51,13 +54,15 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Success if the buyer is the tile's owner, has sufficient funds, the tile has sufficient number of houses and the buyer wants a hotel`() {
     every { tile.ownersId } returns buyersId
+    val createdEstatePurchase = mockk<EstatePurchase>(name = "estate purchase")
+    val buyersPosition = buyer.position
+    every { actionCreator(buyer, buyersId, tile, buyersPosition, EstateType.HOTEL) } returns createdEstatePurchase
     every { priceOf(EstateType.HOTEL) } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
     )
     every { tile.houseCount() } returnsMany listOf(requiredHousesForHotel, requiredHousesForHotel + 1)
-    val success =
-      ValidationResult.Success(EstatePurchase.create(buyer, buyersId, tile, buyer.position, EstateType.HOTEL))
+    val success = ValidationResult.Success(createdEstatePurchase)
     assertEquals(success, hotelPurchaseRequest.validate(gameState))
     assertEquals(success, hotelPurchaseRequest.validate(gameState))
     verify { priceOf(EstateType.HOTEL) }
