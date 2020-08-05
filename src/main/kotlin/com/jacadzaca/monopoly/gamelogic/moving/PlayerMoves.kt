@@ -8,12 +8,11 @@ import java.util.*
 data class PlayerMoves(
   private val player: Player,
   private val playersId: UUID,
-  private val rollDice: () -> Int
+  val moveBy: Int
 ) : Transformation {
   override fun apply(target: GameState): GameState {
-    val diceRoll = rollDice()
     return target
-      .update(playersId, player.copy(position = (player.position + diceRoll) % target.boardSize))
+      .update(playersId, player.copy(position = (player.position + moveBy) % target.boardSize))
       .addTransformation(this)
   }
 }
