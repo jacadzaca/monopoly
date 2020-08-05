@@ -3,7 +3,7 @@ package com.jacadzaca.monopoly.gamelogic.estatepurchase
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
-import com.jacadzaca.monopoly.gamelogic.Action
+import com.jacadzaca.monopoly.gamelogic.Transformation
 import com.jacadzaca.monopoly.gamelogic.estates.Estate
 import com.jacadzaca.monopoly.gamelogic.estates.EstateFactory
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
@@ -18,7 +18,7 @@ data class EstatePurchase(
   private val estateType: EstateType,
   private val create: (EstateType) -> Estate,
   private val priceOf: (EstateType) -> BigInteger
-) : Action {
+) : Transformation {
   override fun apply(target: GameState): GameState {
     return target
       .update(tileIndex, tile.addEstate(create(estateType)))

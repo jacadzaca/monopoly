@@ -52,16 +52,7 @@ internal class PlayerMovesTest {
 
   @Test
   fun `apply adds PlayerMovement transformation`() {
-    val transformation = Transformation.PlayerMovement(playersId, rollDice())
     action.apply(gameState)
-    verify { gameState.addTransformation(transformation) }
-  }
-
-  @Test
-  fun `rollDice's randomness is taken into account when adding transformation`() {
-    val transformation = Transformation.PlayerMovement(playersId, Random.nextInt())
-    every { rollDice() } returnsMany listOf(transformation.movedBy, 3)
-    action.apply(gameState)
-    verify { gameState.addTransformation(transformation) }
+    verify { gameState.addTransformation(action) }
   }
 }
