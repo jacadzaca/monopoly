@@ -1,9 +1,8 @@
-package com.jacadzaca.monopoly.gamelogic.tilepurchase
+package com.jacadzaca.monopoly.gamelogic.transformations
 
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
-import com.jacadzaca.monopoly.gamelogic.Transformation
 import java.util.*
 
 data class TilePurchase(

@@ -1,7 +1,8 @@
-package com.jacadzaca.monopoly.gamelogic.playerpaysliability
+package com.jacadzaca.monopoly.gamelogic.transformations
 
 import com.jacadzaca.monopoly.createPlayer
 import com.jacadzaca.monopoly.gamelogic.GameState
+import com.jacadzaca.monopoly.gamelogic.Liability
 import com.jacadzaca.monopoly.gamelogic.Player
 import io.mockk.every
 import io.mockk.mockk
@@ -18,7 +19,13 @@ internal class LiabilityPaymentTest {
   private val liability = mockk<Liability>()
   private val gameState = mockk<GameState>()
   private val payersId = UUID.randomUUID()
-  private val transformation = LiabilityPayment(payer, payersId, liability, gameState)
+  private val transformation =
+    LiabilityPayment(
+      payer,
+      payersId,
+      liability,
+      gameState
+    )
 
   @BeforeEach
   fun setUp() {

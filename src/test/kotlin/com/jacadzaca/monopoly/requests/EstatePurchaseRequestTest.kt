@@ -1,7 +1,7 @@
 package com.jacadzaca.monopoly.requests
 
 import com.jacadzaca.monopoly.gamelogic.*
-import com.jacadzaca.monopoly.gamelogic.estatepurchase.EstatePurchase
+import com.jacadzaca.monopoly.gamelogic.transformations.EstatePurchase
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -1,11 +1,11 @@
-package com.jacadzaca.monopoly.gamelogic.moving
+package com.jacadzaca.monopoly.gamelogic.transformations
 
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
+import com.jacadzaca.monopoly.gamelogic.transformations.PlayerMoves
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -18,7 +18,13 @@ internal class PlayerMovesTest {
   private val playersId = UUID.randomUUID()
   private val boardSize = Random.nextInt(2, 10_000)
   private val moveBy = Random.nextInt(1, boardSize - 1)
-  private val transformation = PlayerMoves(player, playersId, moveBy, gameState)
+  private val transformation =
+    PlayerMoves(
+      player,
+      playersId,
+      moveBy,
+      gameState
+    )
 
   @BeforeEach
   fun setUp() {

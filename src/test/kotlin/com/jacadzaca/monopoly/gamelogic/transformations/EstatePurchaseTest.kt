@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.gamelogic.estatepurchase
+package com.jacadzaca.monopoly.gamelogic.transformations
 
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
@@ -10,8 +10,6 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import java.math.BigInteger
@@ -60,5 +58,14 @@ internal class EstatePurchaseTest {
   }
 
   private fun purchaseOfType(estateType: EstateType): EstatePurchase =
-    EstatePurchase(buyer, buyersId, tile, tileIndex, estateType, create, priceOf, gameState)
+    EstatePurchase(
+      buyer,
+      buyersId,
+      tile,
+      tileIndex,
+      estateType,
+      create,
+      priceOf,
+      gameState
+    )
 }

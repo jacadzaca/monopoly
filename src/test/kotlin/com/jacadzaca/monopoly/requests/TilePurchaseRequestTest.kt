@@ -1,7 +1,7 @@
 package com.jacadzaca.monopoly.requests
 
 import com.jacadzaca.monopoly.gamelogic.*
-import com.jacadzaca.monopoly.gamelogic.tilepurchase.TilePurchase
+import com.jacadzaca.monopoly.gamelogic.transformations.TilePurchase
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals

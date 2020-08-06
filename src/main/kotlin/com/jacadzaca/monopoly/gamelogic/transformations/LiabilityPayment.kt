@@ -1,8 +1,8 @@
-package com.jacadzaca.monopoly.gamelogic.playerpaysliability
+package com.jacadzaca.monopoly.gamelogic.transformations
 
 import com.jacadzaca.monopoly.gamelogic.GameState
+import com.jacadzaca.monopoly.gamelogic.Liability
 import com.jacadzaca.monopoly.gamelogic.Player
-import com.jacadzaca.monopoly.gamelogic.Transformation
 import java.util.*
 
 data class LiabilityPayment(

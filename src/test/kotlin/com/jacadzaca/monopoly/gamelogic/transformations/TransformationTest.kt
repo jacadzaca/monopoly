@@ -1,5 +1,6 @@
-package com.jacadzaca.monopoly.gamelogic
+package com.jacadzaca.monopoly.gamelogic.transformations
 
+import com.jacadzaca.monopoly.gamelogic.GameState
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk

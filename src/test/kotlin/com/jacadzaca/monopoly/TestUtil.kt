@@ -2,7 +2,6 @@ package com.jacadzaca.monopoly
 
 import com.jacadzaca.monopoly.gamelogic.estates.Estate
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
-import com.jacadzaca.monopoly.gamelogic.playerpaysliability.Liability
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
 import kotlinx.collections.immutable.persistentListOf

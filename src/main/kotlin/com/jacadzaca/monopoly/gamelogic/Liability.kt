@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.gamelogic.playerpaysliability
+package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.gamelogic.Player
 import java.math.BigInteger
