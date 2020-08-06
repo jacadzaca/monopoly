@@ -3,7 +3,6 @@ package com.jacadzaca.monopoly.requests
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBalance
 import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
-import com.jacadzaca.monopoly.gamelogic.ValidationResult
 import com.jacadzaca.monopoly.gamelogic.transformations.TilePurchase
 import java.util.*
 
