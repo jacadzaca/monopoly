@@ -39,23 +39,23 @@ internal class EstatePurchaseTest {
 
   @ParameterizedTest
   @EnumSource(EstateType::class)
-  fun `apply adds a estate to the tile`(estateType: EstateType) {
+  fun `transform adds a estate to the tile`(estateType: EstateType) {
     val estate = mockk<Estate>(name = "estate")
     val tileWithAddedHouse = mockk<Tile>(name = "tile with added estate")
     every { tile.addEstate(estate) } returns tileWithAddedHouse
     every { create(estateType) } returns estate
-    purchaseOfType(estateType).apply()
+    purchaseOfType(estateType).transform()
     verify { gameState.update(tileIndex, tileWithAddedHouse) }
   }
 
   @ParameterizedTest
   @EnumSource(EstateType::class)
-  fun `apply detracts from the buyer's balance`(estateType: EstateType) {
+  fun `transform detracts from the buyer's balance`(estateType: EstateType) {
     val estatePrice = Random.nextInt().toBigInteger()
     val playerAfterPurchase = mockk<Player>(name = "playerAfterPurchase")
     every { priceOf(estateType) } returns estatePrice
     every { buyer.detractFunds(estatePrice) } returns playerAfterPurchase
-    purchaseOfType(estateType).apply()
+    purchaseOfType(estateType).transform()
     verify { gameState.update(buyersId, playerAfterPurchase) }
   }
 
