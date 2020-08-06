@@ -8,13 +8,14 @@ import com.jacadzaca.monopoly.gamelogic.ValidationResult
 import java.util.*
 
 class TilePurchaseRequest(
-  private val buyersId: UUID
+  private val buyersId: UUID,
+  private val context: GameState
 ) : Request {
   internal companion object {
     internal const val tileAlreadyHasOwner = "Tile that the player wants to buy already has an owner "
   }
 
-  override fun validate(context: GameState): ValidationResult {
+  override fun validate(): ValidationResult {
     val buyer = context.players[buyersId] ?: return ValidationResult.Failure(invalidPlayerId)
     val tile = context.tiles[buyer.position]
     return when {

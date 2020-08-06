@@ -16,7 +16,7 @@ internal class TilePurchaseRequestTest {
   private val gameState = mockk<GameState>()
   private val buyersId = UUID.randomUUID()
   private val buyersPosition = Random.nextInt()
-  private val request = TilePurchaseRequest(buyersId)
+  private val request = TilePurchaseRequest(buyersId, gameState)
 
   @BeforeEach
   fun setUp() {
@@ -32,8 +32,8 @@ internal class TilePurchaseRequestTest {
     every { tile.ownersId } returns null
     every { tile.price } returnsMany listOf(buyer.balance, buyer.balance - BigInteger.ONE)
     val success = ValidationResult.Success(TilePurchase(buyer, buyersId, tile, buyer.position, gameState))
-    assertEquals(success, request.validate(gameState))
-    assertEquals(success, request.validate(gameState))
+    assertEquals(success, request.validate())
+    assertEquals(success, request.validate())
   }
 
   @Test
@@ -41,8 +41,8 @@ internal class TilePurchaseRequestTest {
     every { tile.price } returns buyer.balance - BigInteger.ONE
     every { tile.ownersId } returnsMany listOf(UUID.randomUUID(), buyersId)
     val failure = ValidationResult.Failure(TilePurchaseRequest.tileAlreadyHasOwner)
-    assertEquals(failure, request.validate(gameState))
-    assertEquals(failure, request.validate(gameState))
+    assertEquals(failure, request.validate())
+    assertEquals(failure, request.validate())
   }
 
   @Test
@@ -50,7 +50,7 @@ internal class TilePurchaseRequestTest {
     every { tile.price } returns buyer.balance + BigInteger.ONE
     assertEquals(
       ValidationResult.Failure(Request.buyerHasInsufficientBalance),
-      request.validate(gameState)
+      request.validate()
     )
   }
 
@@ -59,7 +59,7 @@ internal class TilePurchaseRequestTest {
     every { gameState.players[buyersId] } returns null
     assertEquals(
       ValidationResult.Failure(Request.invalidPlayerId),
-      request.validate(gameState)
+      request.validate()
     )
   }
 }

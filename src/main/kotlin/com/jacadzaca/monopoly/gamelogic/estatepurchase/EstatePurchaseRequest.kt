@@ -12,13 +12,14 @@ data class EstatePurchaseRequest(
   private val estateType: EstateType,
   private val priceOf: (EstateType) -> BigInteger,
   private val requiredHousesForHotel: Int,
-  private val createAction: (Player, UUID, Tile, Int, EstateType, GameState) -> EstatePurchase
+  private val createAction: (Player, UUID, Tile, Int, EstateType, GameState) -> EstatePurchase,
+  private val context: GameState
 ) : Request {
   internal companion object {
     internal const val tileNotOwnedByBuyer = "Buyer dose not own the tile where he wants to buy a estate"
     internal const val notEnoughHouses = "There are not enough houses on the tile where a hotel is to be placed "
   }
-  override fun validate(context: GameState): ValidationResult {
+  override fun validate(): ValidationResult {
     val buyer =
       context.players[buyersId] ?: return ValidationResult.Failure(invalidPlayerId)
     val tile = context.tiles[buyer.position]

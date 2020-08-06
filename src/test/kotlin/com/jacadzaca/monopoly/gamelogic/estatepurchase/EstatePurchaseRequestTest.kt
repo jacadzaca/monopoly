@@ -19,9 +19,9 @@ internal class EstatePurchaseRequestTest {
   private val priceOf = mockk<(EstateType) -> BigInteger>()
   private val actionCreator = mockk<(Player, UUID, Tile, Int, EstateType, GameState) -> EstatePurchase>()
   private val housePurchaseRequest =
-    EstatePurchaseRequest(buyersId, EstateType.HOUSE, priceOf, requiredHousesForHotel, actionCreator)
+    EstatePurchaseRequest(buyersId, EstateType.HOUSE, priceOf, requiredHousesForHotel, actionCreator, gameState)
   private val hotelPurchaseRequest =
-    EstatePurchaseRequest(buyersId, EstateType.HOTEL, priceOf, requiredHousesForHotel, actionCreator)
+    EstatePurchaseRequest(buyersId, EstateType.HOTEL, priceOf, requiredHousesForHotel, actionCreator, gameState)
 
   @BeforeEach
   fun setUp() {
@@ -47,8 +47,8 @@ internal class EstatePurchaseRequestTest {
       buyer.balance - BigInteger.ONE
     )
     val success = ValidationResult.Success(createdEstatePurchase)
-    assertEquals(success, housePurchaseRequest.validate(gameState))
-    assertEquals(success, housePurchaseRequest.validate(gameState))
+    assertEquals(success, housePurchaseRequest.validate())
+    assertEquals(success, housePurchaseRequest.validate())
     verify { priceOf(EstateType.HOUSE) }
   }
 
@@ -64,8 +64,8 @@ internal class EstatePurchaseRequestTest {
     )
     every { tile.houseCount() } returnsMany listOf(requiredHousesForHotel, requiredHousesForHotel + 1)
     val success = ValidationResult.Success(createdEstatePurchase)
-    assertEquals(success, hotelPurchaseRequest.validate(gameState))
-    assertEquals(success, hotelPurchaseRequest.validate(gameState))
+    assertEquals(success, hotelPurchaseRequest.validate())
+    assertEquals(success, hotelPurchaseRequest.validate())
     verify { priceOf(EstateType.HOTEL) }
   }
 
@@ -74,16 +74,16 @@ internal class EstatePurchaseRequestTest {
     val otherOwner = UUID.randomUUID()
     every { tile.ownersId } returnsMany listOf(otherOwner, null)
     val failure = ValidationResult.Failure(EstatePurchaseRequest.tileNotOwnedByBuyer)
-    assertEquals(failure, housePurchaseRequest.validate(gameState))
-    assertEquals(failure, hotelPurchaseRequest.validate(gameState))
+    assertEquals(failure, housePurchaseRequest.validate())
+    assertEquals(failure, hotelPurchaseRequest.validate())
   }
 
   @Test
   fun `validate returns Failure if the buyer has insufficient funds`() {
     val failure = ValidationResult.Failure(Request.buyerHasInsufficientBalance)
     every { priceOf(any()) } returns buyer.balance + BigInteger.ONE
-    assertEquals(failure, housePurchaseRequest.validate(gameState))
-    assertEquals(failure, hotelPurchaseRequest.validate(gameState))
+    assertEquals(failure, housePurchaseRequest.validate())
+    assertEquals(failure, hotelPurchaseRequest.validate())
   }
 
   @Test
@@ -91,7 +91,7 @@ internal class EstatePurchaseRequestTest {
     every { tile.houseCount() } returns requiredHousesForHotel - 1
     assertEquals(
       ValidationResult.Failure(EstatePurchaseRequest.notEnoughHouses),
-      hotelPurchaseRequest.validate(gameState)
+      hotelPurchaseRequest.validate()
     )
   }
 }
