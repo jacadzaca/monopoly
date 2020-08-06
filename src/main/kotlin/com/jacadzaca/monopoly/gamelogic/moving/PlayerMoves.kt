@@ -14,6 +14,5 @@ data class PlayerMoves(
   override fun transform(): GameState {
     return target
       .update(playersId, player.copy(position = (player.position + moveBy) % target.boardSize))
-      .addTransformation(this)
   }
 }

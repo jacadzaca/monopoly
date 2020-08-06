@@ -47,10 +47,4 @@ internal class PlayerMovesTest {
     val actual = transformation.apply().players[playersId]!!.position
     assertEquals(transformation.moveBy - 1, actual)
   }
-
-  @Test
-  fun `apply adds PlayerMovement transformation`() {
-    transformation.apply()
-    verify { gameState.addTransformation(transformation) }
-  }
 }
