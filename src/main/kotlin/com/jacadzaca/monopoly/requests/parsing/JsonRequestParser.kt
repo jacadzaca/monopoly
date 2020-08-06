@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.parsing
+package com.jacadzaca.monopoly.requests.parsing
 
 import com.jacadzaca.monopoly.gamelogic.estatepurchase.EstatePurchaseRequest
 import com.jacadzaca.monopoly.gamelogic.moving.PlayerMovementRequest
