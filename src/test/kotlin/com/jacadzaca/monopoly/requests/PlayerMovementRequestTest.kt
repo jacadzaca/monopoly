@@ -1,6 +1,7 @@
-package com.jacadzaca.monopoly.gamelogic.moving
+package com.jacadzaca.monopoly.requests
 
 import com.jacadzaca.monopoly.gamelogic.*
+import com.jacadzaca.monopoly.gamelogic.moving.PlayerMoves
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -12,7 +13,8 @@ internal class PlayerMovementRequestTest {
   private val playersId = UUID.randomUUID()
   private val gameState = mockk<GameState>()
   private val actionCreator = mockk<(Player, UUID, GameState) -> PlayerMoves>()
-  private val request = PlayerMovementRequest(playersId, actionCreator, gameState)
+  private val request =
+    PlayerMovementRequest(playersId, actionCreator, gameState)
 
   @Test
   fun `validate returns verifiedEvent if the player with given id exists`() {

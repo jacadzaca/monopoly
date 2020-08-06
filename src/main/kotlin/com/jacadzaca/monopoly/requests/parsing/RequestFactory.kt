@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly.requests.parsing
 
-import com.jacadzaca.monopoly.gamelogic.Request
+import com.jacadzaca.monopoly.requests.Request
 import java.util.*
 import kotlin.reflect.KClass
 

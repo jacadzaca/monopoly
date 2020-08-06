@@ -1,6 +1,7 @@
-package com.jacadzaca.monopoly.gamelogic.estatepurchase
+package com.jacadzaca.monopoly.requests
 
 import com.jacadzaca.monopoly.gamelogic.*
+import com.jacadzaca.monopoly.gamelogic.estatepurchase.EstatePurchase
 import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -19,9 +20,23 @@ internal class EstatePurchaseRequestTest {
   private val priceOf = mockk<(EstateType) -> BigInteger>()
   private val actionCreator = mockk<(Player, UUID, Tile, Int, EstateType, GameState) -> EstatePurchase>()
   private val housePurchaseRequest =
-    EstatePurchaseRequest(buyersId, EstateType.HOUSE, priceOf, requiredHousesForHotel, actionCreator, gameState)
+    EstatePurchaseRequest(
+      buyersId,
+      EstateType.HOUSE,
+      priceOf,
+      requiredHousesForHotel,
+      actionCreator,
+      gameState
+    )
   private val hotelPurchaseRequest =
-    EstatePurchaseRequest(buyersId, EstateType.HOTEL, priceOf, requiredHousesForHotel, actionCreator, gameState)
+    EstatePurchaseRequest(
+      buyersId,
+      EstateType.HOTEL,
+      priceOf,
+      requiredHousesForHotel,
+      actionCreator,
+      gameState
+    )
 
   @BeforeEach
   fun setUp() {

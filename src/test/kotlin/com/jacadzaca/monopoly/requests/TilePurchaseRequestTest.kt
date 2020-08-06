@@ -1,6 +1,7 @@
-package com.jacadzaca.monopoly.gamelogic.tilepurchase
+package com.jacadzaca.monopoly.requests
 
 import com.jacadzaca.monopoly.gamelogic.*
+import com.jacadzaca.monopoly.gamelogic.tilepurchase.TilePurchase
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -31,7 +32,15 @@ internal class TilePurchaseRequestTest {
   fun `validate returns Success if the buyer has sufficient funds and the tile has no owner`() {
     every { tile.ownersId } returns null
     every { tile.price } returnsMany listOf(buyer.balance, buyer.balance - BigInteger.ONE)
-    val success = ValidationResult.Success(TilePurchase(buyer, buyersId, tile, buyer.position, gameState))
+    val success = ValidationResult.Success(
+      TilePurchase(
+        buyer,
+        buyersId,
+        tile,
+        buyer.position,
+        gameState
+      )
+    )
     assertEquals(success, request.validate())
     assertEquals(success, request.validate())
   }

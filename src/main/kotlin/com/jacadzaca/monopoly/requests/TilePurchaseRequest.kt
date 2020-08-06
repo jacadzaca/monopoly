@@ -1,10 +1,10 @@
-package com.jacadzaca.monopoly.gamelogic.tilepurchase
+package com.jacadzaca.monopoly.requests
 
 import com.jacadzaca.monopoly.gamelogic.GameState
-import com.jacadzaca.monopoly.gamelogic.Request
-import com.jacadzaca.monopoly.gamelogic.Request.Companion.buyerHasInsufficientBalance
-import com.jacadzaca.monopoly.gamelogic.Request.Companion.invalidPlayerId
+import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBalance
+import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
 import com.jacadzaca.monopoly.gamelogic.ValidationResult
+import com.jacadzaca.monopoly.gamelogic.tilepurchase.TilePurchase
 import java.util.*
 
 class TilePurchaseRequest(
@@ -21,7 +21,15 @@ class TilePurchaseRequest(
     return when {
       tile.ownersId != null -> ValidationResult.Failure(tileAlreadyHasOwner)
       tile.price > buyer.balance -> ValidationResult.Failure(buyerHasInsufficientBalance)
-      else -> ValidationResult.Success(TilePurchase(buyer, buyersId, tile, buyer.position, context))
+      else -> ValidationResult.Success(
+          TilePurchase(
+              buyer,
+              buyersId,
+              tile,
+              buyer.position,
+              context
+          )
+      )
     }
   }
 }

@@ -1,8 +1,8 @@
 package com.jacadzaca.monopoly.requests.parsing
 
-import com.jacadzaca.monopoly.gamelogic.estatepurchase.EstatePurchaseRequest
-import com.jacadzaca.monopoly.gamelogic.moving.PlayerMovementRequest
-import com.jacadzaca.monopoly.gamelogic.tilepurchase.TilePurchaseRequest
+import com.jacadzaca.monopoly.requests.EstatePurchaseRequest
+import com.jacadzaca.monopoly.requests.PlayerMovementRequest
+import com.jacadzaca.monopoly.requests.TilePurchaseRequest
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.json.get
 import java.util.*

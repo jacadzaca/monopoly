@@ -1,9 +1,9 @@
 package com.jacadzaca.monopoly.requests.parsing
 
-import com.jacadzaca.monopoly.gamelogic.Request
-import com.jacadzaca.monopoly.gamelogic.estatepurchase.EstatePurchaseRequest
-import com.jacadzaca.monopoly.gamelogic.moving.PlayerMovementRequest
-import com.jacadzaca.monopoly.gamelogic.tilepurchase.TilePurchaseRequest
+import com.jacadzaca.monopoly.requests.Request
+import com.jacadzaca.monopoly.requests.EstatePurchaseRequest
+import com.jacadzaca.monopoly.requests.PlayerMovementRequest
+import com.jacadzaca.monopoly.requests.TilePurchaseRequest
 import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk

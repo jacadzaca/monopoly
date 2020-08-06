@@ -1,4 +1,6 @@
-package com.jacadzaca.monopoly.gamelogic
+package com.jacadzaca.monopoly.requests
+
+import com.jacadzaca.monopoly.gamelogic.ValidationResult
 
 interface Request {
   companion object {
