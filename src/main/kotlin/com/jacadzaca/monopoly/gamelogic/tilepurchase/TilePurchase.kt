@@ -13,7 +13,7 @@ data class TilePurchase(
   val tileIndex: Int,
   private val target: GameState
 ) : Transformation() {
-  override fun apply(): GameState {
+  override fun transform(): GameState {
     return target
       .update(tileIndex, tile.changeOwner(buyersId))
       .update(buyersId, buyer.detractFunds(tile.price))

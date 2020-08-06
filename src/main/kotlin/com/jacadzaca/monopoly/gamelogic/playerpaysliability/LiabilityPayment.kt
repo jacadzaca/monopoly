@@ -11,7 +11,7 @@ data class LiabilityPayment(
   private val liability: Liability,
   private val target: GameState
 ) : Transformation() {
-  override fun apply(): GameState {
+  override fun transform(): GameState {
     return if (liability.amount > payer.balance) {
       target
         .update(payerId, payer.detractFunds(liability.amount))

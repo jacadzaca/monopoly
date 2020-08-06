@@ -34,6 +34,7 @@ internal class EstatePurchaseTest {
     every { create(any()) } returns mockk()
     every { gameState.update(buyersId, any()) } returns gameState
     every { gameState.update(tileIndex, any()) } returns gameState
+    every { gameState.addTransformation(any()) } returns gameState
   }
 
   @ParameterizedTest

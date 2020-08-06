@@ -35,6 +35,7 @@ internal class LiabilityPaymentTest {
       every { gameState.players[liability.recevierId] } returns recevierSlot.captured
       gameState
     }
+    every { gameState.addTransformation(any()) } returns gameState
   }
 
   @Test

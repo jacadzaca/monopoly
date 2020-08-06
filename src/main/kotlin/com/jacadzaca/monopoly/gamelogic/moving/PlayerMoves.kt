@@ -11,7 +11,7 @@ data class PlayerMoves(
   val moveBy: Int,
   private val target: GameState
 ) : Transformation() {
-  override fun apply(): GameState {
+  override fun transform(): GameState {
     return target
       .update(playersId, player.copy(position = (player.position + moveBy) % target.boardSize))
       .addTransformation(this)
