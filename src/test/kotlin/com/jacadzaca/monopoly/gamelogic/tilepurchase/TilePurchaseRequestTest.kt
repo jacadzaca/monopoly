@@ -31,7 +31,7 @@ internal class TilePurchaseRequestTest {
   fun `validate returns Success if the buyer has sufficient funds and the tile has no owner`() {
     every { tile.ownersId } returns null
     every { tile.price } returnsMany listOf(buyer.balance, buyer.balance - BigInteger.ONE)
-    val success = ValidationResult.Success(TilePurchase(buyer, buyersId, tile, buyer.position))
+    val success = ValidationResult.Success(TilePurchase(buyer, buyersId, tile, buyer.position, gameState))
     assertEquals(success, request.validate(gameState))
     assertEquals(success, request.validate(gameState))
   }

@@ -11,14 +11,14 @@ internal class PlayerMovementRequestTest {
   private val player = mockk<Player>()
   private val playersId = UUID.randomUUID()
   private val gameState = mockk<GameState>()
-  private val actionCreator = mockk<(Player, UUID) -> PlayerMoves>()
+  private val actionCreator = mockk<(Player, UUID, GameState) -> PlayerMoves>()
   private val request = PlayerMovementRequest(playersId, actionCreator)
 
   @Test
   fun `validate returns verifiedEvent if the player with given id exists`() {
     every { gameState.players[playersId] } returns player
     val createdAction = mockk<PlayerMoves>(name = "created PlayerMoves")
-    every { actionCreator(player, playersId) } returns createdAction
+    every { actionCreator(player, playersId, gameState) } returns createdAction
     assertEquals(
       ValidationResult.Success(createdAction),
       request.validate(gameState)

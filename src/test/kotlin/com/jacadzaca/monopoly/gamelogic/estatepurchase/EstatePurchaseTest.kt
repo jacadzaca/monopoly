@@ -43,7 +43,7 @@ internal class EstatePurchaseTest {
     val tileWithAddedHouse = mockk<Tile>(name = "tile with added estate")
     every { tile.addEstate(estate) } returns tileWithAddedHouse
     every { create(estateType) } returns estate
-    purchaseOfType(estateType).apply(gameState)
+    purchaseOfType(estateType).apply()
     verify { gameState.update(tileIndex, tileWithAddedHouse) }
   }
 
@@ -54,10 +54,10 @@ internal class EstatePurchaseTest {
     val playerAfterPurchase = mockk<Player>(name = "playerAfterPurchase")
     every { priceOf(estateType) } returns estatePrice
     every { buyer.detractFunds(estatePrice) } returns playerAfterPurchase
-    purchaseOfType(estateType).apply(gameState)
+    purchaseOfType(estateType).apply()
     verify { gameState.update(buyersId, playerAfterPurchase) }
   }
 
   private fun purchaseOfType(estateType: EstateType): EstatePurchase =
-    EstatePurchase(buyer, buyersId, tile, tileIndex, estateType, create, priceOf)
+    EstatePurchase(buyer, buyersId, tile, tileIndex, estateType, create, priceOf, gameState)
 }
