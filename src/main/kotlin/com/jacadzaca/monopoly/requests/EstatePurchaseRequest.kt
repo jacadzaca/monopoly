@@ -13,7 +13,7 @@ data class EstatePurchaseRequest(
   private val estateType: EstateType,
   private val priceOf: (EstateType) -> BigInteger,
   private val requiredHousesForHotel: Int,
-  private val createAction: (Player, UUID, Tile, Int, EstateType, GameState) -> EstatePurchase,
+  private val createPurchase: (Player, UUID, Tile, Int, EstateType, GameState) -> EstatePurchase,
   private val context: GameState
 ) : Request {
   internal companion object {
@@ -30,7 +30,7 @@ data class EstatePurchaseRequest(
       estateType == EstateType.HOTEL && tile.houseCount() < requiredHousesForHotel -> ValidationResult.Failure(
           notEnoughHouses
       )
-      else -> ValidationResult.Success(createAction(buyer, buyersId, tile, buyer.position, estateType, context))
+      else -> ValidationResult.Success(createPurchase(buyer, buyersId, tile, buyer.position, estateType, context))
     }
   }
 }
