@@ -15,5 +15,3 @@ fun createPlayer(startPosition: Int = 0): Player =
   )
 fun createHouse(rent: BigInteger = 100.toBigInteger()) = Estate(rent, EstateType.HOUSE)
 fun createHotel(rent: BigInteger = 120.toBigInteger()) = Estate(rent, EstateType.HOTEL)
-fun createTile(owner: UUID? = UUID.randomUUID()): Tile =
-    Tile(persistentListOf(), 0.toBigInteger(), owner)
