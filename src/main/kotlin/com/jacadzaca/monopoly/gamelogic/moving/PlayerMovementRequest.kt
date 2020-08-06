@@ -6,10 +6,10 @@ import java.util.*
 
 data class PlayerMovementRequest(
   private val playersId: UUID,
-  private val actionCreator: (Player, UUID) -> PlayerMoves
+  private val actionCreator: (Player, UUID, GameState) -> PlayerMoves
 ) : Request {
   override fun validate(context: GameState): ValidationResult {
     val player = context.players[playersId] ?: return ValidationResult.Failure(invalidPlayerId)
-    return ValidationResult.Success(actionCreator(player, playersId))
+    return ValidationResult.Success(actionCreator(player, playersId, context))
   }
 }

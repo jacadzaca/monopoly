@@ -17,7 +17,7 @@ internal class EstatePurchaseRequestTest {
   private val gameState = mockk<GameState>()
   private val requiredHousesForHotel = Random.nextInt()
   private val priceOf = mockk<(EstateType) -> BigInteger>()
-  private val actionCreator = mockk<(Player, UUID, Tile, Int, EstateType) -> EstatePurchase>()
+  private val actionCreator = mockk<(Player, UUID, Tile, Int, EstateType, GameState) -> EstatePurchase>()
   private val housePurchaseRequest =
     EstatePurchaseRequest(buyersId, EstateType.HOUSE, priceOf, requiredHousesForHotel, actionCreator)
   private val hotelPurchaseRequest =
@@ -41,7 +41,7 @@ internal class EstatePurchaseRequestTest {
     every { tile.ownersId } returns buyersId
     val createdEstatePurchase = mockk<EstatePurchase>(name = "estate purchase")
     val buyersPosition = buyer.position
-    every { actionCreator(buyer, buyersId, tile, buyersPosition, EstateType.HOUSE) } returns createdEstatePurchase
+    every { actionCreator(buyer, buyersId, tile, buyersPosition, EstateType.HOUSE, gameState) } returns createdEstatePurchase
     every { priceOf(EstateType.HOUSE) } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
@@ -57,7 +57,7 @@ internal class EstatePurchaseRequestTest {
     every { tile.ownersId } returns buyersId
     val createdEstatePurchase = mockk<EstatePurchase>(name = "estate purchase")
     val buyersPosition = buyer.position
-    every { actionCreator(buyer, buyersId, tile, buyersPosition, EstateType.HOTEL) } returns createdEstatePurchase
+    every { actionCreator(buyer, buyersId, tile, buyersPosition, EstateType.HOTEL, gameState) } returns createdEstatePurchase
     every { priceOf(EstateType.HOTEL) } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE

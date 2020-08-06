@@ -20,7 +20,7 @@ class TilePurchaseRequest(
     return when {
       tile.ownersId != null -> ValidationResult.Failure(tileAlreadyHasOwner)
       tile.price > buyer.balance -> ValidationResult.Failure(buyerHasInsufficientBalance)
-      else -> ValidationResult.Success(TilePurchase(buyer, buyersId, tile, buyer.position))
+      else -> ValidationResult.Success(TilePurchase(buyer, buyersId, tile, buyer.position, context))
     }
   }
 }

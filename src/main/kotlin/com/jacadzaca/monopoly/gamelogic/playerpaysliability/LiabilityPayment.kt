@@ -8,9 +8,10 @@ import java.util.*
 data class LiabilityPayment(
   private val payer: Player,
   private val payerId: UUID,
-  private val liability: Liability
-) : Transformation() {
-  override fun apply(target: GameState): GameState {
+  private val liability: Liability,
+  private val target: GameState
+) : Transformation(target) {
+  override fun apply(): GameState {
     return if (liability.amount > payer.balance) {
       target
         .update(payerId, payer.detractFunds(liability.amount))
