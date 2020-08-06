@@ -8,10 +8,9 @@ import java.util.*
 data class PlayerMoves(
   private val player: Player,
   private val playersId: UUID,
-  val moveBy: Int,
-  private val target: GameState
-) : Transformation(target) {
-  override fun apply(): GameState {
+  val moveBy: Int
+) : Transformation() {
+  override fun apply(target: GameState): GameState {
     return target
       .update(playersId, player.copy(position = (player.position + moveBy) % target.boardSize))
       .addTransformation(this)

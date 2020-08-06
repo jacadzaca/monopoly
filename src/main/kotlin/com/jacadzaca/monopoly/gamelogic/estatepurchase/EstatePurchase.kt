@@ -17,10 +17,9 @@ data class EstatePurchase(
   private val tileIndex: Int,
   private val estateType: EstateType,
   private val create: (EstateType) -> Estate,
-  private val priceOf: (EstateType) -> BigInteger,
-  private val target: GameState
-) : Transformation(target) {
-  override fun apply(): GameState {
+  private val priceOf: (EstateType) -> BigInteger
+) : Transformation() {
+  override fun apply(target: GameState): GameState {
     return target
       .update(tileIndex, tile.addEstate(create(estateType)))
       .update(buyersId, buyer.detractFunds(priceOf(estateType)))
