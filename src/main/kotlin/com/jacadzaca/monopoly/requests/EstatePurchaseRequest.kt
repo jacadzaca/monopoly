@@ -7,13 +7,11 @@ import com.jacadzaca.monopoly.gamelogic.estates.Estate
 import com.jacadzaca.monopoly.gamelogic.transformations.EstatePurchase
 import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBalance
 import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
-import java.math.BigInteger
 import java.util.*
 
 data class EstatePurchaseRequest(
   private val buyersId: UUID,
   private val estate: Estate,
-  private val priceOf: (Estate) -> BigInteger,
   private val requiredHousesForHotel: Int,
   private val createPurchase: (Player, UUID, Tile, Int, Estate, GameState) -> EstatePurchase,
   private val context: GameState
@@ -28,7 +26,7 @@ data class EstatePurchaseRequest(
     val tile = context.tiles[buyer.position]
     return when {
       tile.ownersId != buyersId -> ValidationResult.Failure(tileNotOwnedByBuyer)
-      priceOf(estate) > buyer.balance -> ValidationResult.Failure(buyerHasInsufficientBalance)
+      estate.price > buyer.balance -> ValidationResult.Failure(buyerHasInsufficientBalance)
       estate is Estate.Hotel && tile.houseCount() < requiredHousesForHotel -> ValidationResult.Failure(
           notEnoughHouses
       )

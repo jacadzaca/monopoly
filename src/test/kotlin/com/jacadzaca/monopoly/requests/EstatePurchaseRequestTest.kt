@@ -22,14 +22,12 @@ internal class EstatePurchaseRequestTest {
   private val buyersId = UUID.randomUUID()
   private val gameState = mockk<GameState>()
   private val requiredHousesForHotel = Random.nextInt()
-  private val priceOf = mockk<(Estate) -> BigInteger>()
   private val actionCreator = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> EstatePurchase>()
   private val house = mockk<Estate.House>(name = "house")
   private val housePurchaseRequest =
     EstatePurchaseRequest(
       buyersId,
       house,
-      priceOf,
       requiredHousesForHotel,
       actionCreator,
       gameState
@@ -38,7 +36,6 @@ internal class EstatePurchaseRequestTest {
   private val hotelPurchaseRequest = EstatePurchaseRequest(
       buyersId,
       hotel,
-      priceOf,
       requiredHousesForHotel,
       actionCreator,
       gameState
@@ -54,7 +51,8 @@ internal class EstatePurchaseRequestTest {
     every { gameState.tiles[buyersPosition] } returns tile
     every { tile.houseCount() } returns requiredHousesForHotel
     every { buyer.balance } returns Random.nextInt().toBigInteger()
-    every { priceOf(any()) } returns buyer.balance - BigInteger.ONE
+    every { house.price } returns buyer.balance - BigInteger.ONE
+    every { hotel.price } returns buyer.balance - BigInteger.ONE
   }
 
   @Test
@@ -63,14 +61,14 @@ internal class EstatePurchaseRequestTest {
     val createdEstatePurchase = mockk<EstatePurchase>(name = "estate purchase")
     val buyersPosition = buyer.position
     every { actionCreator(buyer, buyersId, tile, buyersPosition, house, gameState) } returns createdEstatePurchase
-    every { priceOf(house) } returnsMany listOf(
+    every { house.price } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
     )
     val success = ValidationResult.Success(createdEstatePurchase)
     assertEquals(success, housePurchaseRequest.validate())
     assertEquals(success, housePurchaseRequest.validate())
-    verify { priceOf(house) }
+    verify { house.price }
   }
 
   @Test
@@ -79,7 +77,7 @@ internal class EstatePurchaseRequestTest {
     val createdEstatePurchase = mockk<EstatePurchase>(name = "estate purchase")
     val buyersPosition = buyer.position
     every { actionCreator(buyer, buyersId, tile, buyersPosition, hotel, gameState) } returns createdEstatePurchase
-    every { priceOf(hotel) } returnsMany listOf(
+    every { hotel.price } returnsMany listOf(
       buyer.balance,
       buyer.balance - BigInteger.ONE
     )
@@ -87,7 +85,7 @@ internal class EstatePurchaseRequestTest {
     val success = ValidationResult.Success(createdEstatePurchase)
     assertEquals(success, hotelPurchaseRequest.validate())
     assertEquals(success, hotelPurchaseRequest.validate())
-    verify { priceOf(hotel) }
+    verify { hotel.price }
   }
 
   @Test
@@ -102,7 +100,8 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Failure if the buyer has insufficient funds`() {
     val failure = ValidationResult.Failure(Request.buyerHasInsufficientBalance)
-    every { priceOf(any()) } returns buyer.balance + BigInteger.ONE
+    every { house.price } returns buyer.balance + BigInteger.ONE
+    every { hotel.price } returns buyer.balance + BigInteger.ONE
     assertEquals(failure, housePurchaseRequest.validate())
     assertEquals(failure, hotelPurchaseRequest.validate())
   }
