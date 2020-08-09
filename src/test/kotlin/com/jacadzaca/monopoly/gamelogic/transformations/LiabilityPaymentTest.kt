@@ -1,6 +1,5 @@
 package com.jacadzaca.monopoly.gamelogic.transformations
 
-import com.jacadzaca.monopoly.createPlayer
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Liability
 import com.jacadzaca.monopoly.gamelogic.Player
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigInteger
 import java.util.*
+import kotlin.random.Random
 
 internal class LiabilityPaymentTest {
   private val payer = createPlayer()
@@ -72,4 +72,6 @@ internal class LiabilityPaymentTest {
       actual.players[liability.recevierId]!!.balance
     )
   }
+
+  private fun createPlayer(): Player = Player(Random.nextInt(), Random.nextInt().toBigInteger())
 }
