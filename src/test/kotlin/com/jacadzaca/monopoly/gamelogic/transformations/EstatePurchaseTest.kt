@@ -18,14 +18,13 @@ internal class EstatePurchaseTest {
   private val gameState = mockk<GameState>()
   private val tile = mockk<Tile>(relaxed = true)
   private val buyer = mockk<Player>(relaxed = true)
-  private val priceOf = mockk<(Estate) -> BigInteger>()
   private val estate = mockk<Estate>(name = "estate")
-  private val purchase = EstatePurchase(buyer, buyersId, tile, tileIndex, estate, priceOf, gameState)
+  private val purchase = EstatePurchase(buyer, buyersId, tile, tileIndex, estate, gameState)
 
   @BeforeEach
   fun setUp() {
     clearAllMocks()
-    every { priceOf(any()) } returns mockk()
+    every { estate.price } returns mockk()
     every { gameState.update(buyersId, any()) } returns gameState
     every { gameState.update(tileIndex, any()) } returns gameState
     every { gameState.addTransformation(any()) } returns gameState
@@ -43,7 +42,7 @@ internal class EstatePurchaseTest {
   fun `transform detracts from the buyer's balance`() {
     val estatePrice = Random.nextInt().toBigInteger()
     val playerAfterPurchase = mockk<Player>(name = "playerAfterPurchase")
-    every { priceOf(estate) } returns estatePrice
+    every { estate.price } returns estatePrice
     every { buyer.detractFunds(estatePrice) } returns playerAfterPurchase
     purchase.transform()
     verify { gameState.update(buyersId, playerAfterPurchase) }
