@@ -40,8 +40,8 @@ internal class LiabilityPaymentTest {
   }
 
   @Test
-  fun `transform detracts from the payer's balance`() {
-    val actual = transformation.transform()
+  fun `apply detracts from the payer's balance`() {
+    val actual = transformation.apply()
     assertEquals(
       payer.balance - liability.amount,
       actual.players[payersId]!!.balance
@@ -49,8 +49,8 @@ internal class LiabilityPaymentTest {
   }
 
   @Test
-  fun `transform adds the amount to the receiver's balance`() {
-    val actual = transformation.transform()
+  fun `apply adds the amount to the receiver's balance`() {
+    val actual = transformation.apply()
     assertEquals(
       receiver.balance + liability.amount,
       actual.players[liability.recevierId]!!.balance
@@ -58,9 +58,9 @@ internal class LiabilityPaymentTest {
   }
 
   @Test
-  fun `transform only transfers what the payer has`() {
+  fun `apply only transfers what the payer has`() {
     every { liability.amount } returns payer.balance + BigInteger.ONE
-    val actual = transformation.transform()
+    val actual = transformation.apply()
     assertEquals(
       receiver.balance + payer.balance,
       actual.players[liability.recevierId]!!.balance

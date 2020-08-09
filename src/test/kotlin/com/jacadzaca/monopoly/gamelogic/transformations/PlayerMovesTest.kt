@@ -33,17 +33,17 @@ internal class PlayerMovesTest {
   }
 
   @Test
-  fun `transform adds moveBy to the player's position`() {
+  fun `apply adds moveBy to the player's position`() {
     every { player.position } returns gameState.boardSize - transformation.moveBy - 1
     val previousPosition = player.position
-    val actual = transformation.transform().players[playersId]!!.position
+    val actual = transformation.apply().players[playersId]!!.position
     assertEquals(previousPosition + transformation.moveBy, actual)
   }
 
   @Test
-  fun `transform wraps the position calculation`() {
+  fun `apply wraps the position calculation`() {
     every { player.position } returns gameState.boardSize - 1
-    val actual = transformation.transform().players[playersId]!!.position
+    val actual = transformation.apply().players[playersId]!!.position
     assertEquals(transformation.moveBy - 1, actual)
   }
 }
