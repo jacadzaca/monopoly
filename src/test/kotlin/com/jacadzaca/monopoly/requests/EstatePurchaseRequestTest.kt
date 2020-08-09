@@ -24,7 +24,7 @@ internal class EstatePurchaseRequestTest {
   private val requiredHousesForHotel = Random.nextInt()
   private val priceOf = mockk<(Estate) -> BigInteger>()
   private val actionCreator = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> EstatePurchase>()
-  private val house = Estate.House(Random.nextInt().toBigInteger())
+  private val house = mockk<Estate.House>(name = "house")
   private val housePurchaseRequest =
     EstatePurchaseRequest(
       buyersId,
@@ -34,7 +34,7 @@ internal class EstatePurchaseRequestTest {
       actionCreator,
       gameState
     )
-  private val hotel = Estate.Hotel(Random.nextInt().toBigInteger())
+  private val hotel = mockk<Estate.Hotel>(name = "hotel")
   private val hotelPurchaseRequest = EstatePurchaseRequest(
       buyersId,
       hotel,
