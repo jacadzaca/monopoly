@@ -19,13 +19,7 @@ internal class LiabilityPaymentTest {
   private val liability = mockk<Liability>()
   private val gameState = mockk<GameState>()
   private val payersId = UUID.randomUUID()
-  private val transformation =
-    LiabilityPayment(
-      payer,
-      payersId,
-      liability,
-      gameState
-    )
+  private val transformation = LiabilityPayment(payer, payersId, liability, gameState)
 
   @BeforeEach
   fun setUp() {

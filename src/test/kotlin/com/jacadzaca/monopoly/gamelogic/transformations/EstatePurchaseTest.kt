@@ -57,15 +57,7 @@ internal class EstatePurchaseTest {
     verify { gameState.update(buyersId, playerAfterPurchase) }
   }
 
-  private fun purchaseOfType(estateType: EstateType): EstatePurchase =
-    EstatePurchase(
-      buyer,
-      buyersId,
-      tile,
-      tileIndex,
-      estateType,
-      create,
-      priceOf,
-      gameState
-    )
+  private fun purchaseOfType(estateType: EstateType): EstatePurchase {
+    return EstatePurchase(buyer, buyersId, tile, tileIndex, estateType, create, priceOf, gameState)
+  }
 }

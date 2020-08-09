@@ -28,8 +28,7 @@ internal class EstatePurchaseRequestTest {
       actionCreator,
       gameState
     )
-  private val hotelPurchaseRequest =
-    EstatePurchaseRequest(
+  private val hotelPurchaseRequest = EstatePurchaseRequest(
       buyersId,
       EstateType.HOTEL,
       priceOf,

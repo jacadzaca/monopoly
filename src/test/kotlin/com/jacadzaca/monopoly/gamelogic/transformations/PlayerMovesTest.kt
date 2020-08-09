@@ -17,13 +17,7 @@ internal class PlayerMovesTest {
   private val playersId = UUID.randomUUID()
   private val boardSize = Random.nextInt(2, 10_000)
   private val moveBy = Random.nextInt(1, boardSize - 1)
-  private val transformation =
-    PlayerMoves(
-      player,
-      playersId,
-      moveBy,
-      gameState
-    )
+  private val transformation = PlayerMoves(player, playersId, moveBy, gameState)
 
   @BeforeEach
   fun setUp() {
