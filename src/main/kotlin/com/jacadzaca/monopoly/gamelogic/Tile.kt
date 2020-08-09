@@ -1,6 +1,5 @@
 package com.jacadzaca.monopoly.gamelogic
 
-import com.jacadzaca.monopoly.gamelogic.estates.Estate
 import kotlinx.collections.immutable.PersistentList
 import java.math.BigInteger
 import java.util.*

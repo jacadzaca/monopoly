@@ -1,6 +1,5 @@
 package com.jacadzaca.monopoly.gamelogic
 
-import com.jacadzaca.monopoly.gamelogic.estates.Estate
 import io.mockk.*
 import kotlinx.collections.immutable.persistentListOf
 import org.junit.jupiter.api.Assertions.assertEquals

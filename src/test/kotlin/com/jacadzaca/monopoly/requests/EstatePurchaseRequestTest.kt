@@ -3,7 +3,7 @@ package com.jacadzaca.monopoly.requests
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
-import com.jacadzaca.monopoly.gamelogic.estates.Estate
+import com.jacadzaca.monopoly.gamelogic.Estate
 import com.jacadzaca.monopoly.gamelogic.transformations.EstatePurchase
 import io.mockk.clearAllMocks
 import io.mockk.every

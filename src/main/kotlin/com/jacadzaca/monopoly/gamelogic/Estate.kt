@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.gamelogic.estates
+package com.jacadzaca.monopoly.gamelogic
 
 import java.math.BigInteger
 
