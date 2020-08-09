@@ -1,7 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.gamelogic.estates.Estate
-import com.jacadzaca.monopoly.gamelogic.estates.EstateType
 import kotlinx.collections.immutable.PersistentList
 import java.math.BigInteger
 import java.util.*
@@ -13,9 +12,9 @@ data class Tile(
   val ownersId: UUID?
 ) {
   fun addEstate(newEstate: Estate): Tile {
-    return when (newEstate.estateType) {
-      EstateType.HOUSE -> copy(houses = houses.add(newEstate))
-      EstateType.HOTEL -> copy(hotels = hotels.add(newEstate))
+    return when (newEstate) {
+      is Estate.House -> copy(houses = houses.add(newEstate))
+      is Estate.Hotel -> copy(hotels = hotels.add(newEstate))
     }
   }
 
