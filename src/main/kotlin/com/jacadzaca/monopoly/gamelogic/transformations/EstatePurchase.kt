@@ -6,7 +6,7 @@ import com.jacadzaca.monopoly.gamelogic.Tile
 import com.jacadzaca.monopoly.gamelogic.Estate
 import java.util.*
 
-data class EstatePurchase(
+class EstatePurchase(
   private val buyer: Player,
   private val buyersId: UUID,
   private val tile: Tile,
