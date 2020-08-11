@@ -9,7 +9,7 @@ import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBal
 import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
 import java.util.*
 
-data class EstatePurchaseRequest(
+class EstatePurchaseRequest(
   private val buyersId: UUID,
   private val estate: Estate,
   private val requiredHousesForHotel: Int,
