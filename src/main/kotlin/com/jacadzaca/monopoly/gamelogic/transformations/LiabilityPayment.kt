@@ -5,7 +5,7 @@ import com.jacadzaca.monopoly.gamelogic.Liability
 import com.jacadzaca.monopoly.gamelogic.Player
 import java.util.*
 
-data class LiabilityPayment(
+class LiabilityPayment(
   private val payer: Player,
   private val payerId: UUID,
   private val liability: Liability,
