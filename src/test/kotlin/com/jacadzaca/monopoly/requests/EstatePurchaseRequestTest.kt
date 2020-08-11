@@ -5,6 +5,7 @@ import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
 import com.jacadzaca.monopoly.gamelogic.Estate
 import com.jacadzaca.monopoly.gamelogic.transformations.EstatePurchase
+import com.jacadzaca.monopoly.requests.EstatePurchaseRequest.Companion.notEnoughHouses
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -25,21 +26,10 @@ internal class EstatePurchaseRequestTest {
   private val actionCreator = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> EstatePurchase>()
   private val house = mockk<Estate.House>(name = "house")
   private val housePurchaseRequest =
-    EstatePurchaseRequest(
-      buyersId,
-      house,
-      requiredHousesForHotel,
-      actionCreator,
-      gameState
-    )
+    EstatePurchaseRequest(buyersId, house, requiredHousesForHotel, actionCreator, gameState)
   private val hotel = mockk<Estate.Hotel>(name = "hotel")
-  private val hotelPurchaseRequest = EstatePurchaseRequest(
-      buyersId,
-      hotel,
-      requiredHousesForHotel,
-      actionCreator,
-      gameState
-    )
+  private val hotelPurchaseRequest =
+    EstatePurchaseRequest(buyersId, hotel, requiredHousesForHotel, actionCreator, gameState)
 
   @BeforeEach
   fun setUp() {
@@ -58,13 +48,10 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Success if the buyer is the tile's owner, has sufficient funds and wants a house`() {
     every { tile.ownersId } returns buyersId
-    val createdEstatePurchase = mockk<EstatePurchase>(name = "estate purchase")
+    val createdEstatePurchase = mockk<EstatePurchase>()
     val buyersPosition = buyer.position
     every { actionCreator(buyer, buyersId, tile, buyersPosition, house, gameState) } returns createdEstatePurchase
-    every { house.price } returnsMany listOf(
-      buyer.balance,
-      buyer.balance - BigInteger.ONE
-    )
+    every { house.price } returnsMany listOf(buyer.balance, buyer.balance - BigInteger.ONE)
     val success = ValidationResult.Success(createdEstatePurchase)
     assertEquals(success, housePurchaseRequest.validate())
     assertEquals(success, housePurchaseRequest.validate())
@@ -74,13 +61,10 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Success if the buyer is the tile's owner, has sufficient funds, the tile has sufficient number of houses and the buyer wants a hotel`() {
     every { tile.ownersId } returns buyersId
-    val createdEstatePurchase = mockk<EstatePurchase>(name = "estate purchase")
+    val createdEstatePurchase = mockk<EstatePurchase>()
     val buyersPosition = buyer.position
     every { actionCreator(buyer, buyersId, tile, buyersPosition, hotel, gameState) } returns createdEstatePurchase
-    every { hotel.price } returnsMany listOf(
-      buyer.balance,
-      buyer.balance - BigInteger.ONE
-    )
+    every { hotel.price } returnsMany listOf(buyer.balance, buyer.balance - BigInteger.ONE)
     every { tile.houseCount() } returnsMany listOf(requiredHousesForHotel, requiredHousesForHotel + 1)
     val success = ValidationResult.Success(createdEstatePurchase)
     assertEquals(success, hotelPurchaseRequest.validate())
@@ -109,9 +93,6 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Failure if the buyer wants a hotel and there are too few houses on tile`() {
     every { tile.houseCount() } returns requiredHousesForHotel - 1
-    assertEquals(
-      ValidationResult.Failure(EstatePurchaseRequest.notEnoughHouses),
-      hotelPurchaseRequest.validate()
-    )
+    assertEquals(ValidationResult.Failure(notEnoughHouses), hotelPurchaseRequest.validate())
   }
 }

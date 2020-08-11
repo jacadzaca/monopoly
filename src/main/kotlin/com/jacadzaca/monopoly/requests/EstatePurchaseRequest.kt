@@ -21,15 +21,12 @@ data class EstatePurchaseRequest(
     internal const val notEnoughHouses = "There are not enough houses on the tile where a hotel is to be placed "
   }
   override fun validate(): ValidationResult {
-    val buyer =
-      context.players[buyersId] ?: return ValidationResult.Failure(invalidPlayerId)
+    val buyer = context.players[buyersId] ?: return ValidationResult.Failure(invalidPlayerId)
     val tile = context.tiles[buyer.position]
     return when {
       tile.ownersId != buyersId -> ValidationResult.Failure(tileNotOwnedByBuyer)
       estate.price > buyer.balance -> ValidationResult.Failure(buyerHasInsufficientBalance)
-      estate is Estate.Hotel && tile.houseCount() < requiredHousesForHotel -> ValidationResult.Failure(
-          notEnoughHouses
-      )
+      estate is Estate.Hotel && tile.houseCount() < requiredHousesForHotel -> ValidationResult.Failure(notEnoughHouses)
       else -> ValidationResult.Success(createPurchase(buyer, buyersId, tile, buyer.position, estate, context))
     }
   }
