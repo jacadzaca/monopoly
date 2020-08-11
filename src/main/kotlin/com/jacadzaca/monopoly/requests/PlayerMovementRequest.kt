@@ -5,7 +5,7 @@ import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.transformations.PlayerMoves
 import java.util.*
 
-data class PlayerMovementRequest(
+class PlayerMovementRequest(
   private val playersId: UUID,
   private val actionCreator: (Player, UUID, GameState) -> PlayerMoves,
   private val context: GameState
