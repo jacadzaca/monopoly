@@ -2,6 +2,7 @@ package com.jacadzaca.monopoly.requests.parsing
 
 import com.jacadzaca.monopoly.requests.EstatePurchaseRequest
 import com.jacadzaca.monopoly.requests.PlayerMovementRequest
+import com.jacadzaca.monopoly.requests.RequestFactory
 import com.jacadzaca.monopoly.requests.TilePurchaseRequest
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.json.get

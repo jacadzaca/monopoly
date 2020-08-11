@@ -1,6 +1,5 @@
-package com.jacadzaca.monopoly.requests.parsing
+package com.jacadzaca.monopoly.requests
 
-import com.jacadzaca.monopoly.requests.Request
 import java.util.*
 import kotlin.reflect.KClass
 
