@@ -44,10 +44,10 @@ internal class PlayerMovesTest {
     every { gameState.tiles[newPosition] } returns tileOwnedByOther
     val liability = Liability(tileOwnedByOther.totalRent(), gameState.players[tileOwnedByOther.ownersId]!!, tileOwnedByOther.ownersId!!)
     val rentPayment = mockk<LiabilityPayment>()
-    every { rentPayment.transform() } returns gameState
+    every { rentPayment.apply() } returns gameState
     every { createPayment(player, playersId, liability, gameState) } returns rentPayment
     transformation.transform()
-    verify { rentPayment.transform() }
+    verify { rentPayment.apply() }
   }
 
 }

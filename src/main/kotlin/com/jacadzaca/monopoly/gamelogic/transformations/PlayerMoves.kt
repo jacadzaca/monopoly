@@ -19,7 +19,7 @@ data class PlayerMoves(
     val tile = target.tiles[newPosition]
     return if (tile.ownersId != null && tile.ownersId != playersId) {
       val liability = Liability(tile.totalRent(), target.players[tile.ownersId]!!, tile.ownersId)
-      createPayment(player, playersId, liability, target).transform()
+      createPayment(player, playersId, liability, target).apply()
     } else {
       target
     }.update(playersId, player.setPosition(newPosition))
