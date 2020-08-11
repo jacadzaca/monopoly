@@ -25,7 +25,7 @@ internal class PlayerMovesTest {
     every { gameState.boardSize } returns boardSize
     every { gameState.update(playersId, any()) } returns gameState
     every { gameState.players[playersId] } returns player
-    every { player.copy(position = capture(calculatedPositionSlot)) } answers {
+    every { player.setPosition(capture(calculatedPositionSlot)) } answers {
       every { player.position } returns calculatedPositionSlot.captured
       player
     }
