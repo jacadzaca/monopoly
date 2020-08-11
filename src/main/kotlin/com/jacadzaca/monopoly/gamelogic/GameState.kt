@@ -11,9 +11,6 @@ data class GameState(
   val tiles: PersistentList<Tile>,
   val transformations: PersistentList<Transformation> = persistentListOf()
 ) {
-   val boardSize: Int
-    get() = tiles.size
-
   /**
    * @return a copy of this, where the player under @playersId is @updatedPlayer
    */
