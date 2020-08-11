@@ -10,7 +10,7 @@ data class LiabilityPayment(
   private val payerId: UUID,
   private val liability: Liability,
   private val target: GameState
-) : Transformation {
+) : Transformation() {
   override fun transform(): GameState {
     return if (liability.amount > payer.balance) {
       target
