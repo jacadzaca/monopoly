@@ -4,5 +4,5 @@ import com.jacadzaca.monopoly.gamelogic.GameState
 
 abstract class Transformation {
   fun apply(): GameState = transform().addTransformation(this)
-  protected abstract fun transform(): GameState
+  internal abstract fun transform(): GameState
 }
