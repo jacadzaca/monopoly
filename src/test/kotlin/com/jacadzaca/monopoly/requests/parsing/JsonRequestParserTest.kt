@@ -2,7 +2,6 @@ package com.jacadzaca.monopoly.requests.parsing
 
 import com.jacadzaca.monopoly.requests.*
 import io.mockk.clearAllMocks
-import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.vertx.core.json.JsonObject
@@ -45,7 +44,7 @@ internal class JsonRequestParserTest {
   @Test
   fun `parse returns Failure if json dose not contain a game-state-id field`() {
     val json = JsonObject().put("player-id", playerId).put("type", randomType())
-    assertEquals(ParsingResult.Failure(JsonRequestParser.missingGameState), parser.parse(json))
+    assertEquals(ParsingResult.Failure(JsonRequestParser.missingGameStateId), parser.parse(json))
   }
 
   @Test
