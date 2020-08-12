@@ -1,7 +1,13 @@
 package com.jacadzaca.monopoly.requests
 
-import com.jacadzaca.monopoly.gamelogic.*
+import com.jacadzaca.monopoly.gamelogic.GameState
+import com.jacadzaca.monopoly.gamelogic.Player
+import com.jacadzaca.monopoly.gamelogic.Tile
 import com.jacadzaca.monopoly.gamelogic.transformations.TilePurchase
+import com.jacadzaca.monopoly.randomPositive
+import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBalance
+import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
+import com.jacadzaca.monopoly.requests.TilePurchaseRequest.Companion.tileAlreadyHasOwner
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -9,14 +15,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigInteger
 import java.util.*
-import kotlin.random.Random
 
 internal class TilePurchaseRequestTest {
   private val tile = mockk<Tile>()
   private val buyer = mockk<Player>()
   private val gameState = mockk<GameState>()
   private val buyersId = UUID.randomUUID()
-  private val buyersPosition = Random.nextInt()
+  private val buyersPosition = randomPositive()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, GameState) -> (TilePurchase)>()
   private val request = TilePurchaseRequest(buyersId, gameState, createPurchase)
 
@@ -26,7 +31,7 @@ internal class TilePurchaseRequestTest {
     every { buyer.position } returns buyersPosition
     every { gameState.tiles[buyersPosition] } returns tile
     every { gameState.players[buyersId] } returns buyer
-    every { buyer.balance } returns Random.nextInt().toBigInteger()
+    every { buyer.balance } returns randomPositive().toBigInteger()
   }
 
   @Test
@@ -44,7 +49,7 @@ internal class TilePurchaseRequestTest {
   fun `validate returns Failure if the the tile already has an owner`() {
     every { tile.price } returns buyer.balance - BigInteger.ONE
     every { tile.ownersId } returnsMany listOf(UUID.randomUUID(), buyersId)
-    val failure = ValidationResult.Failure(TilePurchaseRequest.tileAlreadyHasOwner)
+    val failure = ValidationResult.Failure(tileAlreadyHasOwner)
     assertEquals(failure, request.validate())
     assertEquals(failure, request.validate())
   }
@@ -52,18 +57,12 @@ internal class TilePurchaseRequestTest {
   @Test
   fun `validate returns Failure if the buyer's balance is less than the tile's price`() {
     every { tile.price } returns buyer.balance + BigInteger.ONE
-    assertEquals(
-      ValidationResult.Failure(Request.buyerHasInsufficientBalance),
-      request.validate()
-    )
+    assertEquals(ValidationResult.Failure(buyerHasInsufficientBalance), request.validate())
   }
 
   @Test
   fun `validate returns Failure if the event references an non-existing player`() {
     every { gameState.players[buyersId] } returns null
-    assertEquals(
-      ValidationResult.Failure(Request.invalidPlayerId),
-      request.validate()
-    )
+    assertEquals(ValidationResult.Failure(invalidPlayerId), request.validate())
   }
 }
