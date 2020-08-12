@@ -17,7 +17,8 @@ internal class TilePurchaseRequestTest {
   private val gameState = mockk<GameState>()
   private val buyersId = UUID.randomUUID()
   private val buyersPosition = Random.nextInt()
-  private val request = TilePurchaseRequest(buyersId, gameState)
+  private val createPurchase = mockk<(Player, UUID, Tile, Int, GameState) -> (TilePurchase)>()
+  private val request = TilePurchaseRequest(buyersId, gameState, createPurchase)
 
   @BeforeEach
   fun setUp() {
@@ -32,7 +33,9 @@ internal class TilePurchaseRequestTest {
   fun `validate returns Success if the buyer has sufficient funds and the tile has no owner`() {
     every { tile.ownersId } returns null
     every { tile.price } returnsMany listOf(buyer.balance, buyer.balance - BigInteger.ONE)
-    val success = ValidationResult.Success(TilePurchase(buyer, buyersId, tile, buyer.position, gameState))
+    val purchase = mockk<TilePurchase>(name = "purchase")
+    every { createPurchase(buyer, buyersId, tile, buyersPosition, gameState) } returns purchase
+    val success = ValidationResult.Success(purchase)
     assertEquals(success, request.validate())
     assertEquals(success, request.validate())
   }
