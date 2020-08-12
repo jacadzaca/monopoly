@@ -7,10 +7,10 @@ import com.jacadzaca.monopoly.gamelogic.Tile
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import java.util.*
 import kotlin.random.Random
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 internal class PlayerMovesTest {
   private val player = mockk<Player>(relaxed = true)
@@ -49,5 +49,4 @@ internal class PlayerMovesTest {
     transformation.transform()
     verify { rentPayment.apply() }
   }
-
 }

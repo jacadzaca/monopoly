@@ -6,12 +6,12 @@ import com.jacadzaca.monopoly.gamelogic.Player
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 import java.math.BigInteger
 import java.util.*
 import kotlin.random.Random
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 internal class LiabilityPaymentTest {
   private val payer = createPlayer()

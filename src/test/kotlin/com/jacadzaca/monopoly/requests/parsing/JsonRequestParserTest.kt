@@ -6,11 +6,11 @@ import io.mockk.every
 import io.mockk.mockk
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.core.json.get
+import java.util.*
+import kotlin.random.Random
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import java.util.*
-import kotlin.random.Random
 
 internal class JsonRequestParserTest {
   private val requestFactory = mockk<RequestFactory>()

@@ -1,20 +1,16 @@
 package com.jacadzaca.monopoly.requests
 
-import com.jacadzaca.monopoly.gamelogic.GameState
-import com.jacadzaca.monopoly.gamelogic.Player
-import com.jacadzaca.monopoly.gamelogic.Tile
-import com.jacadzaca.monopoly.gamelogic.transformations.TilePurchase
-import com.jacadzaca.monopoly.randomPositive
+import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gamelogic.*
+import com.jacadzaca.monopoly.gamelogic.transformations.*
 import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBalance
 import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
 import com.jacadzaca.monopoly.requests.TilePurchaseRequest.Companion.tileAlreadyHasOwner
-import io.mockk.every
-import io.mockk.mockk
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import io.mockk.*
 import java.math.BigInteger
-import java.util.*
+import java.util.UUID
+import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
 
 internal class TilePurchaseRequestTest {
   private val tile = mockk<Tile>()

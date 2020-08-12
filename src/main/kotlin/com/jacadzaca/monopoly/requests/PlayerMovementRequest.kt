@@ -1,8 +1,8 @@
 package com.jacadzaca.monopoly.requests
 
-import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.transformations.PlayerMoves
+import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
 import java.util.*
 
 class PlayerMovementRequest(

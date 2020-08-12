@@ -18,4 +18,3 @@ internal class TransformationTest {
     verify { gameState.addTransformation(transformation) }
   }
 }
-

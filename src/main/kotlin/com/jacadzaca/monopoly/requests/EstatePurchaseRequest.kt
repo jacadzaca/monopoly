@@ -1,13 +1,13 @@
 package com.jacadzaca.monopoly.requests
 
+import com.jacadzaca.monopoly.gamelogic.Estate
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
-import com.jacadzaca.monopoly.gamelogic.Estate
 import com.jacadzaca.monopoly.gamelogic.transformations.EstatePurchase
 import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBalance
 import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
-import java.util.*
+import java.util.UUID
 
 class EstatePurchaseRequest(
   private val buyersId: UUID,
@@ -20,6 +20,7 @@ class EstatePurchaseRequest(
     internal const val tileNotOwnedByBuyer = "Buyer dose not own the tile where he wants to buy a estate"
     internal const val notEnoughHouses = "There are not enough houses on the tile where a hotel is to be placed "
   }
+
   override fun validate(): ValidationResult {
     val buyer = context.players[buyersId] ?: return ValidationResult.Failure(invalidPlayerId)
     val tile = context.tiles[buyer.position]
