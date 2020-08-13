@@ -10,7 +10,7 @@ class JsonRequestParser(private val requestFactory: RequestFactory) : RequestPar
     internal const val missingType = "Json missing type [string] field"
     internal const val unknownType = "Invalid value in type field"
     internal const val missingPlayerId = "Json missing player-id [uuid] field"
-    internal const val missingGameStateId = "Json is missing a game-state-id [uuid] field"
+    internal const val missingGameStateId = "Json is missing a game-room-id [uuid] field"
   }
 
   override fun parse(raw: JsonObject): ParsingResult {
@@ -18,11 +18,11 @@ class JsonRequestParser(private val requestFactory: RequestFactory) : RequestPar
       ParsingResult.Failure(missingType)
     } else if (!raw.containsKey("player-id")) {
       ParsingResult.Failure(missingPlayerId)
-    } else if (!raw.containsKey("game-state-id")) {
+    } else if (!raw.containsKey("game-room-id")) {
       ParsingResult.Failure(missingGameStateId)
     } else {
       val playerId = raw.get<UUID>("player-id")
-      val gameStateId = raw.get<UUID>("game-state-id")
+      val gameStateId = raw.get<UUID>("game-room-id")
       when (raw.getString("type")) {
         "move" -> ParsingResult.Success(requestFactory.playerMoveRequest(playerId, gameStateId))
         "tile-purchase" -> ParsingResult.Success(requestFactory.tilePurchaseRequest(playerId, gameStateId))
