@@ -19,7 +19,7 @@ class JsonRequestParser(private val requestFactory: RequestFactory) : RequestPar
     } else if (!raw.containsKey("player-id")) {
       ParsingResult.Failure(missingPlayerId)
     } else if (!raw.containsKey("game-state-id")) {
-     ParsingResult.Failure(missingGameStateId)
+      ParsingResult.Failure(missingGameStateId)
     } else {
       val playerId = raw.get<UUID>("player-id")
       val gameStateId = raw.get<UUID>("game-state-id")
