@@ -7,7 +7,7 @@ import java.util.*
 /**
  * target.boardSize > PlayerMoves.newPosition >= 0
  */
-data class PlayerMoves(
+data class MovePlayer(
   private val player: Player,
   private val playersId: UUID,
   private val newPosition: Int,

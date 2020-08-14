@@ -7,13 +7,13 @@ import org.junit.jupiter.api.*
 import java.math.*
 import java.util.*
 
-internal class PlayerMovesTest {
+internal class MovePlayerTest {
   private val player = mockk<Player>(relaxed = true)
   private val gameState = mockk<GameState>(relaxed = true)
   private val playersId = UUID.randomUUID()
   private val newPosition = randomPositive()
   private val createPayment = mockk<(Player, UUID, Player, UUID, BigInteger, GameState) -> (PayLiability)>()
-  private val transformation = PlayerMoves(player, playersId, newPosition, gameState, createPayment)
+  private val transformation = MovePlayer(player, playersId, newPosition, gameState, createPayment)
 
   @BeforeEach
   fun setUp() {
