@@ -1,70 +1,51 @@
 package com.jacadzaca.monopoly.gamelogic.transformations
 
-import com.jacadzaca.monopoly.gamelogic.GameState
-import com.jacadzaca.monopoly.gamelogic.Liability
-import com.jacadzaca.monopoly.gamelogic.Player
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.slot
-import java.math.BigInteger
+import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gamelogic.*
+import io.mockk.*
+import org.junit.jupiter.api.*
+import java.math.*
 import java.util.*
-import kotlin.random.Random
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 
 internal class LiabilityPaymentTest {
-  private val payer = createPlayer()
-  private val receiver = createPlayer()
+  private val payer = mockk<Player>(relaxed = true)
+  private val receiver = mockk<Player>(relaxed = true)
+  private val payersId = UUID.randomUUID()
   private val liability = mockk<Liability>()
   private val gameState = mockk<GameState>()
-  private val payersId = UUID.randomUUID()
   private val transformation = LiabilityPayment(payer, payersId, liability, gameState)
 
   @BeforeEach
   fun setUp() {
+    every { payer.balance } returns randomPositive().toBigInteger()
     every { liability.recevier } returns receiver
     every { liability.recevierId } returns UUID.randomUUID()
     every { liability.amount } returns payer.balance - BigInteger.ONE
-    val payerSlot = slot<Player>()
-    val recevierSlot = slot<Player>()
-    every { gameState.update(payersId, capture(payerSlot)) } answers {
-      every { gameState.players[payersId] } returns payerSlot.captured
-      gameState
-    }
-    every { gameState.update(liability.recevierId, capture(recevierSlot)) } answers {
-      every { gameState.players[liability.recevierId] } returns recevierSlot.captured
-      gameState
-    }
+    every { gameState.update(payersId, any()) } returns gameState
+    every { gameState.update(liability.recevierId, any()) } returns gameState
   }
 
   @Test
   fun `transform detracts from the payer's balance`() {
-    val actual = transformation.transform()
-    assertEquals(
-      payer.balance - liability.amount,
-      actual.players[payersId]!!.balance
-    )
+    transformation.transform()
+    val amount = liability.amount
+    verify { payer.detractFunds(amount) }
   }
 
   @Test
   fun `transform adds the amount to the receiver's balance`() {
-    val actual = transformation.transform()
-    assertEquals(
-      receiver.balance + liability.amount,
-      actual.players[liability.recevierId]!!.balance
-    )
+    transformation.transform()
+    val amount = liability.amount
+    verify { receiver.addFunds(amount) }
   }
 
   @Test
   fun `transform only transfers what the payer has`() {
     every { liability.amount } returns payer.balance + BigInteger.ONE
-    val actual = transformation.transform()
-    assertEquals(
-      receiver.balance + payer.balance,
-      actual.players[liability.recevierId]!!.balance
-    )
+    transformation.transform()
+    val amount = liability.amount
+    val payersBalance = payer.balance
+    verify { receiver.addFunds(payersBalance) }
+    verify { payer.detractFunds(amount) }
   }
-
-  private fun createPlayer(): Player = Player(Random.nextInt(), Random.nextInt().toBigInteger())
 }
