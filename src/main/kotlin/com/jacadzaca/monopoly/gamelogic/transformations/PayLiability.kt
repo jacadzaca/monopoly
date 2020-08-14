@@ -4,7 +4,7 @@ import com.jacadzaca.monopoly.gamelogic.*
 import java.math.*
 import java.util.*
 
-class LiabilityPayment(
+class PayLiability(
   private val payer: Player,
   private val payerId: UUID,
   private val receiver: Player,

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.*
 import java.math.*
 import java.util.*
 
-internal class LiabilityPaymentTest {
+internal class PayLiabilityTest {
   private val payer = mockk<Player>(relaxed = true)
   private val receiver = mockk<Player>(relaxed = true)
   private val payersId = UUID.randomUUID()
@@ -15,7 +15,7 @@ internal class LiabilityPaymentTest {
   private val gameState = mockk<GameState>()
   private val payersBalance = randomPositive().toBigInteger()
   private val liability = payersBalance - BigInteger.ONE
-  private val transformation = LiabilityPayment(payer, payersId, receiver, receiversId, liability, gameState)
+  private val transformation = PayLiability(payer, payersId, receiver, receiversId, liability, gameState)
 
   @BeforeEach
   fun setUp() {
@@ -40,7 +40,7 @@ internal class LiabilityPaymentTest {
   @Test
   fun `transform only transfers what the payer has`() {
     val liability = payer.balance + BigInteger.ONE
-    val transformation = LiabilityPayment(payer, payersId, receiver, receiversId, liability, gameState)
+    val transformation = PayLiability(payer, payersId, receiver, receiversId, liability, gameState)
     transformation.execute()
     verify { gameState.update(receiversId, receiver.addFunds(payersBalance)) }
     verify { gameState.update(payersId, payer.detractFunds(liability)) }

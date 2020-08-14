@@ -12,7 +12,7 @@ internal class PlayerMovesTest {
   private val gameState = mockk<GameState>(relaxed = true)
   private val playersId = UUID.randomUUID()
   private val newPosition = randomPositive()
-  private val createPayment = mockk<(Player, UUID, Player, UUID, BigInteger, GameState) -> (LiabilityPayment)>()
+  private val createPayment = mockk<(Player, UUID, Player, UUID, BigInteger, GameState) -> (PayLiability)>()
   private val transformation = PlayerMoves(player, playersId, newPosition, gameState, createPayment)
 
   @BeforeEach
@@ -35,7 +35,7 @@ internal class PlayerMovesTest {
     every { tileOwnedByOther.ownersId } returns UUID.randomUUID()
     every { gameState.players[tileOwnedByOther.ownersId] } returns mockk(name = "tile owner")
     every { gameState.tiles[newPosition] } returns tileOwnedByOther
-    val rentPayment = mockk<LiabilityPayment>()
+    val rentPayment = mockk<PayLiability>()
     every { rentPayment.apply() } returns gameState
     every {
       createPayment(
