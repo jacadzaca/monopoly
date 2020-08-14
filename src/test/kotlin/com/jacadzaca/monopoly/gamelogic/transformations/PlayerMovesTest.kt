@@ -24,7 +24,7 @@ internal class PlayerMovesTest {
 
   @Test
   fun `transform sets player's position to newPosition`() {
-    transformation.transform()
+    transformation.execute()
     verify { player.setPosition(newPosition) }
   }
 
@@ -47,7 +47,7 @@ internal class PlayerMovesTest {
         gameState
       )
     } returns rentPayment
-    transformation.transform()
+    transformation.execute()
     verify { rentPayment.apply() }
   }
 }

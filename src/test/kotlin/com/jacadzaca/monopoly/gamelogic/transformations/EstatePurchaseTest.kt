@@ -34,7 +34,7 @@ internal class EstatePurchaseTest {
   fun `transform adds a estate to the tile`() {
     val tileWithAddedHouse = mockk<Tile>(name = "tile with added estate")
     every { tile.addEstate(estate) } returns tileWithAddedHouse
-    purchase.transform()
+    purchase.execute()
     verify { gameState.update(tileIndex, tileWithAddedHouse) }
   }
 
@@ -44,7 +44,7 @@ internal class EstatePurchaseTest {
     val playerAfterPurchase = mockk<Player>(name = "playerAfterPurchase")
     every { estate.price } returns estatePrice
     every { buyer.detractFunds(estatePrice) } returns playerAfterPurchase
-    purchase.transform()
+    purchase.execute()
     verify { gameState.update(buyersId, playerAfterPurchase) }
   }
 }

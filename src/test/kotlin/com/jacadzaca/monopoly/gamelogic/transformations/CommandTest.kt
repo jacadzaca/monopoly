@@ -13,7 +13,7 @@ internal class CommandTest {
 
   @Test
   fun test() {
-    every { transformation.transform() } returns gameState
+    every { transformation.execute() } returns gameState
     transformation.apply()
     verify { gameState.addTransformation(transformation) }
   }

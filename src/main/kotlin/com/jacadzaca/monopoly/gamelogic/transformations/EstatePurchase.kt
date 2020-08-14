@@ -14,7 +14,7 @@ class EstatePurchase(
   private val estate: Estate,
   private val target: GameState
 ) : Command() {
-  override fun transform(): GameState {
+  override fun execute(): GameState {
     return target
       .update(tileIndex, tile.addEstate(estate))
       .update(buyersId, buyer.detractFunds(estate.price))

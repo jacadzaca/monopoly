@@ -12,7 +12,7 @@ class LiabilityPayment(
   private val liability: BigInteger,
   private val target: GameState
 ) : Command() {
-  override fun transform(): GameState {
+  override fun execute(): GameState {
     return if (liability > payer.balance) {
       target
         .update(payerId, payer.detractFunds(liability))

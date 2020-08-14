@@ -14,7 +14,7 @@ data class PlayerMoves(
   private val target: GameState,
   private val createPayment: (Player, UUID, Player, UUID, BigInteger, GameState) -> (LiabilityPayment)
 ) : Command() {
-  override fun transform(): GameState {
+  override fun execute(): GameState {
     val tile = target.tiles[newPosition]
     return if (tile.ownersId != null && tile.ownersId != playersId) {
       createPayment(player, playersId, target.players[tile.ownersId]!!, tile.ownersId, tile.totalRent(), target).apply()

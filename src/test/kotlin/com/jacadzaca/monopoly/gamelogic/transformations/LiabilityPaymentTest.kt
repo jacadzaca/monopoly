@@ -27,13 +27,13 @@ internal class LiabilityPaymentTest {
 
   @Test
   fun `transform detracts from the payer's balance`() {
-    transformation.transform()
+    transformation.execute()
     verify { gameState.update(payersId, payer.detractFunds(liability)) }
   }
 
   @Test
   fun `transform adds the amount to the receiver's balance`() {
-    transformation.transform()
+    transformation.execute()
     verify { gameState.update(receiversId, receiver.addFunds(liability)) }
   }
 
@@ -41,7 +41,7 @@ internal class LiabilityPaymentTest {
   fun `transform only transfers what the payer has`() {
     val liability = payer.balance + BigInteger.ONE
     val transformation = LiabilityPayment(payer, payersId, receiver, receiversId, liability, gameState)
-    transformation.transform()
+    transformation.execute()
     verify { gameState.update(receiversId, receiver.addFunds(payersBalance)) }
     verify { gameState.update(payersId, payer.detractFunds(liability)) }
   }
