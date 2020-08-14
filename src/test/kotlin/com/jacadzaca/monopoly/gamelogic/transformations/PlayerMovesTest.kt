@@ -1,23 +1,18 @@
 package com.jacadzaca.monopoly.gamelogic.transformations
 
-import com.jacadzaca.monopoly.gamelogic.GameState
-import com.jacadzaca.monopoly.gamelogic.Liability
-import com.jacadzaca.monopoly.gamelogic.Player
-import com.jacadzaca.monopoly.gamelogic.Tile
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gamelogic.*
+import io.mockk.*
+import org.junit.jupiter.api.*
+import java.math.*
 import java.util.*
-import kotlin.random.Random
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 
 internal class PlayerMovesTest {
   private val player = mockk<Player>(relaxed = true)
   private val gameState = mockk<GameState>(relaxed = true)
   private val playersId = UUID.randomUUID()
-  private val newPosition = Random.nextInt(1, Int.MAX_VALUE)
-  private val createPayment = mockk<(Player, UUID, Liability, GameState) -> (LiabilityPayment)>()
+  private val newPosition = randomPositive()
+  private val createPayment = mockk<(Player, UUID, Player, UUID, BigInteger, GameState) -> (LiabilityPayment)>()
   private val transformation = PlayerMoves(player, playersId, newPosition, gameState, createPayment)
 
   @BeforeEach
@@ -36,16 +31,22 @@ internal class PlayerMovesTest {
   @Test
   fun `transform makes player pay a liability if he steps on a tile owned by different player`() {
     val tileOwnedByOther = mockk<Tile>()
-    every { tileOwnedByOther.totalRent() } returns Random.nextInt().toBigInteger()
+    every { tileOwnedByOther.totalRent() } returns randomPositive().toBigInteger()
     every { tileOwnedByOther.ownersId } returns UUID.randomUUID()
-    every { tileOwnedByOther.ownersId == playersId } returns false
-    every { tileOwnedByOther.ownersId == null } returns false
     every { gameState.players[tileOwnedByOther.ownersId] } returns mockk(name = "tile owner")
     every { gameState.tiles[newPosition] } returns tileOwnedByOther
-    val liability = Liability(tileOwnedByOther.totalRent(), gameState.players[tileOwnedByOther.ownersId]!!, tileOwnedByOther.ownersId!!)
     val rentPayment = mockk<LiabilityPayment>()
     every { rentPayment.apply() } returns gameState
-    every { createPayment(player, playersId, liability, gameState) } returns rentPayment
+    every {
+      createPayment(
+        player,
+        playersId,
+        gameState.players[tileOwnedByOther.ownersId]!!,
+        tileOwnedByOther.ownersId!!,
+        tileOwnedByOther.totalRent(),
+        gameState
+      )
+    } returns rentPayment
     transformation.transform()
     verify { rentPayment.apply() }
   }
