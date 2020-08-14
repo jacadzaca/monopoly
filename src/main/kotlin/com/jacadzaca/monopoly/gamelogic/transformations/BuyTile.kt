@@ -5,7 +5,7 @@ import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
 import java.util.*
 
-class TilePurchase(
+class BuyTile(
   private val buyer: Player,
   private val buyersId: UUID,
   private val tile: Tile,

@@ -3,7 +3,7 @@ package com.jacadzaca.monopoly.requests
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
-import com.jacadzaca.monopoly.gamelogic.transformations.TilePurchase
+import com.jacadzaca.monopoly.gamelogic.transformations.BuyTile
 import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBalance
 import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
 import java.util.*
@@ -11,7 +11,7 @@ import java.util.*
 class TilePurchaseRequest(
   private val buyersId: UUID,
   private val context: GameState,
-  private val createPurchase: (Player, UUID, Tile, Int, GameState) -> (TilePurchase)
+  private val createPurchase: (Player, UUID, Tile, Int, GameState) -> (BuyTile)
 ) : Request {
   internal companion object {
     internal const val tileAlreadyHasOwner = "Tile that the player wants to buy already has an owner "
