@@ -7,9 +7,9 @@ import io.mockk.spyk
 import io.mockk.verify
 import org.junit.jupiter.api.Test
 
-internal class TransformationTest {
+internal class CommandTest {
   private val gameState = mockk<GameState>(relaxed = true)
-  private val transformation = spyk<Transformation>()
+  private val transformation = spyk<Command>()
 
   @Test
   fun test() {

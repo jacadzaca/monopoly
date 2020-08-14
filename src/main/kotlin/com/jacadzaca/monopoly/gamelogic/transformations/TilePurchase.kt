@@ -11,7 +11,7 @@ class TilePurchase(
   private val tile: Tile,
   private val tileIndex: Int,
   private val target: GameState
-) : Transformation() {
+) : Command() {
   override fun transform(): GameState {
     return target
       .update(tileIndex, tile.changeOwner(buyersId))

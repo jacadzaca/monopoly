@@ -11,7 +11,7 @@ class LiabilityPayment(
   private val receiversId: UUID,
   private val liability: BigInteger,
   private val target: GameState
-) : Transformation() {
+) : Command() {
   override fun transform(): GameState {
     return if (liability > payer.balance) {
       target

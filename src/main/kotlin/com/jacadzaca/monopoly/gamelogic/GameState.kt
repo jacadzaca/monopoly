@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic
 
-import com.jacadzaca.monopoly.gamelogic.transformations.Transformation
+import com.jacadzaca.monopoly.gamelogic.transformations.Command
 import java.util.*
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
@@ -9,7 +9,7 @@ import kotlinx.collections.immutable.persistentListOf
 data class GameState(
   val players: PersistentMap<UUID, Player>,
   val tiles: PersistentList<Tile>,
-  val transformations: PersistentList<Transformation> = persistentListOf()
+  val commands: PersistentList<Command> = persistentListOf()
 ) {
   /**
    * @return a copy of this, where the player under @playersId is @updatedPlayer
@@ -23,6 +23,6 @@ data class GameState(
 
   fun update(tileIndex: Int, updatedTile: Tile): GameState = copy(tiles = tiles.set(tileIndex, updatedTile))
 
-  fun addTransformation(transformation: Transformation): GameState =
-    copy(transformations = transformations.add(transformation))
+  fun addTransformation(command: Command): GameState =
+    copy(commands = commands.add(command))
 }
