@@ -4,7 +4,7 @@ import com.jacadzaca.monopoly.gamelogic.Estate
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
-import com.jacadzaca.monopoly.gamelogic.transformations.EstatePurchase
+import com.jacadzaca.monopoly.gamelogic.transformations.BuyEstate
 import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBalance
 import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
 import java.util.UUID
@@ -13,7 +13,7 @@ class EstatePurchaseRequest(
   private val buyersId: UUID,
   private val estate: Estate,
   private val requiredHousesForHotel: Int,
-  private val createPurchase: (Player, UUID, Tile, Int, Estate, GameState) -> EstatePurchase,
+  private val createPurchase: (Player, UUID, Tile, Int, Estate, GameState) -> BuyEstate,
   private val context: GameState
 ) : Request {
   internal companion object {

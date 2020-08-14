@@ -13,14 +13,14 @@ import kotlin.random.Random
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-internal class EstatePurchaseTest {
+internal class BuyEstateTest {
   private val tileIndex = Random.nextInt()
   private val buyersId = UUID.randomUUID()
   private val gameState = mockk<GameState>()
   private val tile = mockk<Tile>(relaxed = true)
   private val buyer = mockk<Player>(relaxed = true)
   private val estate = mockk<Estate>(name = "estate")
-  private val purchase = EstatePurchase(buyer, buyersId, tile, tileIndex, estate, gameState)
+  private val purchase = BuyEstate(buyer, buyersId, tile, tileIndex, estate, gameState)
 
   @BeforeEach
   fun setUp() {

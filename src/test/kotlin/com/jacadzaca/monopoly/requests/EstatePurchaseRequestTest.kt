@@ -4,7 +4,7 @@ import com.jacadzaca.monopoly.gamelogic.Estate
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
-import com.jacadzaca.monopoly.gamelogic.transformations.EstatePurchase
+import com.jacadzaca.monopoly.gamelogic.transformations.BuyEstate
 import com.jacadzaca.monopoly.randomPositive
 import com.jacadzaca.monopoly.randomPositiveBIG
 import com.jacadzaca.monopoly.requests.EstatePurchaseRequest.Companion.notEnoughHouses
@@ -25,7 +25,7 @@ internal class EstatePurchaseRequestTest {
   private val buyersId = UUID.randomUUID()
   private val gameState = mockk<GameState>()
   private val requiredHousesForHotel = randomPositive()
-  private val createPurchase = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> EstatePurchase>()
+  private val createPurchase = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> BuyEstate>()
   private val house = mockk<Estate.House>(name = "house")
   private val housePurchaseRequest =
     EstatePurchaseRequest(buyersId, house, requiredHousesForHotel, createPurchase, gameState)
@@ -50,7 +50,7 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Success if the buyer is the tile's owner, has sufficient funds and wants a house`() {
     every { tile.ownersId } returns buyersId
-    val createdEstatePurchase = mockk<EstatePurchase>()
+    val createdEstatePurchase = mockk<BuyEstate>()
     val buyersPosition = buyer.position
     every { createPurchase(buyer, buyersId, tile, buyersPosition, house, gameState) } returns createdEstatePurchase
     every { house.price } returnsMany listOf(
@@ -68,7 +68,7 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Success if the buyer is the tile's owner, has sufficient funds, the tile has sufficient number of houses and the buyer wants a hotel`() {
     every { tile.ownersId } returns buyersId
-    val createdEstatePurchase = mockk<EstatePurchase>()
+    val createdEstatePurchase = mockk<BuyEstate>()
     val buyersPosition = buyer.position
     every { createPurchase(buyer, buyersId, tile, buyersPosition, hotel, gameState) } returns createdEstatePurchase
     every { hotel.price } returnsMany listOf(
