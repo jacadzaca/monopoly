@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.gamelogic.transformations
+package com.jacadzaca.monopoly.gamelogic.commands
 
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*

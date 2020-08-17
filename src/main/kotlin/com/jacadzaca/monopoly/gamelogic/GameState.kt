@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic
 
-import com.jacadzaca.monopoly.gamelogic.transformations.Command
+import com.jacadzaca.monopoly.gamelogic.commands.Command
 import java.util.*
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap

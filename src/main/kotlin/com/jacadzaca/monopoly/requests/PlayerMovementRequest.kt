@@ -1,7 +1,7 @@
 package com.jacadzaca.monopoly.requests
 
 import com.jacadzaca.monopoly.gamelogic.*
-import com.jacadzaca.monopoly.gamelogic.transformations.MovePlayer
+import com.jacadzaca.monopoly.gamelogic.commands.MovePlayer
 import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
 import java.util.*
 

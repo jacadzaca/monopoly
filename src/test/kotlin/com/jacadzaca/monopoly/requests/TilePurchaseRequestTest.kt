@@ -2,7 +2,7 @@ package com.jacadzaca.monopoly.requests
 
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
-import com.jacadzaca.monopoly.gamelogic.transformations.*
+import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBalance
 import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
 import com.jacadzaca.monopoly.requests.TilePurchaseRequest.Companion.tileAlreadyHasOwner
