@@ -6,10 +6,10 @@ import io.vertx.core.shareddata.impl.*
 
 data class GameRoom(val gameState: GameState, val version: Long = 0L): ClusterSerializable {
   override fun readFromBuffer(pos: Int, buffer: Buffer): Int {
-    TODO("Not yet implemented")
+    throw UnsupportedOperationException()
   }
 
   override fun writeToBuffer(buffer: Buffer) {
-    TODO("Not yet implemented")
+    throw UnsupportedOperationException()
   }
 }

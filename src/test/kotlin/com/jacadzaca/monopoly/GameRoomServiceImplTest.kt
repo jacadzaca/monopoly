@@ -26,7 +26,7 @@ internal class GameRoomServiceImplTest {
     clearAllMocks()
     every { room.version } returns randomPositive().toLong()
     runBlocking {
-      rooms = vertx.sharedData().getAsyncMapAwait("rooms")
+      rooms = vertx.sharedData().getLocalAsyncMapAwait("rooms")
       rooms.clearAwait()
       val getLock: suspend (UUID) -> (Lock) = { id ->
         lock = spyk(vertx.sharedData().getLockAwait(id.toString()))
