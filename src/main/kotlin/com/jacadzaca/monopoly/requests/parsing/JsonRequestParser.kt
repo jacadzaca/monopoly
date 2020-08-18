@@ -1,33 +1,25 @@
 package com.jacadzaca.monopoly.requests.parsing
 
-import com.jacadzaca.monopoly.requests.RequestFactory
-import io.vertx.core.json.JsonObject
-import io.vertx.kotlin.core.json.get
+import com.jacadzaca.monopoly.gamelogic.*
+import com.jacadzaca.monopoly.requests.*
+import io.vertx.core.json.*
 import java.util.*
 
 class JsonRequestParser(private val requestFactory: RequestFactory) : RequestParser<JsonObject> {
   internal companion object {
     internal const val missingType = "Json missing type [string] field"
     internal const val unknownType = "Invalid value in type field"
-    internal const val missingPlayerId = "Json missing player-id [uuid] field"
-    internal const val missingGameStateId = "Json is missing a game-room-id [uuid] field"
   }
 
-  override fun parse(raw: JsonObject): ParsingResult {
+  override fun parse(raw: JsonObject, playersId: UUID, gameState: GameState): ParsingResult {
     return if (!raw.containsKey("type")) {
       ParsingResult.Failure(missingType)
-    } else if (!raw.containsKey("player-id")) {
-      ParsingResult.Failure(missingPlayerId)
-    } else if (!raw.containsKey("game-room-id")) {
-      ParsingResult.Failure(missingGameStateId)
     } else {
-      val playerId = raw.get<UUID>("player-id")
-      val gameStateId = raw.get<UUID>("game-room-id")
       when (raw.getString("type")) {
-        "move" -> ParsingResult.Success(requestFactory.playerMoveRequest(playerId, gameStateId))
-        "tile-purchase" -> ParsingResult.Success(requestFactory.tilePurchaseRequest(playerId, gameStateId))
-        "house-purchase" -> ParsingResult.Success(requestFactory.housePurchaseRequest(playerId, gameStateId))
-        "hotel-purchase" -> ParsingResult.Success(requestFactory.hotelPurchaseRequest(playerId, gameStateId))
+        "move" -> ParsingResult.Success(requestFactory.playerMoveRequest(playersId, gameState))
+        "tile-purchase" -> ParsingResult.Success(requestFactory.tilePurchaseRequest(playersId, gameState))
+        "house-purchase" -> ParsingResult.Success(requestFactory.housePurchaseRequest(playersId, gameState))
+        "hotel-purchase" -> ParsingResult.Success(requestFactory.hotelPurchaseRequest(playersId, gameState))
         else -> ParsingResult.Failure(unknownType)
       }
     }
