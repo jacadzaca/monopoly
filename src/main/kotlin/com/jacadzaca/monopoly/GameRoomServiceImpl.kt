@@ -10,7 +10,7 @@ class GameRoomServiceImpl(
 ) : GameRoomService {
   companion object {
     internal const val invalidRoomId = "No game room with such id"
-    internal const val otherChangeWasApplied = "Rooms' ids differ, cannot apply change"
+    internal const val otherChangeWasApplied = "Rooms' versions differ, cannot apply change"
   }
 
   override suspend fun byId(id: UUID): GameRoom? = rooms.getAwait(id)
