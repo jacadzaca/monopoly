@@ -108,7 +108,7 @@ internal class EstatePurchaseRequestTest {
     val failure = ValidationResult.Failure(notEnoughHouses)
     every { tile.houseCount() } returnsMany listOf(
       requiredHousesForHotel - 1,
-      requiredHousesForHotel - Random.nextPositive()
+      Random.nextPositive(until = requiredHousesForHotel)
     )
     assertEquals(failure, hotelPurchaseRequest.validate())
     assertEquals(failure, hotelPurchaseRequest.validate())
