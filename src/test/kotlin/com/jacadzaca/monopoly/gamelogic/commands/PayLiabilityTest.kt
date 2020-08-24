@@ -6,6 +6,7 @@ import io.mockk.*
 import org.junit.jupiter.api.*
 import java.math.*
 import java.util.*
+import kotlin.random.Random
 
 internal class PayLiabilityTest {
   private val payer = mockk<Player>(relaxed = true)
@@ -13,7 +14,7 @@ internal class PayLiabilityTest {
   private val payersId = UUID.randomUUID()
   private val receiversId = UUID.randomUUID()
   private val gameState = mockk<GameState>()
-  private val payersBalance = randomPositive().toBigInteger()
+  private val payersBalance = Random.nextPositive().toBigInteger()
   private val liability = payersBalance - BigInteger.ONE
   private val transformation = PayLiability(payer, payersId, receiver, receiversId, liability, gameState)
 

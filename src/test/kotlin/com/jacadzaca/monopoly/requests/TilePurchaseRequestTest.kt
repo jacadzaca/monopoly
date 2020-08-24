@@ -7,17 +7,18 @@ import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBal
 import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
 import com.jacadzaca.monopoly.requests.TilePurchaseRequest.Companion.tileAlreadyHasOwner
 import io.mockk.*
-import java.math.BigInteger
-import java.util.UUID
 import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
+import java.math.*
+import java.util.*
+import kotlin.random.Random
 
 internal class TilePurchaseRequestTest {
   private val tile = mockk<Tile>()
   private val buyer = mockk<Player>()
   private val gameState = mockk<GameState>()
   private val buyersId = UUID.randomUUID()
-  private val buyersPosition = randomPositive()
+  private val buyersPosition = Random.nextPositive()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, GameState) -> (BuyTile)>()
   private val request = TilePurchaseRequest(buyersId, gameState, createPurchase)
 
@@ -27,7 +28,7 @@ internal class TilePurchaseRequestTest {
     every { buyer.position } returns buyersPosition
     every { gameState.tiles[buyersPosition] } returns tile
     every { gameState.players[buyersId] } returns buyer
-    every { buyer.balance } returns randomPositive().toBigInteger()
+    every { buyer.balance } returns Random.nextPositive().toBigInteger()
   }
 
   @Test

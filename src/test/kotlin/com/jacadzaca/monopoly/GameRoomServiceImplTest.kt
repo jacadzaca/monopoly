@@ -12,6 +12,7 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.*
 import java.util.*
+import kotlin.random.Random
 
 @ExtendWith(VertxExtension::class)
 internal class GameRoomServiceImplTest {
@@ -24,7 +25,7 @@ internal class GameRoomServiceImplTest {
   @BeforeEach
   fun setUp(vertx: Vertx) {
     clearAllMocks()
-    every { room.version } returns randomPositive().toLong()
+    every { room.version } returns Random.nextPositive().toLong()
     runBlocking {
       rooms = vertx.sharedData().getLocalAsyncMapAwait("rooms")
       rooms.clearAwait()
@@ -77,7 +78,7 @@ internal class GameRoomServiceImplTest {
       rooms.putAwait(roomsId, changedRoom)
       every { changedRoom.version } returns room.version + 1L
       assertEquals(failure, roomService.updateGameState(roomsId, room))
-      every { changedRoom.version } returns room.version + randomPositive()
+      every { changedRoom.version } returns room.version + Random.nextPositive()
       assertEquals(failure, roomService.updateGameState(roomsId, room))
     }
   }

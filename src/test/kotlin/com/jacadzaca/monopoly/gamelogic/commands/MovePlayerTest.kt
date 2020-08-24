@@ -6,12 +6,13 @@ import io.mockk.*
 import org.junit.jupiter.api.*
 import java.math.*
 import java.util.*
+import kotlin.random.Random
 
 internal class MovePlayerTest {
   private val player = mockk<Player>(relaxed = true)
   private val gameState = mockk<GameState>(relaxed = true)
   private val playersId = UUID.randomUUID()
-  private val newPosition = randomPositive()
+  private val newPosition = Random.nextPositive()
   private val createPayment = mockk<(Player, UUID, Player, UUID, BigInteger, GameState) -> (PayLiability)>()
   private val transformation = MovePlayer(player, playersId, newPosition, gameState, createPayment)
 
@@ -31,7 +32,7 @@ internal class MovePlayerTest {
   @Test
   fun `transform makes player pay a liability if he steps on a tile owned by different player`() {
     val tileOwnedByOther = mockk<Tile>()
-    every { tileOwnedByOther.totalRent() } returns randomPositive().toBigInteger()
+    every { tileOwnedByOther.totalRent() } returns Random.nextPositive().toBigInteger()
     every { tileOwnedByOther.ownersId } returns UUID.randomUUID()
     every { gameState.players[tileOwnedByOther.ownersId] } returns mockk(name = "tile owner")
     every { gameState.tiles[newPosition] } returns tileOwnedByOther

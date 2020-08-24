@@ -16,7 +16,7 @@ internal class EstatePurchaseRequestTest {
   private val buyer = mockk<Player>()
   private val buyersId = UUID.randomUUID()
   private val gameState = mockk<GameState>()
-  private val requiredHousesForHotel = randomPositive()
+  private val requiredHousesForHotel = Random.nextPositive()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> BuyEstate>()
   private val house = mockk<Estate.House>(name = "house")
   private val housePurchaseRequest =
@@ -28,13 +28,13 @@ internal class EstatePurchaseRequestTest {
   @BeforeEach
   fun setUp() {
     clearAllMocks()
-    val buyersPosition = randomPositive()
+    val buyersPosition = Random.nextPositive()
     every { tile.ownersId } returns buyersId
     every { buyer.position } returns buyersPosition
     every { gameState.players[buyersId] } returns buyer
     every { gameState.tiles[buyersPosition] } returns tile
     every { tile.houseCount() } returns requiredHousesForHotel
-    every { buyer.balance } returns randomPositive().toBigInteger()
+    every { buyer.balance } returns Random.nextPositive().toBigInteger()
     every { house.price } returns buyer.balance - BigInteger.ONE
     every { hotel.price } returns buyer.balance - BigInteger.ONE
   }
@@ -91,11 +91,11 @@ internal class EstatePurchaseRequestTest {
     val failure = ValidationResult.Failure(Request.buyerHasInsufficientBalance)
     every { house.price } returnsMany listOf(
       buyer.balance + BigInteger.ONE,
-      buyer.balance + randomPositive().toBigInteger()
+      buyer.balance + Random.nextPositive().toBigInteger()
     )
     every { hotel.price } returnsMany listOf(
       buyer.balance + BigInteger.ONE,
-      buyer.balance + randomPositive().toBigInteger()
+      buyer.balance + Random.nextPositive().toBigInteger()
     )
     assertEquals(failure, housePurchaseRequest.validate())
     assertEquals(failure, housePurchaseRequest.validate())
@@ -108,7 +108,7 @@ internal class EstatePurchaseRequestTest {
     val failure = ValidationResult.Failure(notEnoughHouses)
     every { tile.houseCount() } returnsMany listOf(
       requiredHousesForHotel - 1,
-      requiredHousesForHotel - randomPositive()
+      requiredHousesForHotel - Random.nextPositive()
     )
     assertEquals(failure, hotelPurchaseRequest.validate())
     assertEquals(failure, hotelPurchaseRequest.validate())
