@@ -1,23 +1,15 @@
 package com.jacadzaca.monopoly.requests
 
-import com.jacadzaca.monopoly.gamelogic.Estate
-import com.jacadzaca.monopoly.gamelogic.GameState
-import com.jacadzaca.monopoly.gamelogic.Player
-import com.jacadzaca.monopoly.gamelogic.Tile
-import com.jacadzaca.monopoly.gamelogic.commands.BuyEstate
-import com.jacadzaca.monopoly.randomPositive
-import com.jacadzaca.monopoly.randomPositiveBIG
+import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gamelogic.*
+import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.requests.EstatePurchaseRequest.Companion.notEnoughHouses
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import java.math.BigInteger
+import io.mockk.*
+import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.*
+import java.math.*
 import java.util.*
 import kotlin.random.Random
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
 
 internal class EstatePurchaseRequestTest {
   private val tile = mockk<Tile>()
@@ -42,7 +34,7 @@ internal class EstatePurchaseRequestTest {
     every { gameState.players[buyersId] } returns buyer
     every { gameState.tiles[buyersPosition] } returns tile
     every { tile.houseCount() } returns requiredHousesForHotel
-    every { buyer.balance } returns randomPositiveBIG()
+    every { buyer.balance } returns randomPositive().toBigInteger()
     every { house.price } returns buyer.balance - BigInteger.ONE
     every { hotel.price } returns buyer.balance - BigInteger.ONE
   }
@@ -97,8 +89,14 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Failure if the buyer has insufficient funds`() {
     val failure = ValidationResult.Failure(Request.buyerHasInsufficientBalance)
-    every { house.price } returnsMany listOf(buyer.balance + BigInteger.ONE, buyer.balance + randomPositiveBIG())
-    every { hotel.price } returnsMany listOf(buyer.balance + BigInteger.ONE, buyer.balance + randomPositiveBIG())
+    every { house.price } returnsMany listOf(
+      buyer.balance + BigInteger.ONE,
+      buyer.balance + randomPositive().toBigInteger()
+    )
+    every { hotel.price } returnsMany listOf(
+      buyer.balance + BigInteger.ONE,
+      buyer.balance + randomPositive().toBigInteger()
+    )
     assertEquals(failure, housePurchaseRequest.validate())
     assertEquals(failure, housePurchaseRequest.validate())
     assertEquals(failure, hotelPurchaseRequest.validate())
@@ -108,7 +106,10 @@ internal class EstatePurchaseRequestTest {
   @Test
   fun `validate returns Failure if the buyer wants a hotel and there are too few houses on tile`() {
     val failure = ValidationResult.Failure(notEnoughHouses)
-    every { tile.houseCount() } returnsMany listOf(requiredHousesForHotel - 1, requiredHousesForHotel - randomPositive())
+    every { tile.houseCount() } returnsMany listOf(
+      requiredHousesForHotel - 1,
+      requiredHousesForHotel - randomPositive()
+    )
     assertEquals(failure, hotelPurchaseRequest.validate())
     assertEquals(failure, hotelPurchaseRequest.validate())
   }
