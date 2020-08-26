@@ -22,9 +22,8 @@ internal class JsonEventMarshallerTest {
     assertEquals(event, marshaller.decode(marshaller.encode(event)))
   }
 
-  @ParameterizedTest
-  @ArgumentsSource(EventSource::class)
-  fun `decode throws IllegalStateArgument if type is unknown`(event: Event) {
+  @Test
+  fun `decode throws IllegalStateArgument if type is unknown`() {
     assertThrows<IllegalStateException> {
       marshaller.decode(JsonObject().put("type", Random.nextString()))
     }
