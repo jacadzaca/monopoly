@@ -1,9 +1,9 @@
-package com.jacadzaca.monopoly.encoders
+package com.jacadzaca.monopoly.marshallers
 
 import com.jacadzaca.monopoly.gamelogic.commands.*
 import io.vertx.core.json.*
 
-object JsonEventEncoder : Encoder<Event, JsonObject> {
+object JsonEventMarshaller : Marshaller<Event, JsonObject> {
   override fun encode(obj: Event): JsonObject {
     return when (obj) {
       is Event.PlayerMoved -> JsonObject()

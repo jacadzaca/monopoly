@@ -1,9 +1,9 @@
-package com.jacadzaca.monopoly.encoders
+package com.jacadzaca.monopoly.marshallers
 
 import com.jacadzaca.monopoly.gamelogic.*
 import io.vertx.core.json.*
 
-object JsonPlayerEncoder : Encoder<Player, JsonObject> {
+object JsonPlayerMarshaller : Marshaller<Player, JsonObject> {
   override fun encode(obj: Player): JsonObject {
     return JsonObject()
       .put("position", obj.position)
