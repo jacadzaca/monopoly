@@ -2,25 +2,59 @@ package com.jacadzaca.monopoly.marshallers
 
 import com.jacadzaca.monopoly.gamelogic.commands.*
 import io.vertx.core.json.*
+import java.math.*
+import java.util.*
 
 object JsonEventMarshaller : Marshaller<Event, JsonObject> {
+  private const val id = "id"
+  private const val newPosition = "new-position"
+  private const val purchasedTileIndex = "purchased-tile-index"
+  private const val payersId = "payers-${id}"
+  private const val receiversId = "receiver-${id}"
+  private const val liability = "liability"
+  private const val estate = "estate"
+  private const val tileIndex = "tile-index"
+  private const val type = "type"
+
   override fun encode(obj: Event): JsonObject {
     return when (obj) {
       is Event.PlayerMoved -> JsonObject()
-        .put("players-id", obj.playersId.toString())
-        .put("new-position", obj.newPosition)
+        .put(id, obj.playersId.toString())
+        .put(newPosition, obj.newPosition)
       is Event.TilePurchased -> JsonObject()
-        .put("buyers-id", obj.buyersId.toString())
-        .put("purchased-tile-index", obj.purchasedTilesIndex)
+        .put(id, obj.buyersId.toString())
+        .put(purchasedTileIndex, obj.purchasedTilesIndex)
       is Event.LiabilityPaid -> JsonObject()
-        .put("payers-id", obj.payersId.toString())
-        .put("receivers-id", obj.receiversId.toString())
-        .put("liability", obj.liability.toString())
+        .put(payersId, obj.payersId.toString())
+        .put(receiversId, obj.receiversId.toString())
+        .put(liability, obj.liability.toString())
       is Event.EstatePurchased -> JsonObject()
-        .put("buyers-id", obj.buyersId.toString())
-        .put("tile-index", obj.tileIndex)
-        .put("estate-price", obj.purchasedEstate.price.toString())
-        .put("estate-rent", obj.purchasedEstate.rent.toString())
+        .put(id, obj.buyersId.toString())
+        .put(tileIndex, obj.tileIndex)
+        .put(estate, JsonEstateMarshaller.encode(obj.purchasedEstate))
+    }.put(type, obj::class.simpleName)
+  }
+
+  override fun decode(raw: JsonObject): Event {
+    return when (raw.getString(type)) {
+      Event.PlayerMoved::class.simpleName -> Event.PlayerMoved(
+        UUID.fromString(raw.getString(id)),
+        raw.getInteger(newPosition)
+      )
+      Event.TilePurchased::class.simpleName -> Event.TilePurchased(
+        UUID.fromString(raw.getString(id)),
+        raw.getInteger(purchasedTileIndex)
+      )
+      Event.LiabilityPaid::class.simpleName -> Event.LiabilityPaid(
+        UUID.fromString(raw.getString(payersId)),
+        UUID.fromString(raw.getString(receiversId)),
+        BigInteger(raw.getString(liability))
+      )
+      Event.EstatePurchased::class.simpleName -> Event.EstatePurchased(
+        UUID.fromString(raw.getString(id)),
+        raw.getInteger(tileIndex),
+        JsonEstateMarshaller.decode(raw.getJsonObject(estate)))
+      else -> throw IllegalStateException("Cannot parse event of type ${raw.getString("type")}")
     }
   }
 }
