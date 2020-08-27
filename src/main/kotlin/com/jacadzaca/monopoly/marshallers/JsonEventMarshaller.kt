@@ -5,7 +5,7 @@ import io.vertx.core.json.*
 import java.math.*
 import java.util.*
 
-object JsonEventMarshaller : Marshaller<Event, JsonObject> {
+object JsonEventMarshaller {
   private const val id = "id"
   private const val newPosition = "new-position"
   private const val purchasedTileIndex = "purchased-tile-index"
@@ -16,7 +16,7 @@ object JsonEventMarshaller : Marshaller<Event, JsonObject> {
   private const val tileIndex = "tile-index"
   private const val type = "type"
 
-  override fun encode(obj: Event): JsonObject {
+  fun encode(obj: Event): JsonObject {
     return when (obj) {
       is Event.PlayerMoved -> JsonObject()
         .put(id, obj.playersId.toString())
@@ -35,7 +35,7 @@ object JsonEventMarshaller : Marshaller<Event, JsonObject> {
     }.put(type, obj::class.simpleName)
   }
 
-  override fun decode(raw: JsonObject): Event {
+  fun decode(raw: JsonObject): Event {
     return when (raw.getString(type)) {
       Event.PlayerMoved::class.simpleName -> Event.PlayerMoved(
         UUID.fromString(raw.getString(id)),

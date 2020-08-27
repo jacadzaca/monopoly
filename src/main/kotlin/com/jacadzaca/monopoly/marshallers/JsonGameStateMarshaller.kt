@@ -5,14 +5,14 @@ import io.vertx.core.json.*
 import kotlinx.collections.immutable.*
 import java.util.*
 
-object JsonGameStateMarshaller : Marshaller<GameState, JsonObject> {
+object JsonGameStateMarshaller {
   private const val id = "id"
   private const val player = "player"
   private const val players = "${player}s"
   private const val tiles = "tiles"
   private const val events = "events"
 
-  override fun encode(obj: GameState): JsonObject {
+  fun encode(obj: GameState): JsonObject {
     return JsonObject()
       .put(players, JsonArray(obj.players.map(::encodeEntry)))
       .put(tiles, JsonArray(obj.tiles.map(JsonTileMarshaller::encode)))
@@ -25,7 +25,7 @@ object JsonGameStateMarshaller : Marshaller<GameState, JsonObject> {
       .put(player, JsonPlayerMarshaller.encode(entry.value))
   }
 
-  override fun decode(raw: JsonObject): GameState {
+  fun decode(raw: JsonObject): GameState {
     val players = persistentHashMapOf(*raw.getJsonArrayOfType<JsonObject>(players).map(::decodeEntry).toTypedArray())
     val tiles = raw
       .getJsonArrayOfType<JsonObject>(tiles)

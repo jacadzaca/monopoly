@@ -4,15 +4,15 @@ import com.jacadzaca.monopoly.gamelogic.*
 import io.vertx.core.json.*
 import java.math.*
 
-object JsonEstateMarshaller : Marshaller<Estate, JsonObject> {
-  override fun encode(obj: Estate): JsonObject {
+object JsonEstateMarshaller  {
+  fun encode(obj: Estate): JsonObject {
     return JsonObject()
       .put("type", obj::class.simpleName)
       .put("price", obj.price.toString())
       .put("rent", obj.rent.toString())
   }
 
-  override fun decode(raw: JsonObject): Estate {
+  fun decode(raw: JsonObject): Estate {
     return when (raw.getString("type")) {
       Estate.House::class.simpleName -> Estate.House(
         BigInteger(raw.getString("rent")),

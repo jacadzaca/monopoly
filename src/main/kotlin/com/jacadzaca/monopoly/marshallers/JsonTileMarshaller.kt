@@ -6,13 +6,13 @@ import kotlinx.collections.immutable.*
 import java.math.*
 import java.util.*
 
-object JsonTileMarshaller : Marshaller<Tile, JsonObject> {
+object JsonTileMarshaller {
   private const val price = "price"
   private const val ownersId = "owners-id"
   private const val houses = "houses"
   private const val hotels = "hotels"
 
-  override fun encode(obj: Tile): JsonObject {
+  fun encode(obj: Tile): JsonObject {
     return JsonObject()
       .put(price, obj.price.toString())
       .put(ownersId, obj.ownersId.toString())
@@ -20,7 +20,7 @@ object JsonTileMarshaller : Marshaller<Tile, JsonObject> {
       .put(hotels, JsonArray(obj.hotels.map(JsonEstateMarshaller::encode)))
   }
 
-  override fun decode(raw: JsonObject): Tile {
+  fun decode(raw: JsonObject): Tile {
     val houses = raw.getJsonArray(houses)
       .map { it as JsonObject }
       .map(JsonEstateMarshaller::decode)
