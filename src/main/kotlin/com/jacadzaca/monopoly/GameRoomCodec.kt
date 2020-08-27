@@ -13,7 +13,7 @@ class GameRoomCodec : MessageCodec<GameRoom, GameRoom> {
   }
 
   override fun encodeToWire(buffer: Buffer, s: GameRoom) {
-   JsonObject()
+    JsonObject()
       .put(version, s.version)
       .put(gameState, JsonGameStateMarshaller.encode(s.gameState))
       .writeToBuffer(buffer)

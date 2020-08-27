@@ -29,7 +29,6 @@ internal class JsonEventMarshallerTest {
     }
   }
 
-
   private object EventSource : ArgumentsProvider {
     override fun provideArguments(context: ExtensionContext?): Stream<out Arguments> {
       return Stream.of(

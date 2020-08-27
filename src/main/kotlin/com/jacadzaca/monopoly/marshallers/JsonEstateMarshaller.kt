@@ -4,7 +4,7 @@ import com.jacadzaca.monopoly.gamelogic.*
 import io.vertx.core.json.*
 import java.math.*
 
-object JsonEstateMarshaller  {
+object JsonEstateMarshaller {
   fun encode(obj: Estate): JsonObject {
     return JsonObject()
       .put("type", obj::class.simpleName)

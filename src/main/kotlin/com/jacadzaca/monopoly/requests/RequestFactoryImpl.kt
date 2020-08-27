@@ -20,7 +20,8 @@ object RequestFactoryImpl : RequestFactory {
       playersId,
       PositionCalculator.instance.calculate(player.position, gameState.tiles.size),
       gameState,
-      ::PayLiability)
+      ::PayLiability
+    )
   }
 
   override fun tilePurchaseRequest(playersId: UUID, gameState: GameState): TilePurchaseRequest {

@@ -1,8 +1,8 @@
 package com.jacadzaca.monopoly.gamelogic
 
+import kotlinx.collections.immutable.PersistentList
 import java.math.BigInteger
 import java.util.*
-import kotlinx.collections.immutable.PersistentList
 
 data class Tile(
   val houses: PersistentList<Estate>,

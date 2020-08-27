@@ -1,10 +1,10 @@
 package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.gamelogic.commands.*
-import java.util.*
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
+import java.util.*
 
 data class GameState(
   val players: PersistentMap<UUID, Player>,

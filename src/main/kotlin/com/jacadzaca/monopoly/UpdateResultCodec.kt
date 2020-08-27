@@ -13,9 +13,10 @@ class UpdateResultCodec : MessageCodec<UpdateResult, UpdateResult> {
   override fun encodeToWire(buffer: Buffer, s: UpdateResult) {
     when (s) {
       UpdateResult.Success -> successJson
-      is UpdateResult.Failure -> JsonObject()
-        .put(type, UpdateResult.Failure::class.simpleName)
-        .put(reason, s.reason)
+      is UpdateResult.Failure ->
+        JsonObject()
+          .put(type, UpdateResult.Failure::class.simpleName)
+          .put(reason, s.reason)
     }.writeToBuffer(buffer)
   }
 

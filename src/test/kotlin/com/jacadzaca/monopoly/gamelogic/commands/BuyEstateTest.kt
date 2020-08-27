@@ -8,10 +8,10 @@ import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import java.util.*
-import kotlin.random.Random
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import java.util.*
+import kotlin.random.Random
 
 internal class BuyEstateTest {
   private val tileIndex = Random.nextInt()

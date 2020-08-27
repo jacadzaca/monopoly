@@ -1,12 +1,12 @@
 package com.jacadzaca.monopoly.gamelogic
 
 import io.mockk.*
-import kotlin.random.Random
 import kotlinx.collections.immutable.persistentListOf
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import kotlin.random.Random
 
 internal class TileTest {
   private val houses = spyk(persistentListOf<Estate>())

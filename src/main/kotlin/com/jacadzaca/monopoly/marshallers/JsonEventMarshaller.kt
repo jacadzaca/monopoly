@@ -9,8 +9,8 @@ object JsonEventMarshaller {
   private const val id = "id"
   private const val newPosition = "new-position"
   private const val purchasedTileIndex = "purchased-tile-index"
-  private const val payersId = "payers-${id}"
-  private const val receiversId = "receiver-${id}"
+  private const val payersId = "payers-$id"
+  private const val receiversId = "receiver-$id"
   private const val liability = "liability"
   private const val estate = "estate"
   private const val tileIndex = "tile-index"
@@ -18,20 +18,24 @@ object JsonEventMarshaller {
 
   fun encode(obj: Event): JsonObject {
     return when (obj) {
-      is Event.PlayerMoved -> JsonObject()
-        .put(id, obj.playersId.toString())
-        .put(newPosition, obj.newPosition)
-      is Event.TilePurchased -> JsonObject()
-        .put(id, obj.buyersId.toString())
-        .put(purchasedTileIndex, obj.purchasedTilesIndex)
-      is Event.LiabilityPaid -> JsonObject()
-        .put(payersId, obj.payersId.toString())
-        .put(receiversId, obj.receiversId.toString())
-        .put(liability, obj.liability.toString())
-      is Event.EstatePurchased -> JsonObject()
-        .put(id, obj.buyersId.toString())
-        .put(tileIndex, obj.tileIndex)
-        .put(estate, JsonEstateMarshaller.encode(obj.purchasedEstate))
+      is Event.PlayerMoved ->
+        JsonObject()
+          .put(id, obj.playersId.toString())
+          .put(newPosition, obj.newPosition)
+      is Event.TilePurchased ->
+        JsonObject()
+          .put(id, obj.buyersId.toString())
+          .put(purchasedTileIndex, obj.purchasedTilesIndex)
+      is Event.LiabilityPaid ->
+        JsonObject()
+          .put(payersId, obj.payersId.toString())
+          .put(receiversId, obj.receiversId.toString())
+          .put(liability, obj.liability.toString())
+      is Event.EstatePurchased ->
+        JsonObject()
+          .put(id, obj.buyersId.toString())
+          .put(tileIndex, obj.tileIndex)
+          .put(estate, JsonEstateMarshaller.encode(obj.purchasedEstate))
     }.put(type, obj::class.simpleName)
   }
 
@@ -53,7 +57,8 @@ object JsonEventMarshaller {
       Event.EstatePurchased::class.simpleName -> Event.EstatePurchased(
         UUID.fromString(raw.getString(id)),
         raw.getInteger(tileIndex),
-        JsonEstateMarshaller.decode(raw.getJsonObject(estate)))
+        JsonEstateMarshaller.decode(raw.getJsonObject(estate))
+      )
       else -> throw IllegalStateException("Cannot parse event of type ${raw.getString("type")}")
     }
   }
