@@ -1,28 +1,18 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.marshallers.*
 import io.vertx.core.buffer.*
 import io.vertx.core.eventbus.*
-import io.vertx.core.json.*
-import io.vertx.kotlin.core.json.*
+import kotlinx.serialization.*
+import kotlinx.serialization.json.*
 
 class GameRoomCodec : MessageCodec<GameRoom, GameRoom> {
-  private companion object {
-    private const val version = "version"
-    private const val gameState = "game-state"
-  }
-
   override fun encodeToWire(buffer: Buffer, s: GameRoom) {
-    JsonObject()
-      .put(version, s.version)
-      .put(gameState, JsonGameStateMarshaller.encode(s.gameState))
-      .writeToBuffer(buffer)
+    buffer.appendString(Json.encodeToString(s))
   }
 
-  override fun decodeFromWire(pos: Int, buffer: Buffer): GameRoom {
-    val json = buffer.toJsonObject()
-    return GameRoom(JsonGameStateMarshaller.decode(json.getJsonObject(gameState)), json.getLong(version))
-  }
+  override fun decodeFromWire(pos: Int, buffer: Buffer): GameRoom =
+    Json.decodeFromString(buffer.getString(0, buffer.length()))
+
 
   override fun transform(s: GameRoom): GameRoom = s
 
