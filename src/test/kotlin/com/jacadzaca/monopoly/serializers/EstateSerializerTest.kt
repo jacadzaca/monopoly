@@ -16,15 +16,7 @@ internal class EstateSerializerTest {
   @ParameterizedTest
   @ArgumentsSource(EstateProvider::class)
   fun `decode method is the inverse of the encode method`(estate: Estate) {
-    assertEquals(estate, Json.decodeFromString(EstateSerializer, Json.encodeToString(EstateSerializer, estate)))
-  }
-
-  @Test
-  fun `decode throws SerializationException if type is unknown`() {
-    val json = "{\"type\": ${Random.nextPositive(from = 2)} }"
-    assertThrows<SerializationException> {
-      Json.decodeFromString(EstateSerializer, json)
-    }
+    assertEquals(estate, Json.decodeFromString<Estate>(Json.encodeToString(estate)))
   }
 
   private object EstateProvider : ArgumentsProvider {

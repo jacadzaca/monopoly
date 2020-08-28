@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.marshallers
+package com.jacadzaca.monopoly.serializers
 
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.*
