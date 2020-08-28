@@ -11,13 +11,6 @@ fun Random.nextPositive(from: Int = 1, until: Int = Int.MAX_VALUE): Int {
   return nextInt(from, until)
 }
 
-fun Random.nextString(): String {
-  return generateSequence { nextInt(Char.MIN_VALUE.toInt(), Char.MAX_VALUE.toInt()) }
-    .map(Int::toChar)
-    .take(200)
-    .toString()
-}
-
 fun createHouses(): PersistentList<Estate> {
   return (1..10)
     .map { Estate.House(Random.nextPositive().toBigInteger(), Random.nextPositive().toBigInteger()) }
