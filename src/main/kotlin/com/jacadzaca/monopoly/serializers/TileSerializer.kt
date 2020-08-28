@@ -20,11 +20,14 @@ object TileSerializer : KSerializer<Tile> {
     element("ownersId", UUIDSerializer.descriptor, isOptional = true)
   }
 
+  /**
+   * @throws IllegalMonitorStateException if there are too many indexes
+   */
   override fun deserialize(decoder: Decoder): Tile {
     return decoder.decodeStructure(descriptor) {
       var houses = persistentListOf<Estate>()
       var hotels = persistentListOf<Estate>()
-      var price  = BigInteger.ZERO
+      var price = BigInteger.ZERO
       var ownersId: UUID? = null
       while (true) {
         when (val index = decodeElementIndex(descriptor)) {
@@ -42,8 +45,8 @@ object TileSerializer : KSerializer<Tile> {
 
   override fun serialize(encoder: Encoder, value: Tile) {
     encoder.encodeStructure(descriptor) {
-      encodeEstateList(0,value.houses.toList())
-      encodeEstateList(1,value.hotels.toList())
+      encodeEstateList(0, value.houses.toList())
+      encodeEstateList(1, value.hotels.toList())
       encodeSerializableElement(descriptor, 2, BigIntegerSerializer, value.price)
       if (value.ownersId != null) {
         encodeSerializableElement(descriptor, 3, UUIDSerializer, value.ownersId)
