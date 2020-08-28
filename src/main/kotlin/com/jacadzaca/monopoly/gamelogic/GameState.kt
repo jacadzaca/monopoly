@@ -1,11 +1,15 @@
+@file:UseSerializers(PlayersMapSerializer::class, UUIDSerializer::class, PlayersMapSerializer::class)
 package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.gamelogic.commands.*
+import com.jacadzaca.monopoly.serializers.*
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.serialization.*
 import java.util.*
 
+@Serializable
 data class GameState(
   val players: PersistentMap<UUID, Player>,
   val tiles: PersistentList<Tile>,
