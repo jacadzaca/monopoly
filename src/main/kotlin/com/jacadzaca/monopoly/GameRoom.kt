@@ -18,7 +18,7 @@ class GameRoom constructor() : ClusterSerializable {
   private lateinit var _gameState: GameState
   private var _version: Long = 0L
 
-  constructor(gameState: GameState, version: Long) {
+  constructor(gameState: GameState, version: Long = 0L) {
     _gameState = gameState
     _version = version
   }
