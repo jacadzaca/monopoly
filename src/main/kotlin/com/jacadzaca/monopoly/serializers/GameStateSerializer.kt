@@ -9,6 +9,12 @@ import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 import java.util.*
 
+/**
+ * DISCLAIMER:
+ * DO NOT USE [kotlinx.serialization] IN ORDER DO DESERIALIZE UNTRUSTED INPUT!
+ * [deserialize] methods throw Java's [IllegalStateException]
+ * when the JSON string dose not comfort to the [descriptor] scheme
+ */
 object GameStateSerializer : KSerializer<GameState> {
   private val playersMapSerializer = MapSerializer(UUIDSerializer, Player.serializer())
   private val tilesSerializer = ListSerializer(TileSerializer)
@@ -20,9 +26,6 @@ object GameStateSerializer : KSerializer<GameState> {
     element("events", eventsSerializer.descriptor)
   }
 
-  /**
-   * @throws IllegalAccessException if there are too many indexes
-   */
   override fun deserialize(decoder: Decoder): GameState {
     return decoder.decodeStructure(descriptor) {
       val players: PersistentMap<UUID, Player>? = decodePlayers()

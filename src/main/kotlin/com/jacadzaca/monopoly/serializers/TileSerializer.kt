@@ -1,6 +1,8 @@
 package com.jacadzaca.monopoly.serializers
 
 import com.jacadzaca.monopoly.gamelogic.*
+import com.jacadzaca.monopoly.serializers.TileSerializer.descriptor
+import com.jacadzaca.monopoly.serializers.TileSerializer.deserialize
 import kotlinx.collections.immutable.*
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.*
@@ -10,6 +12,12 @@ import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import java.math.*
 import java.util.*
 
+/**
+ * DISCLAIMER:
+ * DO NOT USE [kotlinx.serialization] IN ORDER DO DESERIALIZE UNTRUSTED INPUT!
+ * [deserialize] methods throw Java's [IllegalStateException]
+ * when the JSON string dose not comfort to the [descriptor] scheme
+ */
 object TileSerializer : KSerializer<Tile> {
   private val estateListSerializer = ListSerializer(Estate.serializer())
 
@@ -20,9 +28,6 @@ object TileSerializer : KSerializer<Tile> {
     element("ownersId", UUIDSerializer.descriptor, isOptional = true)
   }
 
-  /**
-   * @throws IllegalMonitorStateException if there are too many indexes
-   */
   override fun deserialize(decoder: Decoder): Tile {
     return decoder.decodeStructure(descriptor) {
       var houses = persistentListOf<Estate>()
