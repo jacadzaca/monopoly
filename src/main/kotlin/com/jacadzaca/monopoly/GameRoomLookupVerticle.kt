@@ -13,7 +13,7 @@ class GameRoomLookupVerticle : CoroutineVerticle() {
 
   override suspend fun start() {
     val rooms = vertx.sharedData().getLocalAsyncMap<String, GameRoom>("game-rooms").await()
-    val eventBus = vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GameRoomCodec())
+    val eventBus = vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
     launch {
       val messages = eventBus.consumer<String>(ADDRESS).toChannel(vertx)
       for (message in messages) {

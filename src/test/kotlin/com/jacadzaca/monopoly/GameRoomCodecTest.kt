@@ -10,7 +10,6 @@ import java.util.*
 import kotlin.random.Random
 
 internal class GameRoomCodecTest {
-  private val codec = GameRoomCodec()
   private val room = GameRoom(
     GameState(
       persistentMapOf(
@@ -34,7 +33,7 @@ internal class GameRoomCodecTest {
   @Test
   fun `decode method is the inverse of the encode method`() {
     val buffer = Buffer.buffer()
-    codec.encodeToWire(buffer, room)
-    assertEquals(room, codec.decodeFromWire(0, buffer))
+    GameRoomCodec.encodeToWire(buffer, room)
+    assertEquals(room, GameRoomCodec.decodeFromWire(0, buffer))
   }
 }
