@@ -1,7 +1,12 @@
+@file:UseSerializers(BigIntegerSerializer::class)
+
 package com.jacadzaca.monopoly.gamelogic
 
+import com.jacadzaca.monopoly.serializers.*
+import kotlinx.serialization.*
 import java.math.BigInteger
 
+@Serializable
 data class Player(
   val position: Int = 0,
   val balance: BigInteger
