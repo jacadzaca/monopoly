@@ -1,4 +1,8 @@
-@file:UseSerializers(PlayersMapSerializer::class, UUIDSerializer::class, PlayersMapSerializer::class)
+@file:UseSerializers(
+  PlayersMapSerializer::class,
+  UUIDSerializer::class,
+  PlayersMapSerializer::class,
+  TileSerializer::class)
 package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.gamelogic.commands.*
