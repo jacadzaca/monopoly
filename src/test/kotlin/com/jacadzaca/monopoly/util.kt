@@ -16,9 +16,3 @@ fun createHouses(): PersistentList<Estate> {
     .map { Estate.House(Random.nextPositive().toBigInteger(), Random.nextPositive().toBigInteger()) }
     .toPersistentList()
 }
-
-fun createHotels(): PersistentList<Estate> {
-  return (1..10)
-    .map { Estate.Hotel(Random.nextPositive().toBigInteger(), Random.nextPositive().toBigInteger()) }
-    .toPersistentList()
-}
