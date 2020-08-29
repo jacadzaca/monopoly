@@ -27,15 +27,16 @@ class GameRoomUpdateVerticle : CoroutineVerticle() {
         val updateWith = request.body()
         //val lock = vertx.sharedData().getLockAwait(roomsName)
         val room = rooms.getAwait(roomsName)
-        when {
-          room == null -> request.reply(UpdateResult.Failure(INVALID_ROOM_ID))
-          room.version != updateWith.version -> request.reply(UpdateResult.Failure(OTHER_CHANGE_WAS_APPLIED))
+        val result = when {
+          room == null -> UpdateResult.Failure(INVALID_ROOM_ID)
+          room.version != updateWith.version -> UpdateResult.Failure(OTHER_CHANGE_WAS_APPLIED)
           else -> {
-            rooms.putAwait(roomsName, request.body())
-            request.reply(UpdateResult.Success)
+            rooms.putAwait(roomsName, request.body().copy(version = room.version + 1))
+            UpdateResult.Success
           }
         }
         //lock.release()
+        request.reply(result)
       }
     }
     logger.info("Started a ${GameRoomUpdateVerticle::class.qualifiedName} instance")

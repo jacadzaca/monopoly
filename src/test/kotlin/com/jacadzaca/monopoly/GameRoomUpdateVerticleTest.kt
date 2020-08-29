@@ -41,13 +41,14 @@ internal class GameRoomUpdateVerticleTest {
   @RepeatedTest(5)
   fun `verticle updates the game room if the ids match and no changes were applied to the room`(vertx: Vertx) {
     val newRoom = mockk<GameRoom>()
+    val newRoomWithIncrementedVersion = mockk<GameRoom>()
     val version = room.version
     every { newRoom.version } returns version
-    every { newRoom.copy(version = version + 1) } returns newRoom
+    every { newRoom.copy(version = version + 1) } returns newRoomWithIncrementedVersion
     runBlocking {
       val result = sendRequest(vertx, newRoom)
       assertEquals(UpdateResult.Success, result)
-      assertSame(rooms.getAwait(roomsName), newRoom)
+      assertSame(rooms.getAwait(roomsName), newRoomWithIncrementedVersion)
     }
   }
 
