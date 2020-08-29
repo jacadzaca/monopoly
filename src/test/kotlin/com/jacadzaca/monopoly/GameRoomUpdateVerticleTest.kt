@@ -26,7 +26,7 @@ internal class GameRoomUpdateVerticleTest {
     every { room.gameState } returns mockk()
     runBlocking {
       vertx.deployVerticle(GameRoomUpdateVerticle())
-      rooms = vertx.sharedData().getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
+      rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
       rooms.clearAwait()
       rooms.putAwait(roomsName, room)
     }
@@ -53,7 +53,7 @@ internal class GameRoomUpdateVerticleTest {
   }
 
   @Test
-  fun `verticle returns Failure if user wants to update a room that was changed`(vertx: Vertx) {
+  fun `verticle replies with Failure if user wants to update a room that was changed`(vertx: Vertx) {
     val changedRoom = mockk<GameRoom>()
     val failure = UpdateResult.Failure(OTHER_CHANGE_WAS_APPLIED)
     runBlocking {
@@ -65,7 +65,7 @@ internal class GameRoomUpdateVerticleTest {
   }
 
   @Test
-  fun `updateGameState returns Failure if user passes an id that dose not match to any room`(vertx: Vertx) {
+  fun `verticle replies with Failure if user passes an id that dose not match to any room`(vertx: Vertx) {
     runBlocking {
       assertEquals(UpdateResult.Failure(INVALID_ROOM_ID), sendRequest(vertx, room, Random.nextString()))
     }
