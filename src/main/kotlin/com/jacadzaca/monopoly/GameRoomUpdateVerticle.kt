@@ -9,8 +9,8 @@ class GameRoomUpdateVerticle : CoroutineVerticle() {
   companion object {
     const val ADDRESS = "update-game-room"
     internal const val ROOMS_NAME = "roomsName"
-    internal const val INVALID_ROOM_ID = "No game room with such id"
-    internal const val OTHER_CHANGE_WAS_APPLIED = "Rooms' versions differ, cannot apply change"
+    internal val INVALID_ROOM_ID = UpdateResult.Failure("No game room with such id")
+    internal val OTHER_CHANGE_WAS_APPLIED = UpdateResult.Failure("Rooms' versions differ, cannot apply change")
     private val logger = LoggerFactory.getLogger(this::class.java)
   }
 
@@ -28,8 +28,8 @@ class GameRoomUpdateVerticle : CoroutineVerticle() {
         val lock = vertx.sharedData().getLockAwait(roomsName)
         val room = rooms.getAwait(roomsName)
         val result = when {
-          room == null -> UpdateResult.Failure(INVALID_ROOM_ID)
-          room.version != updateWith.version -> UpdateResult.Failure(OTHER_CHANGE_WAS_APPLIED)
+          room == null -> INVALID_ROOM_ID
+          room.version != updateWith.version -> OTHER_CHANGE_WAS_APPLIED
           else -> {
             rooms.putAwait(roomsName, request.body().copy(version = room.version + 1))
             UpdateResult.Success

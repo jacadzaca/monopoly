@@ -50,19 +50,18 @@ internal class GameRoomUpdateVerticleTest {
   @Test
   fun `verticle replies with Failure if user wants to update a room that was changed`(vertx: Vertx) {
     val changedRoom = mockk<GameRoom>()
-    val failure = UpdateResult.Failure(OTHER_CHANGE_WAS_APPLIED)
     runBlocking {
       every { changedRoom.version } returns room.version + 1L
-      assertEquals(failure, sendRequest(vertx, changedRoom))
+      assertEquals(OTHER_CHANGE_WAS_APPLIED, sendRequest(vertx, changedRoom))
       every { changedRoom.version } returns room.version + Random.nextPositive()
-      assertEquals(failure, sendRequest(vertx, changedRoom))
+      assertEquals(OTHER_CHANGE_WAS_APPLIED, sendRequest(vertx, changedRoom))
     }
   }
 
   @Test
   fun `verticle replies with Failure if user passes an id that dose not match to any room`(vertx: Vertx) {
     runBlocking {
-      assertEquals(UpdateResult.Failure(INVALID_ROOM_ID), sendRequest(vertx, room, Random.nextString()))
+      assertEquals(INVALID_ROOM_ID, sendRequest(vertx, room, Random.nextString()))
     }
   }
 
