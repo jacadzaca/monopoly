@@ -7,7 +7,7 @@ interface GameRoomRepository {
   companion object {
     private var instance: GameRoomRepositoryImpl? = null
 
-    fun instance(vertx: Vertx): GameRoomRepositoryImpl {
+    fun instance(vertx: Vertx): GameRoomRepository {
       if (instance == null) {
         instance = GameRoomRepositoryImpl(vertx)
       }
