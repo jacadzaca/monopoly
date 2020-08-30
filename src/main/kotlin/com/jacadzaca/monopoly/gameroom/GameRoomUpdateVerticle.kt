@@ -43,7 +43,7 @@ class GameRoomUpdateVerticle : CoroutineVerticle() {
       room == null -> INVALID_ROOM_ID
       room.version != updatedRoom.version -> OTHER_CHANGE_WAS_APPLIED
       else -> {
-        rooms.putAwait(roomsName, updatedRoom.copy(version = room.version + 1))
+        rooms.putAwait(roomsName, updatedRoom.incrementVersion())
         UpdateResult.Success
       }
     }

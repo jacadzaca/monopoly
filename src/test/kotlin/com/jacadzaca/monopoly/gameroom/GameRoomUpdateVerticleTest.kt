@@ -40,7 +40,7 @@ internal class GameRoomUpdateVerticleTest {
     val newRoomWithIncrementedVersion = mockk<GameRoom>()
     val version = room.version
     every { newRoom.version } returns version
-    every { newRoom.copy(version = version + 1) } returns newRoomWithIncrementedVersion
+    every { newRoom.incrementVersion() } returns newRoomWithIncrementedVersion
     runBlocking {
       val result = sendRequest(vertx, newRoom)
       assertEquals(UpdateResult.Success, result)
