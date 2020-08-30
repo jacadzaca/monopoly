@@ -14,7 +14,6 @@ object GameRoomCodec : MessageCodec<GameRoom, GameRoom> {
   override fun decodeFromWire(pos: Int, buffer: Buffer): GameRoom =
     Json.decodeFromString(buffer.getString(pos, buffer.length()))
 
-
   override fun transform(s: GameRoom): GameRoom = s
 
   override fun name(): String = this::class.simpleName!!
