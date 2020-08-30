@@ -8,6 +8,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.serialization.*
 import java.util.*
 
+@Serializable(with = GameStateSerializer::class)
 data class GameState(
   val players: PersistentMap<UUID, Player>,
   val tiles: PersistentList<Tile>,
