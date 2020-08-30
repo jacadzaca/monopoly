@@ -25,7 +25,7 @@ class GameRoomUpdateVerticle : CoroutineVerticle() {
       for (request in requests) {
         val roomsName = request.headers()[ROOMS_NAME]
         val updateWith = request.body()
-        //val lock = vertx.sharedData().getLockAwait(roomsName)
+        val lock = vertx.sharedData().getLockAwait(roomsName)
         val room = rooms.getAwait(roomsName)
         val result = when {
           room == null -> UpdateResult.Failure(INVALID_ROOM_ID)
@@ -35,7 +35,7 @@ class GameRoomUpdateVerticle : CoroutineVerticle() {
             UpdateResult.Success
           }
         }
-        //lock.release()
+        lock.release()
         request.reply(result)
       }
     }

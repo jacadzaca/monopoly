@@ -32,11 +32,6 @@ internal class GameRoomUpdateVerticleTest {
     }
   }
 
-  //@Test
-  fun `verticle always releases lock`() {
-    TODO("No clue how to implement it")
-  }
-
   // repeat in order to check if the verticle dose not 'block' itself
   @RepeatedTest(5)
   fun `verticle updates the game room if the ids match and no changes were applied to the room`(vertx: Vertx) {
