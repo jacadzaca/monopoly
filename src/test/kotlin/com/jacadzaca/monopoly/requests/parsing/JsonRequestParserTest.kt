@@ -23,13 +23,13 @@ internal class JsonRequestParserTest {
 
   @Test
   fun `parse returns Failure if json dose not contain type field`() {
-    assertEquals(ParsingResult.Failure(JsonRequestParser.missingType), parser.parse(json, playersId, gameState))
+    assertEquals(Result.failure<Request>(JsonRequestParser.missingType), parser.parse(json, playersId, gameState))
   }
 
   @Test
   fun `parse returns Failure if json specifies an unknown type`() {
     val json = json.put("type", randomString())
-    assertEquals(ParsingResult.Failure(JsonRequestParser.unknownType), parser.parse(json, playersId, gameState))
+    assertEquals(Result.failure<Request>(JsonRequestParser.unknownType), parser.parse(json, playersId, gameState))
   }
 
   @Test
@@ -37,7 +37,7 @@ internal class JsonRequestParserTest {
     val json = json.put("type", "move")
     val playerMovementRequest = mockk<PlayerMovementRequest>()
     every { requestFactory.playerMoveRequest(playersId, gameState) } returns playerMovementRequest
-    assertEquals(ParsingResult.Success(playerMovementRequest), parser.parse(json, playersId, gameState))
+    assertEquals(Result.success(playerMovementRequest), parser.parse(json, playersId, gameState))
   }
 
   @Test
@@ -45,7 +45,7 @@ internal class JsonRequestParserTest {
     val json = json.put("type", "tile-purchase")
     val tilePurchaseRequest = mockk<TilePurchaseRequest>()
     every { requestFactory.tilePurchaseRequest(playersId, gameState) } returns tilePurchaseRequest
-    assertEquals(ParsingResult.Success(tilePurchaseRequest), parser.parse(json, playersId, gameState))
+    assertEquals(Result.success(tilePurchaseRequest), parser.parse(json, playersId, gameState))
   }
 
   @Test
@@ -53,7 +53,7 @@ internal class JsonRequestParserTest {
     val json = json.put("type", "house-purchase")
     val housePurchaseRequest = mockk<EstatePurchaseRequest>()
     every { requestFactory.housePurchaseRequest(playersId, gameState) } returns housePurchaseRequest
-    assertEquals(ParsingResult.Success(housePurchaseRequest), parser.parse(json, playersId, gameState))
+    assertEquals(Result.success(housePurchaseRequest), parser.parse(json, playersId, gameState))
   }
 
   @Test
@@ -61,7 +61,7 @@ internal class JsonRequestParserTest {
     val json = json.put("type", "hotel-purchase")
     val hotelPurchaseRequest = mockk<EstatePurchaseRequest>()
     every { requestFactory.hotelPurchaseRequest(playersId, gameState) } returns hotelPurchaseRequest
-    assertEquals(ParsingResult.Success(hotelPurchaseRequest), parser.parse(json, playersId, gameState))
+    assertEquals(Result.success(hotelPurchaseRequest), parser.parse(json, playersId, gameState))
   }
 
   private fun randomString(): String {

@@ -7,20 +7,20 @@ import java.util.*
 
 class JsonRequestParser(private val requestFactory: RequestFactory) : RequestParser<JsonObject> {
   internal companion object {
-    internal const val missingType = "Json missing type [string] field"
-    internal const val unknownType = "Invalid value in type field"
+    internal val missingType = IllegalArgumentException("Json missing type [string] field")
+    internal val unknownType = IllegalArgumentException("Invalid value in type field")
   }
 
-  override fun parse(raw: JsonObject, playersId: UUID, gameState: GameState): ParsingResult {
+  override fun parse(raw: JsonObject, playersId: UUID, gameState: GameState): Result<Request> {
     return if (!raw.containsKey("type")) {
-      ParsingResult.Failure(missingType)
+      Result.failure(missingType)
     } else {
       when (raw.getString("type")) {
-        "move" -> ParsingResult.Success(requestFactory.playerMoveRequest(playersId, gameState))
-        "tile-purchase" -> ParsingResult.Success(requestFactory.tilePurchaseRequest(playersId, gameState))
-        "house-purchase" -> ParsingResult.Success(requestFactory.housePurchaseRequest(playersId, gameState))
-        "hotel-purchase" -> ParsingResult.Success(requestFactory.hotelPurchaseRequest(playersId, gameState))
-        else -> ParsingResult.Failure(unknownType)
+        "move" -> Result.success(requestFactory.playerMoveRequest(playersId, gameState))
+        "tile-purchase" -> Result.success(requestFactory.tilePurchaseRequest(playersId, gameState))
+        "house-purchase" -> Result.success(requestFactory.housePurchaseRequest(playersId, gameState))
+        "hotel-purchase" -> Result.success(requestFactory.hotelPurchaseRequest(playersId, gameState))
+        else -> Result.failure(unknownType)
       }
     }
   }
