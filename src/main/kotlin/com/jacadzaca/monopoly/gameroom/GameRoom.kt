@@ -1,6 +1,6 @@
 @file:UseSerializers(GameStateSerializer::class)
 
-package com.jacadzaca.monopoly
+package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.serializers.*

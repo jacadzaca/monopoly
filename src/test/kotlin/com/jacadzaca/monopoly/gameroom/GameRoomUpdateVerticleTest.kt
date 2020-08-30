@@ -1,7 +1,8 @@
-package com.jacadzaca.monopoly
+package com.jacadzaca.monopoly.gameroom
 
-import com.jacadzaca.monopoly.GameRoomUpdateVerticle.Companion.INVALID_ROOM_ID
-import com.jacadzaca.monopoly.GameRoomUpdateVerticle.Companion.OTHER_CHANGE_WAS_APPLIED
+import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gameroom.GameRoomUpdateVerticle.Companion.INVALID_ROOM_ID
+import com.jacadzaca.monopoly.gameroom.GameRoomUpdateVerticle.Companion.OTHER_CHANGE_WAS_APPLIED
 import io.mockk.*
 import io.vertx.core.*
 import io.vertx.core.shareddata.*

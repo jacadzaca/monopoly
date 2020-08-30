@@ -1,5 +1,6 @@
-package com.jacadzaca.monopoly
+package com.jacadzaca.monopoly.gameroom
 
+import com.jacadzaca.monopoly.*
 import io.mockk.*
 import io.vertx.core.Vertx
 import io.vertx.junit5.*

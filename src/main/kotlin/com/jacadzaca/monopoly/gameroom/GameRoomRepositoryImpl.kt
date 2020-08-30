@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly
+package com.jacadzaca.monopoly.gameroom
 
 import io.vertx.core.*
 import io.vertx.kotlin.core.eventbus.*
