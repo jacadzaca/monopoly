@@ -2,6 +2,7 @@ package com.jacadzaca.monopoly.requests
 
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.MovePlayer
+import com.jacadzaca.monopoly.requests.Request.Companion.INVALID_PLAYER_ID
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -20,12 +21,12 @@ internal class PlayerMovementRequestTest {
     every { gameState.players[playersId] } returns player
     val createdMove = mockk<MovePlayer>()
     every { createMove(player, playersId, gameState) } returns createdMove
-    assertEquals(ValidationResult.Success(createdMove), request.validate())
+    assertEquals(Result.success(createdMove), request.validate())
   }
 
   @Test
   fun `validate returns Failure if the event references a non-existing player`() {
     every { gameState.players[playersId] } returns null
-    assertEquals(ValidationResult.Failure(Request.invalidPlayerId), request.validate())
+    assertEquals(INVALID_PLAYER_ID, request.validate())
   }
 }

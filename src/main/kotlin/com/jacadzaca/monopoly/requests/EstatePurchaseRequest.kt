@@ -1,13 +1,11 @@
 package com.jacadzaca.monopoly.requests
 
-import com.jacadzaca.monopoly.gamelogic.Estate
-import com.jacadzaca.monopoly.gamelogic.GameState
-import com.jacadzaca.monopoly.gamelogic.Player
-import com.jacadzaca.monopoly.gamelogic.Tile
-import com.jacadzaca.monopoly.gamelogic.commands.BuyEstate
-import com.jacadzaca.monopoly.requests.Request.Companion.buyerHasInsufficientBalance
-import com.jacadzaca.monopoly.requests.Request.Companion.invalidPlayerId
-import java.util.UUID
+import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gamelogic.*
+import com.jacadzaca.monopoly.gamelogic.commands.*
+import com.jacadzaca.monopoly.requests.Request.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
+import com.jacadzaca.monopoly.requests.Request.Companion.INVALID_PLAYER_ID
+import java.util.*
 
 class EstatePurchaseRequest(
   private val buyersId: UUID,
@@ -17,18 +15,20 @@ class EstatePurchaseRequest(
   private val context: GameState
 ) : Request {
   internal companion object {
-    internal const val tileNotOwnedByBuyer = "Buyer dose not own the tile where he wants to buy a estate"
-    internal const val notEnoughHouses = "There are not enough houses on the tile where a hotel is to be placed "
+    internal val TILE_NOT_OWNED_BY_BUYER =
+      Result.failure<Command>(ValidationException("Buyer dose not own the tile where he wants to buy a estate"))
+    internal val NOT_ENOUGH_HOUSES =
+      Result.failure<Command>(ValidationException("There are not enough houses on the tile where a hotel is to be placed"))
   }
 
-  override fun validate(): ValidationResult {
-    val buyer = context.players[buyersId] ?: return ValidationResult.Failure(invalidPlayerId)
+  override fun validate(): Result<Command> {
+    val buyer = context.players[buyersId] ?: return INVALID_PLAYER_ID
     val tile = context.tiles[buyer.position]
     return when {
-      tile.ownersId != buyersId -> ValidationResult.Failure(tileNotOwnedByBuyer)
-      estate.price > buyer.balance -> ValidationResult.Failure(buyerHasInsufficientBalance)
-      estate is Estate.Hotel && tile.houseCount() < requiredHousesForHotel -> ValidationResult.Failure(notEnoughHouses)
-      else -> ValidationResult.Success(createPurchase(buyer, buyersId, tile, buyer.position, estate, context))
+      tile.ownersId != buyersId -> TILE_NOT_OWNED_BY_BUYER
+      estate.price > buyer.balance -> BUYER_HAS_INSUFFICIENT_BALANCE
+      estate is Estate.Hotel && tile.houseCount() < requiredHousesForHotel -> NOT_ENOUGH_HOUSES
+      else -> Result.success(createPurchase(buyer, buyersId, tile, buyer.position, estate, context))
     }
   }
 }

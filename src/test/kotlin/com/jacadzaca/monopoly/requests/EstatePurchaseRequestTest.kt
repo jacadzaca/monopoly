@@ -3,7 +3,9 @@ package com.jacadzaca.monopoly.requests
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
-import com.jacadzaca.monopoly.requests.EstatePurchaseRequest.Companion.notEnoughHouses
+import com.jacadzaca.monopoly.requests.EstatePurchaseRequest.Companion.NOT_ENOUGH_HOUSES
+import com.jacadzaca.monopoly.requests.EstatePurchaseRequest.Companion.TILE_NOT_OWNED_BY_BUYER
+import com.jacadzaca.monopoly.requests.Request.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
 import io.mockk.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
@@ -50,7 +52,7 @@ internal class EstatePurchaseRequestTest {
       buyer.balance - BigInteger.ONE,
       Random.nextInt(1, buyer.balance.toInt()).toBigInteger()
     )
-    val success = ValidationResult.Success(createdEstatePurchase)
+    val success = Result.success(createdEstatePurchase)
     assertEquals(success, housePurchaseRequest.validate())
     assertEquals(success, housePurchaseRequest.validate())
     verify { house.price }
@@ -69,7 +71,7 @@ internal class EstatePurchaseRequestTest {
       buyer.balance - Random.nextInt(1, buyer.balance.toInt()).toBigInteger()
     )
     every { tile.houseCount() } returnsMany listOf(requiredHousesForHotel, requiredHousesForHotel + 1)
-    val success = ValidationResult.Success(createdEstatePurchase)
+    val success = Result.success(createdEstatePurchase)
     assertEquals(success, hotelPurchaseRequest.validate())
     assertEquals(success, hotelPurchaseRequest.validate())
     verify { hotel.price }
@@ -81,14 +83,12 @@ internal class EstatePurchaseRequestTest {
   fun `validate returns Failure if the buyer dose not own the tile`() {
     val otherOwner = UUID.randomUUID()
     every { tile.ownersId } returnsMany listOf(otherOwner, null)
-    val failure = ValidationResult.Failure(EstatePurchaseRequest.tileNotOwnedByBuyer)
-    assertEquals(failure, housePurchaseRequest.validate())
-    assertEquals(failure, hotelPurchaseRequest.validate())
+    assertEquals(TILE_NOT_OWNED_BY_BUYER, housePurchaseRequest.validate())
+    assertEquals(TILE_NOT_OWNED_BY_BUYER, hotelPurchaseRequest.validate())
   }
 
   @Test
   fun `validate returns Failure if the buyer has insufficient funds`() {
-    val failure = ValidationResult.Failure(Request.buyerHasInsufficientBalance)
     every { house.price } returnsMany listOf(
       buyer.balance + BigInteger.ONE,
       buyer.balance + Random.nextPositive().toBigInteger()
@@ -97,20 +97,19 @@ internal class EstatePurchaseRequestTest {
       buyer.balance + BigInteger.ONE,
       buyer.balance + Random.nextPositive().toBigInteger()
     )
-    assertEquals(failure, housePurchaseRequest.validate())
-    assertEquals(failure, housePurchaseRequest.validate())
-    assertEquals(failure, hotelPurchaseRequest.validate())
-    assertEquals(failure, hotelPurchaseRequest.validate())
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, housePurchaseRequest.validate())
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, housePurchaseRequest.validate())
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, hotelPurchaseRequest.validate())
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, hotelPurchaseRequest.validate())
   }
 
   @Test
   fun `validate returns Failure if the buyer wants a hotel and there are too few houses on tile`() {
-    val failure = ValidationResult.Failure(notEnoughHouses)
     every { tile.houseCount() } returnsMany listOf(
       requiredHousesForHotel - 1,
       Random.nextPositive(until = requiredHousesForHotel)
     )
-    assertEquals(failure, hotelPurchaseRequest.validate())
-    assertEquals(failure, hotelPurchaseRequest.validate())
+    assertEquals(NOT_ENOUGH_HOUSES, hotelPurchaseRequest.validate())
+    assertEquals(NOT_ENOUGH_HOUSES, hotelPurchaseRequest.validate())
   }
 }
