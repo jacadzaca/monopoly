@@ -41,9 +41,9 @@ class GameRoom() : ClusterSerializable {
     buffer.appendString(Json.encodeToString(this))
   }
 
-  fun incrementVersion(): GameRoom {
-    return GameRoom(_gameState, _version + 1L)
-  }
+  fun incrementVersion(): GameRoom = GameRoom(_gameState, _version + 1L)
+
+  fun updateGameState(gameState: GameState): GameRoom = GameRoom(gameState, _version)
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
