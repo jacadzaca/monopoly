@@ -5,8 +5,10 @@ import com.jacadzaca.monopoly.gameroom.GameRoomUpdateVerticle.Companion.INVALID_
 import com.jacadzaca.monopoly.gameroom.GameRoomUpdateVerticle.Companion.OTHER_CHANGE_WAS_APPLIED
 import io.mockk.*
 import io.vertx.core.*
+import io.vertx.core.Vertx
 import io.vertx.core.shareddata.*
 import io.vertx.junit5.*
+import io.vertx.kotlin.core.*
 import io.vertx.kotlin.core.eventbus.*
 import io.vertx.kotlin.core.shareddata.*
 import kotlinx.coroutines.*
@@ -26,7 +28,7 @@ internal class GameRoomUpdateVerticleTest {
     every { room.version } returns Random.nextPositive().toLong()
     every { room.gameState } returns mockk()
     runBlocking {
-      vertx.deployVerticle(GameRoomUpdateVerticle())
+      vertx.deployVerticleAwait(GameRoomUpdateVerticle())
       rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
       rooms.clearAwait()
       rooms.putAwait(roomsName, room)
