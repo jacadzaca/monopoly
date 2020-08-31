@@ -10,12 +10,12 @@ internal class GameRoomRepositoryImpl internal constructor(private val vertx: Ve
       .requestAwait<GameRoom>(GameRoomLookupVerticle.ADDRESS, id)
       .body()
 
-  override suspend fun update(id: String, updateWith: GameRoom): UpdateResult =
+  override suspend fun save(id: String, room: GameRoom): UpdateResult =
     vertx
       .eventBus()
       .requestAwait<UpdateResult>(
         GameRoomUpdateVerticle.ADDRESS,
-        updateWith,
+        room,
         deliveryOptionsOf()
           .addHeader(GameRoomUpdateVerticle.ROOMS_NAME, id)
       ).body()

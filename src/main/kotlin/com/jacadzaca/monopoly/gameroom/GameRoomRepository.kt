@@ -16,5 +16,5 @@ interface GameRoomRepository {
   }
 
   suspend fun getById(id: String): GameRoom?
-  suspend fun update(id: String, updateWith: GameRoom): UpdateResult
+  suspend fun save(id: String, room: GameRoom): UpdateResult
 }
