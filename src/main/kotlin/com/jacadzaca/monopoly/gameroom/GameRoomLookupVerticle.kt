@@ -1,6 +1,5 @@
 package com.jacadzaca.monopoly.gameroom
 
-import com.jacadzaca.monopoly.gameroom.codecs.*
 import io.vertx.core.impl.logging.*
 import io.vertx.kotlin.core.shareddata.*
 import io.vertx.kotlin.coroutines.*
