@@ -19,4 +19,6 @@ internal class GameRoomRepositoryImpl internal constructor(private val vertx: Ve
         deliveryOptionsOf()
           .addHeader(GameRoomUpdateVerticle.ROOMS_NAME, id)
       ).body()!!
+
+  override suspend fun update(id: String, updateWith: GameRoom): UpdateResult = save(id, updateWith)
 }
