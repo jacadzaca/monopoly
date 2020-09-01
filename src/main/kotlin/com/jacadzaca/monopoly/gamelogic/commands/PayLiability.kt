@@ -17,12 +17,12 @@ class PayLiability(
   override fun execute(): GameState {
     return if (liability > payer.balance) {
       target
-        .update(payerId, payer.detractFunds(liability))
-        .update(receiversId, receiver.addFunds(payer.balance))
+        .put(payerId, payer.detractFunds(liability))
+        .put(receiversId, receiver.addFunds(payer.balance))
     } else {
       target
-        .update(payerId, payer.detractFunds(liability))
-        .update(receiversId, receiver.addFunds(liability))
+        .put(payerId, payer.detractFunds(liability))
+        .put(receiversId, receiver.addFunds(liability))
     }
   }
 }

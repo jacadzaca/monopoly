@@ -18,7 +18,7 @@ class BuyEstate(
 
   override fun execute(): GameState {
     return target
-      .update(tileIndex, tile.addEstate(estate))
-      .update(buyersId, buyer.detractFunds(estate.price))
+      .put(tileIndex, tile.addEstate(estate))
+      .put(buyersId, buyer.detractFunds(estate.price))
   }
 }

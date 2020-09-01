@@ -26,8 +26,8 @@ internal class BuyEstateTest {
   fun setUp() {
     clearAllMocks()
     every { estate.price } returns mockk()
-    every { gameState.update(buyersId, any()) } returns gameState
-    every { gameState.update(tileIndex, any()) } returns gameState
+    every { gameState.put(buyersId, any()) } returns gameState
+    every { gameState.put(tileIndex, any()) } returns gameState
   }
 
   @Test
@@ -35,7 +35,7 @@ internal class BuyEstateTest {
     val tileWithAddedHouse = mockk<Tile>(name = "tile with added estate")
     every { tile.addEstate(estate) } returns tileWithAddedHouse
     purchase.execute()
-    verify { gameState.update(tileIndex, tileWithAddedHouse) }
+    verify { gameState.put(tileIndex, tileWithAddedHouse) }
   }
 
   @Test
@@ -45,6 +45,6 @@ internal class BuyEstateTest {
     every { estate.price } returns estatePrice
     every { buyer.detractFunds(estatePrice) } returns playerAfterPurchase
     purchase.execute()
-    verify { gameState.update(buyersId, playerAfterPurchase) }
+    verify { gameState.put(buyersId, playerAfterPurchase) }
   }
 }

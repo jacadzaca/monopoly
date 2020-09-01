@@ -22,20 +22,20 @@ internal class PayLiabilityTest {
   fun setUp() {
     clearAllMocks()
     every { payer.balance } returns payersBalance
-    every { gameState.update(payersId, any()) } returns gameState
-    every { gameState.update(receiversId, any()) } returns gameState
+    every { gameState.put(payersId, any()) } returns gameState
+    every { gameState.put(receiversId, any()) } returns gameState
   }
 
   @Test
   fun `transform detracts from the payer's balance`() {
     transformation.execute()
-    verify { gameState.update(payersId, payer.detractFunds(liability)) }
+    verify { gameState.put(payersId, payer.detractFunds(liability)) }
   }
 
   @Test
   fun `transform adds the amount to the receiver's balance`() {
     transformation.execute()
-    verify { gameState.update(receiversId, receiver.addFunds(liability)) }
+    verify { gameState.put(receiversId, receiver.addFunds(liability)) }
   }
 
   @Test
@@ -43,7 +43,7 @@ internal class PayLiabilityTest {
     val liability = payer.balance + BigInteger.ONE
     val transformation = PayLiability(payer, payersId, receiver, receiversId, liability, gameState)
     transformation.execute()
-    verify { gameState.update(receiversId, receiver.addFunds(payersBalance)) }
-    verify { gameState.update(payersId, payer.detractFunds(liability)) }
+    verify { gameState.put(receiversId, receiver.addFunds(payersBalance)) }
+    verify { gameState.put(payersId, payer.detractFunds(liability)) }
   }
 }

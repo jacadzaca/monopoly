@@ -22,6 +22,6 @@ data class MovePlayer(
       createPayment(player, playersId, target.players[tile.ownersId]!!, tile.ownersId, tile.totalRent(), target).apply()
     } else {
       target
-    }.update(playersId, player.setPosition(newPosition))
+    }.put(playersId, player.setPosition(newPosition))
   }
 }

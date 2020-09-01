@@ -16,7 +16,7 @@ class BuyTile(
 
   override fun execute(): GameState {
     return target
-      .update(tileIndex, tile.changeOwner(buyersId))
-      .update(buyersId, buyer.detractFunds(tile.price))
+      .put(tileIndex, tile.changeOwner(buyersId))
+      .put(buyersId, buyer.detractFunds(tile.price))
   }
 }
