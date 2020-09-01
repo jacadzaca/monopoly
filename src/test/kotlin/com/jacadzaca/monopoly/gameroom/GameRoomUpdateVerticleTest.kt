@@ -1,10 +1,7 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.*
-import com.jacadzaca.monopoly.gameroom.GameRoomUpdateVerticle.Companion.INVALID_ROOM_ID
-import com.jacadzaca.monopoly.gameroom.GameRoomUpdateVerticle.Companion.OTHER_CHANGE_WAS_APPLIED
 import io.mockk.*
-import io.vertx.core.*
 import io.vertx.core.Vertx
 import io.vertx.core.shareddata.*
 import io.vertx.junit5.*
@@ -20,60 +17,69 @@ import kotlin.random.*
 @ExtendWith(VertxExtension::class)
 internal class GameRoomUpdateVerticleTest {
   private val room = mockk<GameRoom>()
-  private val roomsName = Random.nextString()
+  private val roomsId = Random.nextString()
+  private val roomWithIncrementedVersion = mockk<GameRoom>()
   private lateinit var rooms: AsyncMap<String, GameRoom>
+  private var isDeployed = false
 
   @BeforeEach
   fun setUp(vertx: Vertx) {
     every { room.version } returns Random.nextPositive().toLong()
     every { room.gameState } returns mockk()
+    every { room.incrementVersion() } returns roomWithIncrementedVersion
     runBlocking {
-      vertx.deployVerticleAwait(GameRoomUpdateVerticle())
-      rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
+      if (!isDeployed) {
+        vertx.deployVerticleAwait(GameRoomUpdateVerticle())
+        rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
+        isDeployed = true
+      }
       rooms.clearAwait()
-      rooms.putAwait(roomsName, room)
-    }
-  }
-
-  // repeat in order to check if the verticle dose not 'block' itself
-  @RepeatedTest(5)
-  fun `verticle updates the game room if the ids match and no changes were applied to the room`(vertx: Vertx) {
-    val newRoom = mockk<GameRoom>()
-    val newRoomWithIncrementedVersion = mockk<GameRoom>()
-    val version = room.version
-    every { newRoom.version } returns version
-    every { newRoom.incrementVersion() } returns newRoomWithIncrementedVersion
-    runBlocking {
-      val result = sendRequest(vertx, newRoom)
-      assertEquals(UpdateResult.Success, result)
-      assertSame(rooms.getAwait(roomsName), newRoomWithIncrementedVersion)
     }
   }
 
   @Test
-  fun `verticle replies with Failure if user wants to update a room that was changed`(vertx: Vertx) {
+  fun `verticle saves the game room under given id`(vertx: Vertx) {
+    runBlocking {
+      assertSame(UpdateResult.SUCCESS, saveRoom(vertx, room))
+      assertSame(room, rooms.getAwait(roomsId))
+    }
+  }
+
+  @Test
+  fun `verticle updates the game room if their ids match and no changes were applied to the room`(vertx: Vertx) {
+    runBlocking {
+      rooms.putAwait(roomsId, room)
+      assertSame(UpdateResult.SUCCESS, saveRoom(vertx, room))
+      assertSame(roomWithIncrementedVersion, rooms.getAwait(roomsId))
+
+      rooms.putAwait(roomsId, room)
+      assertSame(UpdateResult.SUCCESS, saveRoom(vertx, room))
+      assertSame(roomWithIncrementedVersion, rooms.getAwait(roomsId))
+    }
+  }
+
+  @Test
+  fun `verticle dose nothing if user wants to update a room that was changed`(vertx: Vertx) {
     val changedRoom = mockk<GameRoom>()
+    every { changedRoom.incrementVersion() } returns mockk()
     runBlocking {
-      every { changedRoom.version } returns room.version + 1L
-      assertEquals(OTHER_CHANGE_WAS_APPLIED, sendRequest(vertx, changedRoom))
-      every { changedRoom.version } returns room.version + Random.nextPositive()
-      assertEquals(OTHER_CHANGE_WAS_APPLIED, sendRequest(vertx, changedRoom))
+      rooms.putAwait(roomsId, room)
+      every { changedRoom.version } returns room.version - 1L
+      assertSame(UpdateResult.ALREADY_CHANGED, saveRoom(vertx, changedRoom))
+      assertSame(room, rooms.getAwait(roomsId))
+
+      rooms.putAwait(roomsId, room)
+      every { changedRoom.version } returns room.version - Random.nextPositive()
+      assertSame(UpdateResult.ALREADY_CHANGED, saveRoom(vertx, changedRoom))
+      assertSame(room, rooms.getAwait(roomsId))
     }
   }
 
-  @Test
-  fun `verticle replies with Failure if user passes an id that dose not match to any room`(vertx: Vertx) {
-    runBlocking {
-      assertEquals(INVALID_ROOM_ID, sendRequest(vertx, room, Random.nextString()))
-    }
-  }
-
-  private suspend fun sendRequest(vertx: Vertx, room: GameRoom, roomsName: String = this.roomsName): UpdateResult {
-    return vertx.eventBus()
+  private suspend fun saveRoom(vertx: Vertx, room: GameRoom) =
+    vertx.eventBus()
       .requestAwait<UpdateResult>(
         GameRoomUpdateVerticle.ADDRESS,
         room,
-        options = deliveryOptionsOf().addHeader(GameRoomUpdateVerticle.ROOMS_NAME, roomsName)
+        deliveryOptionsOf().addHeader(GameRoomUpdateVerticle.ROOMS_NAME, roomsId)
       ).body()
-  }
 }
