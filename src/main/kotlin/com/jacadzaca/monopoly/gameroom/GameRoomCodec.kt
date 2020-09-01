@@ -1,6 +1,5 @@
-package com.jacadzaca.monopoly.gameroom.codecs
+package com.jacadzaca.monopoly.gameroom
 
-import com.jacadzaca.monopoly.gameroom.*
 import io.vertx.core.buffer.*
 import io.vertx.core.eventbus.*
 import kotlinx.serialization.*
