@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.gameroom
 
+import com.jacadzaca.monopoly.gameroom.GameRoomCreationVerticle.Companion.ROOMS_NAME
 import io.vertx.core.*
 import io.vertx.kotlin.core.eventbus.*
 
@@ -10,15 +11,40 @@ internal class GameRoomRepositoryImpl internal constructor(private val vertx: Ve
       .requestAwait<GameRoom>(GameRoomLookupVerticle.ADDRESS, id)
       .body()
 
-  override suspend fun saveIfAbsent(id: String, room: GameRoom) =
-    vertx
+  override suspend fun saveIfAbsent(id: String, room: GameRoom): Result<Unit> {
+    val result = vertx
       .eventBus()
-      .requestAwait<UpdateResult>(
-        GameRoomUpdateVerticle.ADDRESS,
+      .requestAwait<Int>(
+        GameRoomCreationVerticle.ADDRESS,
         room,
         deliveryOptionsOf()
-          .addHeader(GameRoomUpdateVerticle.ROOMS_NAME, id)
-      ).body()!!
+          .addHeader(ROOMS_NAME, id)
+          .setCodecName(GameRoomCodec.name())
+      )
+      .body()
+    return when (result) {
+      GameRoomCreationVerticle.SUCCESS -> GameRoomRepository.SUCCESS
+      GameRoomCreationVerticle.NAME_TAKEN -> GameRoomRepository.NAME_TAKEN
+      else -> throw IllegalStateException("Unknown error code for $result")
+    }
+  }
 
-  override suspend fun update(id: String, updateWith: GameRoom): UpdateResult = saveIfAbsent(id, updateWith)
+  override suspend fun update(id: String, updateWith: GameRoom): Result<Unit> {
+    val result = vertx
+      .eventBus()
+      .requestAwait<Int>(
+        GameRoomUpdateVerticle.ADDRESS,
+        updateWith,
+        deliveryOptionsOf()
+          .addHeader(ROOMS_NAME, id)
+          .setCodecName(GameRoomCodec.name())
+      )
+      .body()
+    return when (result) {
+      GameRoomUpdateVerticle.SUCCESS -> GameRoomRepository.SUCCESS
+      GameRoomUpdateVerticle.ALREADY_CHANGED -> GameRoomRepository.ALREADY_CHANGED
+      GameRoomUpdateVerticle.NO_ROOM_WITH_NAME -> GameRoomRepository.NO_ROOM_WITH_NAME
+      else -> throw IllegalStateException("Unknown error code for $result")
+    }
+  }
 }
