@@ -2,8 +2,6 @@ package com.jacadzaca.monopoly.requests.parsing
 
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.requests.*
-import com.jacadzaca.monopoly.requests.parsing.JsonRequestParser.Companion.MISSING_TYPE
-import com.jacadzaca.monopoly.requests.parsing.JsonRequestParser.Companion.UNKNOWN_TYPE
 import io.mockk.*
 import io.vertx.core.json.*
 import org.junit.jupiter.api.*
@@ -25,13 +23,13 @@ internal class JsonRequestParserTest {
 
   @Test
   fun `parse returns Failure if json dose not contain type field`() {
-    assertEquals(MISSING_TYPE, parser.parse(json, playersId, gameState))
+    assertEquals(RequestParser.MISSING_TYPE, parser.parse(json, playersId, gameState))
   }
 
   @Test
   fun `parse returns Failure if json specifies an unknown type`() {
     val json = json.put("type", randomString())
-    assertEquals(UNKNOWN_TYPE, parser.parse(json, playersId, gameState))
+    assertEquals(RequestParser.UNKNOWN_TYPE, parser.parse(json, playersId, gameState))
   }
 
   @Test
