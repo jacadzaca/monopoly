@@ -1,10 +1,12 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gameroom.GameRoomCreationVerticle.Companion.ROOMS_NAME
 import io.mockk.*
 import io.vertx.core.Vertx
 import io.vertx.core.shareddata.*
 import io.vertx.junit5.*
+import io.vertx.junit5.Timeout
 import io.vertx.kotlin.core.*
 import io.vertx.kotlin.core.eventbus.*
 import io.vertx.kotlin.core.shareddata.*
@@ -12,9 +14,11 @@ import kotlinx.coroutines.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.*
+import java.util.concurrent.*
 import kotlin.random.*
 
 @ExtendWith(VertxExtension::class)
+@Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 internal class GameRoomUpdateVerticleTest {
   private val room = mockk<GameRoom>()
   private val roomsId = Random.nextString()
@@ -38,23 +42,18 @@ internal class GameRoomUpdateVerticleTest {
   }
 
   @Test
-  fun `verticle saves the game room under given id`(vertx: Vertx) {
+  fun `verticle swaps game rooms' if their ids match`(vertx: Vertx) {
     runBlocking {
-      assertSame(UpdateResult.SUCCESS, saveRoom(vertx, room))
-      assertSame(room, rooms.getAwait(roomsId))
+      rooms.putAwait(roomsId, room)
+      assertEquals(GameRoomUpdateVerticle.SUCCESS, saveRoom(vertx, room))
+      assertSame(roomWithIncrementedVersion, rooms.getAwait(roomsId))
     }
   }
 
   @Test
-  fun `verticle updates the game room if their ids match and no changes were applied to the room`(vertx: Vertx) {
+  fun `verticle replies with failure when no game room with specified id exist`(vertx: Vertx) {
     runBlocking {
-      rooms.putAwait(roomsId, room)
-      assertSame(UpdateResult.SUCCESS, saveRoom(vertx, room))
-      assertSame(roomWithIncrementedVersion, rooms.getAwait(roomsId))
-
-      rooms.putAwait(roomsId, room)
-      assertSame(UpdateResult.SUCCESS, saveRoom(vertx, room))
-      assertSame(roomWithIncrementedVersion, rooms.getAwait(roomsId))
+      assertEquals(GameRoomUpdateVerticle.NO_ROOM_WITH_NAME, saveRoom(vertx, room))
     }
   }
 
@@ -65,21 +64,23 @@ internal class GameRoomUpdateVerticleTest {
     runBlocking {
       rooms.putAwait(roomsId, room)
       every { changedRoom.version } returns room.version - 1L
-      assertSame(UpdateResult.ALREADY_CHANGED, saveRoom(vertx, changedRoom))
+      assertEquals(GameRoomUpdateVerticle.ALREADY_CHANGED, saveRoom(vertx, changedRoom))
       assertSame(room, rooms.getAwait(roomsId))
 
       rooms.putAwait(roomsId, room)
       every { changedRoom.version } returns room.version - Random.nextPositive()
-      assertSame(UpdateResult.ALREADY_CHANGED, saveRoom(vertx, changedRoom))
+      assertEquals(GameRoomUpdateVerticle.ALREADY_CHANGED, saveRoom(vertx, changedRoom))
       assertSame(room, rooms.getAwait(roomsId))
     }
   }
 
   private suspend fun saveRoom(vertx: Vertx, room: GameRoom) =
     vertx.eventBus()
-      .requestAwait<UpdateResult>(
+      .requestAwait<Int>(
         GameRoomUpdateVerticle.ADDRESS,
         room,
-        deliveryOptionsOf().addHeader(GameRoomUpdateVerticle.ROOMS_NAME, roomsId)
+        deliveryOptionsOf()
+          .addHeader(ROOMS_NAME, roomsId)
+          .setCodecName(GameRoomCodec.name())
       ).body()
 }
