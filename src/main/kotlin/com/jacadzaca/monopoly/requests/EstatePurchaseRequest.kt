@@ -15,9 +15,9 @@ class EstatePurchaseRequest(
 ) : Request {
   internal companion object {
     internal val TILE_NOT_OWNED_BY_BUYER =
-      Result.failure<Command>(ValidationException("Buyer dose not own the tile where he wants to buy a estate"))
+      Result.failure<Command>(Request.ValidationException("Buyer dose not own the tile where he wants to buy a estate"))
     internal val NOT_ENOUGH_HOUSES =
-      Result.failure<Command>(ValidationException("There are not enough houses on the tile where a hotel is to be placed"))
+      Result.failure<Command>(Request.ValidationException("There are not enough houses on the tile where a hotel is to be placed"))
   }
 
   override fun validate(): Result<Command> {

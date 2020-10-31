@@ -10,4 +10,6 @@ interface Request {
   }
 
   fun validate(): Result<Command>
+
+  class ValidationException(message: String) : Throwable(message)
 }

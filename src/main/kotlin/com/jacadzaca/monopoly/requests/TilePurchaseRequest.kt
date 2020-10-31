@@ -14,7 +14,7 @@ class TilePurchaseRequest(
   private val createPurchase: (Player, UUID, Tile, Int, GameState) -> (BuyTile)
 ) : Request {
   internal companion object {
-    internal val TILE_ALREADY_HAS_OWNER = Result.failure<Command>(ValidationException("Tile that the player wants to buy already has an owner"))
+    internal val TILE_ALREADY_HAS_OWNER = Result.failure<Command>(Request.ValidationException("Tile that the player wants to buy already has an owner"))
   }
 
   override fun validate(): Result<Command> {
