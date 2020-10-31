@@ -51,15 +51,14 @@ class GameRoom() : ClusterSerializable {
 
     other as GameRoom
 
-    if (_gameState != other._gameState) return false
     if (_version != other._version) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    var result = _gameState.hashCode()
-    result = 31 * result + _version.hashCode()
-    return result
+    return _version.hashCode()
   }
+
+
 }
