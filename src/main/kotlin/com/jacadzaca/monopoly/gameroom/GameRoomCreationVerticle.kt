@@ -15,9 +15,11 @@ class GameRoomCreationVerticle : CoroutineVerticle() {
   }
 
   override suspend fun start() {
-    val rooms = vertx.sharedData()
+    val rooms = vertx
+      .sharedData()
       .getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
-    val messages = vertx.eventBus()
+    val messages = vertx
+      .eventBus()
       .registerCodec(GameRoomCodec)
       .consumer<GameRoom>(ADDRESS)
       .toChannel(vertx)
@@ -25,11 +27,7 @@ class GameRoomCreationVerticle : CoroutineVerticle() {
       for (message in messages) {
         launch {
           val response = rooms.putIfAbsentAwait(message.headers()[ROOMS_NAME], message.body())
-          if (response == null) {
-            message.reply(SUCCESS)
-          } else {
-            message.reply(NAME_TAKEN)
-          }
+          message.reply(if (response == null) SUCCESS else NAME_TAKEN)
         }
       }
     }
