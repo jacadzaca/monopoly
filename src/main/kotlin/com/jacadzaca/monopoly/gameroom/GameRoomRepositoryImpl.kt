@@ -8,7 +8,11 @@ internal class GameRoomRepositoryImpl internal constructor(private val vertx: Ve
   override suspend fun getById(id: String): GameRoom? =
     vertx
       .eventBus()
-      .requestAwait<GameRoom>(GameRoomLookupVerticle.ADDRESS, id)
+      .requestAwait<GameRoom>(
+        GameRoomLookupVerticle.ADDRESS,
+        id,
+        deliveryOptionsOf(codecName = GameRoomCodec.name())
+      )
       .body()
 
   override suspend fun saveIfAbsent(id: String, room: GameRoom): Result<Unit> {
