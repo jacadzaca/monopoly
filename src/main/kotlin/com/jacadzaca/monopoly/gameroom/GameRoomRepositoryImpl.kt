@@ -12,7 +12,6 @@ internal class GameRoomRepositoryImpl internal constructor(private val vertx: Ve
       .requestAwait<GameRoom>(
         GameRoomLookupVerticle.ADDRESS,
         id,
-        deliveryOptionsOf(codecName = GameRoomCodec.name())
       )
       .body()
 
