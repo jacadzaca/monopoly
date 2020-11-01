@@ -31,6 +31,7 @@ internal class GameRoomCreationVerticleTest {
     if (!isDeployed) {
       runBlocking {
         vertx.deployVerticleAwait(GameRoomCreationVerticle())
+        vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
         rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
         isDeployed = true
       }
@@ -66,9 +67,7 @@ internal class GameRoomCreationVerticleTest {
       .requestAwait<Int>(
         GameRoomCreationVerticle.ADDRESS,
         room,
-        deliveryOptionsOf()
-          .addHeader(GameRoomCreationVerticle.ROOMS_NAME, roomsId)
-          .setCodecName(GameRoomCodec.name())
+        deliveryOptionsOf(headers = mapOf(GameRoomCreationVerticle.ROOMS_NAME to roomsId))
       )
       .body()
 }

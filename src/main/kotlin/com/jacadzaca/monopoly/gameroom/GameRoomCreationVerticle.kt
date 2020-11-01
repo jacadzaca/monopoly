@@ -20,7 +20,6 @@ class GameRoomCreationVerticle : CoroutineVerticle() {
       .getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
     val messages = vertx
       .eventBus()
-      .registerCodec(GameRoomCodec)
       .consumer<GameRoom>(ADDRESS)
       .toChannel(vertx)
     launch {
