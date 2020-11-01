@@ -21,7 +21,7 @@ internal class GameRoomRepositoryImpl internal constructor(private val vertx: Ve
       .requestAwait<Int>(
         GameRoomCreationVerticle.ADDRESS,
         room,
-        deliveryOptionsOf(headers = mapOf(ROOMS_NAME to id), codecName = GameRoomCodec.name())
+        deliveryOptionsOf(headers = mapOf(ROOMS_NAME to id))
       )
       .body()
     return when (result) {
@@ -37,7 +37,7 @@ internal class GameRoomRepositoryImpl internal constructor(private val vertx: Ve
       .requestAwait<Int>(
         GameRoomUpdateVerticle.ADDRESS,
         updateWith,
-        deliveryOptionsOf(headers = mapOf(ROOMS_NAME to id), codecName = GameRoomCodec.name())
+        deliveryOptionsOf(headers = mapOf(ROOMS_NAME to id))
       )
       .body()
     return when (result) {
