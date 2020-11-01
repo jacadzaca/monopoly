@@ -10,7 +10,6 @@ class GameRoomLookupVerticle : CoroutineVerticle() {
   companion object {
     const val ADDRESS = "lookup-game-room"
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val deliveryOptions = deliveryOptionsOf(codecName = GameRoomCodec.name())
   }
 
   override suspend fun start() {
@@ -19,13 +18,12 @@ class GameRoomLookupVerticle : CoroutineVerticle() {
       .getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
     val messages = vertx
       .eventBus()
-      .registerCodec(GameRoomCodec)
       .consumer<String>(ADDRESS)
       .toChannel(vertx)
     launch {
       for (message in messages) {
         launch {
-          message.reply(rooms.getAwait(message.body()), deliveryOptions)
+          message.reply(rooms.getAwait(message.body()))
         }
       }
     }

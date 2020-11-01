@@ -20,13 +20,18 @@ import kotlin.random.*
 internal class GameRoomLookupVerticleTest {
   private val room = mockk<GameRoom>()
   private val roomName = Random.nextString()
+  private var isDeployed = false
 
   @BeforeEach
   fun setUp(vertx: Vertx) {
-    runBlocking {
-      vertx.deployVerticleAwait(GameRoomLookupVerticle())
-      val rooms = vertx.sharedData().getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
-      rooms.putAwait(roomName, room)
+    if (!isDeployed) {
+      runBlocking {
+        vertx.deployVerticleAwait(GameRoomLookupVerticle())
+        vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
+        val rooms = vertx.sharedData().getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
+        rooms.putAwait(roomName, room)
+      }
+      isDeployed = true
     }
   }
 
