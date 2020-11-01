@@ -52,7 +52,7 @@ internal class EstatePurchaseRequestTest {
       buyer.balance - BigInteger.ONE,
       Random.nextInt(1, buyer.balance.toInt()).toBigInteger()
     )
-    val success = Result.success(createdEstatePurchase)
+    val success = ComputationResult.success(createdEstatePurchase)
     assertEquals(success, housePurchaseRequest.validate())
     assertEquals(success, housePurchaseRequest.validate())
     verify { house.price }
@@ -71,7 +71,7 @@ internal class EstatePurchaseRequestTest {
       buyer.balance - Random.nextInt(1, buyer.balance.toInt()).toBigInteger()
     )
     every { tile.houseCount() } returnsMany listOf(requiredHousesForHotel, requiredHousesForHotel + 1)
-    val success = Result.success(createdEstatePurchase)
+    val success = ComputationResult.success(createdEstatePurchase)
     assertEquals(success, hotelPurchaseRequest.validate())
     assertEquals(success, hotelPurchaseRequest.validate())
     verify { hotel.price }
