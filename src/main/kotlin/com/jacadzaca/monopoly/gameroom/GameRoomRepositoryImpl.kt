@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.gameroom
 
+import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gameroom.GameRoomCreationVerticle.Companion.ROOMS_NAME
 import io.vertx.core.*
 import io.vertx.kotlin.core.eventbus.*
@@ -15,7 +16,7 @@ internal class GameRoomRepositoryImpl internal constructor(private val vertx: Ve
       )
       .body()
 
-  override suspend fun saveIfAbsent(id: String, room: GameRoom): Result<Unit> {
+  override suspend fun saveIfAbsent(id: String, room: GameRoom): ComputationResult<Unit> {
     val result = vertx
       .eventBus()
       .requestAwait<Int>(
@@ -31,7 +32,7 @@ internal class GameRoomRepositoryImpl internal constructor(private val vertx: Ve
     }
   }
 
-  override suspend fun update(id: String, updateWith: GameRoom): Result<Unit> {
+  override suspend fun update(id: String, updateWith: GameRoom): ComputationResult<Unit> {
     val result = vertx
       .eventBus()
       .requestAwait<Int>(
