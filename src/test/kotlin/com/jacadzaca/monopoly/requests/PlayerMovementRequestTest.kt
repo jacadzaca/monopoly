@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.requests
 
+import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.MovePlayer
 import com.jacadzaca.monopoly.requests.Request.Companion.INVALID_PLAYER_ID
@@ -21,7 +22,7 @@ internal class PlayerMovementRequestTest {
     every { gameState.players[playersId] } returns player
     val createdMove = mockk<MovePlayer>()
     every { createMove(player, playersId, gameState) } returns createdMove
-    assertEquals(Result.success(createdMove), request.validate())
+    assertEquals(Computation.success(createdMove), request.validate())
   }
 
   @Test
