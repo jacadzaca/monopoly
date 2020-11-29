@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.gameroom
 
+import com.jacadzaca.monopoly.*
 import io.vertx.core.impl.logging.*
 import io.vertx.kotlin.core.eventbus.*
 import io.vertx.kotlin.core.shareddata.*
@@ -23,7 +24,12 @@ class GameRoomLookupVerticle : CoroutineVerticle() {
     launch {
       for (message in messages) {
         launch {
-          message.reply(rooms.getAwait(message.body()))
+          val room = rooms.getAwait(message.body())
+          if (room != null) {
+            message.reply(ComputationResult.success(room))
+          } else {
+            message.reply(ComputationResult.failure<GameRoom>("No room with such name"))
+          }
         }
       }
     }

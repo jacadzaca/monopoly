@@ -27,7 +27,7 @@ internal class GameRoomLookupVerticleTest {
     if (!isDeployed) {
       runBlocking {
         vertx.deployVerticleAwait(GameRoomLookupVerticle())
-        vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
+        vertx.eventBus().registerDefaultCodec(ComputationResult::class.java, ComputationCodec())
         val rooms = vertx.sharedData().getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
         rooms.putAwait(roomName, room)
       }
@@ -40,20 +40,20 @@ internal class GameRoomLookupVerticleTest {
   @RepeatedTest(2)
   fun `verticle replies with the room if there is an entry under name it exists`(vertx: Vertx) {
     runBlocking {
-      assertSame(room, lookupRoom(vertx, roomName))
+      assertSame(room, lookupRoom(vertx, roomName).value)
     }
   }
 
   @Test
   fun `verticle replies with null if there is no room under given name`(vertx: Vertx) {
     runBlocking {
-      assertSame(null, lookupRoom(vertx, "invalidName"))
+      assertNotNull(lookupRoom(vertx, "invalidName").message)
     }
   }
 
-  private suspend fun lookupRoom(vertx: Vertx, roomName: String): GameRoom? =
+  private suspend fun lookupRoom(vertx: Vertx, roomName: String): ComputationResult<GameRoom> =
     vertx
       .eventBus()
-      .requestAwait<GameRoom>(GameRoomLookupVerticle.ADDRESS, roomName)
+      .requestAwait<ComputationResult<GameRoom>>(GameRoomLookupVerticle.ADDRESS, roomName)
       .body()
 }
