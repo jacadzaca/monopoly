@@ -27,11 +27,11 @@ internal class GameRoomCreationVerticleTest {
   @BeforeEach
   fun setUp(vertx: Vertx) {
     every { room.version } returns Random.nextPositive().toLong()
-    //every { room.gameState } returns mockk()
     if (!isDeployed) {
       runBlocking {
         vertx.deployVerticleAwait(GameRoomCreationVerticle())
         vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
+        vertx.eventBus().registerDefaultCodec(ComputationResult::class.java, ComputationCodec())
         rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
         isDeployed = true
       }
@@ -64,7 +64,7 @@ internal class GameRoomCreationVerticleTest {
 
   private suspend fun saveRoom(vertx: Vertx, room: GameRoom) =
     vertx.eventBus()
-      .requestAwait<Int>(
+      .requestAwait<ComputationResult<Unit>>(
         GameRoomCreationVerticle.ADDRESS,
         room,
         deliveryOptionsOf(headers = mapOf(GameRoomCreationVerticle.ROOMS_NAME to roomsId))

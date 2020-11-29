@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.gameroom
 
+import com.jacadzaca.monopoly.*
 import io.vertx.core.impl.logging.*
 import io.vertx.kotlin.core.shareddata.*
 import io.vertx.kotlin.coroutines.*
@@ -9,8 +10,8 @@ class GameRoomCreationVerticle : CoroutineVerticle() {
   companion object {
     const val ADDRESS = "create-game-room"
     internal const val ROOMS_NAME = "roomsName"
-    internal const val SUCCESS = 0
-    internal const val NAME_TAKEN = 1
+    internal val SUCCESS = ComputationResult.success(Unit)
+    internal val NAME_TAKEN = ComputationResult.failure<Unit>("There already exists a room with such name")
     private val logger = LoggerFactory.getLogger(this::class.java)
   }
 
