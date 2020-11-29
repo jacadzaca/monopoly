@@ -21,7 +21,7 @@ class HttpServer : CoroutineVerticle() {
     vertx
       .eventBus()
       .registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
-      .registerDefaultCodec(ComputationResult::class.java, ComputationCodec())
+      .registerDefaultCodec(Computation::class.java, ComputationCodec())
     vertx.deployVerticleAwait(GameRoomCreationVerticle())
     vertx.deployVerticleAwait(GameRoomLookupVerticle())
 
@@ -58,12 +58,12 @@ class HttpServer : CoroutineVerticle() {
     logger.info("Started a ${this::class.qualifiedName} instance")
   }
 
-  private fun HttpServerRequest.getMaybeParam(name: String): ComputationResult<String> {
+  private fun HttpServerRequest.getMaybeParam(name: String): Computation<String> {
     val param: String? = getParam(name)
     return if (param == null) {
-      ComputationResult.failure("Missing $name param")
+      Computation.failure("Missing $name param")
     } else {
-      ComputationResult.success(param)
+      Computation.success(param)
     }
   }
 

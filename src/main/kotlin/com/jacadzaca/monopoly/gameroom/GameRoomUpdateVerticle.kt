@@ -10,9 +10,9 @@ import kotlinx.coroutines.*
 class GameRoomUpdateVerticle : CoroutineVerticle() {
   companion object {
     const val ADDRESS = "update-game-room"
-    internal val SUCCESS = ComputationResult.success(Unit)
-    internal val NO_ROOM_WITH_NAME = ComputationResult.failure<Unit>("There is no room with such name")
-    internal val ALREADY_CHANGED = ComputationResult.failure<Unit>("Changes were applied to this room during update request execution")
+    internal val SUCCESS = Computation.success(Unit)
+    internal val NO_ROOM_WITH_NAME = Computation.failure<Unit>("There is no room with such name")
+    internal val ALREADY_CHANGED = Computation.failure<Unit>("Changes were applied to this room during update request execution")
     private val logger = LoggerFactory.getLogger(this::class.java)
   }
 

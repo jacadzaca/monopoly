@@ -10,8 +10,8 @@ class GameRoomCreationVerticle : CoroutineVerticle() {
   companion object {
     const val ADDRESS = "create-game-room"
     internal const val ROOMS_NAME = "roomsName"
-    internal val SUCCESS = ComputationResult.success(Unit)
-    internal val NAME_TAKEN = ComputationResult.failure<Unit>("There already exists a room with such name")
+    internal val SUCCESS = Computation.success(Unit)
+    internal val NAME_TAKEN = Computation.failure<Unit>("There already exists a room with such name")
     private val logger = LoggerFactory.getLogger(this::class.java)
   }
 

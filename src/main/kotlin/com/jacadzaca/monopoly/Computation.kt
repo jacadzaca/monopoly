@@ -3,36 +3,36 @@ package com.jacadzaca.monopoly
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ComputationResult<out T> private constructor(
+class Computation<out T> private constructor(
   val value: T?,
   val message: String?,
 ) {
 
   companion object {
     @JvmStatic
-    fun <T> failure(message: String): ComputationResult<T> {
-      return ComputationResult(null, message)
+    fun <T> failure(message: String): Computation<T> {
+      return Computation(null, message)
     }
 
     @JvmStatic
-    fun <T> success(value: T): ComputationResult<T> {
-      return ComputationResult(value, null)
+    fun <T> success(value: T): Computation<T> {
+      return Computation(value, null)
     }
   }
 
-  inline fun onSuccess(onSuccess: (value: T) -> Unit): ComputationResult<T> {
+  inline fun onSuccess(onSuccess: (value: T) -> Unit): Computation<T> {
     if (value == null) return this
     onSuccess(value)
     return this
   }
 
-  inline fun onFailure(onFailure: (message: String) -> Unit): ComputationResult<T> {
+  inline fun onFailure(onFailure: (message: String) -> Unit): Computation<T> {
     if (message == null) return this
     onFailure(message)
     return this
   }
 
-  inline fun <R> flatMap(flatMap: (value: T) -> ComputationResult<R>): ComputationResult<R> {
+  inline fun <R> flatMap(flatMap: (value: T) -> Computation<R>): Computation<R> {
     return when {
       value != null -> flatMap(value)
       message != null -> failure(message)

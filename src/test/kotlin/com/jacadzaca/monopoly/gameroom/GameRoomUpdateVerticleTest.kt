@@ -35,7 +35,7 @@ internal class GameRoomUpdateVerticleTest {
       if (!isDeployed) {
         vertx.deployVerticleAwait(GameRoomUpdateVerticle())
         vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
-        vertx.eventBus().registerDefaultCodec(ComputationResult::class.java, ComputationCodec())
+        vertx.eventBus().registerDefaultCodec(Computation::class.java, ComputationCodec())
         rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
         isDeployed = true
       }

@@ -27,7 +27,7 @@ internal class GameRoomLookupVerticleTest {
     if (!isDeployed) {
       runBlocking {
         vertx.deployVerticleAwait(GameRoomLookupVerticle())
-        vertx.eventBus().registerDefaultCodec(ComputationResult::class.java, ComputationCodec())
+        vertx.eventBus().registerDefaultCodec(Computation::class.java, ComputationCodec())
         val rooms = vertx.sharedData().getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
         rooms.putAwait(roomName, room)
       }
@@ -51,9 +51,9 @@ internal class GameRoomLookupVerticleTest {
     }
   }
 
-  private suspend fun lookupRoom(vertx: Vertx, roomName: String): ComputationResult<GameRoom> =
+  private suspend fun lookupRoom(vertx: Vertx, roomName: String): Computation<GameRoom> =
     vertx
       .eventBus()
-      .requestAwait<ComputationResult<GameRoom>>(GameRoomLookupVerticle.ADDRESS, roomName)
+      .requestAwait<Computation<GameRoom>>(GameRoomLookupVerticle.ADDRESS, roomName)
       .body()
 }

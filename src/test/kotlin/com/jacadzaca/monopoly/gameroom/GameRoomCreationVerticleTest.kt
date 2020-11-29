@@ -31,7 +31,7 @@ internal class GameRoomCreationVerticleTest {
       runBlocking {
         vertx.deployVerticleAwait(GameRoomCreationVerticle())
         vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
-        vertx.eventBus().registerDefaultCodec(ComputationResult::class.java, ComputationCodec())
+        vertx.eventBus().registerDefaultCodec(Computation::class.java, ComputationCodec())
         rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
         isDeployed = true
       }
@@ -64,7 +64,7 @@ internal class GameRoomCreationVerticleTest {
 
   private suspend fun saveRoom(vertx: Vertx, room: GameRoom) =
     vertx.eventBus()
-      .requestAwait<ComputationResult<Unit>>(
+      .requestAwait<Computation<Unit>>(
         GameRoomCreationVerticle.ADDRESS,
         room,
         deliveryOptionsOf(headers = mapOf(GameRoomCreationVerticle.ROOMS_NAME to roomsId))

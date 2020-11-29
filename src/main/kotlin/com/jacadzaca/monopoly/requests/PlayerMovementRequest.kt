@@ -11,8 +11,8 @@ class PlayerMovementRequest(
   private val createMove: (Player, UUID, GameState) -> MovePlayer,
   private val context: GameState
 ) : Request {
-  override fun validate(): ComputationResult<Command> {
+  override fun validate(): Computation<Command> {
     val player = context.players[playersId] ?: return INVALID_PLAYER_ID
-    return ComputationResult.success(createMove(player, playersId, context))
+    return Computation.success(createMove(player, playersId, context))
   }
 }

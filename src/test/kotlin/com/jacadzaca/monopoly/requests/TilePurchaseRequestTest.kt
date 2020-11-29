@@ -37,7 +37,7 @@ internal class TilePurchaseRequestTest {
     every { tile.price } returnsMany listOf(buyer.balance, buyer.balance - BigInteger.ONE)
     val purchase = mockk<BuyTile>(name = "purchase")
     every { createPurchase(buyer, buyersId, tile, buyersPosition, gameState) } returns purchase
-    val success = ComputationResult.success(purchase)
+    val success = Computation.success(purchase)
     assertEquals(success, request.validate())
     assertEquals(success, request.validate())
   }
