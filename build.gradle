@@ -32,7 +32,7 @@ sourceSets {
   }
 }
 
-def mainVerticleName = 'com.jacadzaca.monopoly.MainVerticle'
+def mainVerticleName = 'com.jacadzaca.monopoly.HttpServer'
 def watchForChange = 'src/**/*'
 def doOnChange = './gradlew classes'
 
