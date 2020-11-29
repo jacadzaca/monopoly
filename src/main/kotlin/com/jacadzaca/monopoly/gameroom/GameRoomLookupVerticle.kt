@@ -10,6 +10,7 @@ import kotlinx.coroutines.*
 class GameRoomLookupVerticle : CoroutineVerticle() {
   companion object {
     const val ADDRESS = "lookup-game-room"
+    private val NO_ROOM_WITH_NAME = ComputationResult.failure<GameRoom>("No room with such name")
     private val logger = LoggerFactory.getLogger(this::class.java)
   }
 
@@ -25,11 +26,7 @@ class GameRoomLookupVerticle : CoroutineVerticle() {
       for (message in messages) {
         launch {
           val room = rooms.getAwait(message.body())
-          if (room != null) {
-            message.reply(ComputationResult.success(room))
-          } else {
-            message.reply(ComputationResult.failure<GameRoom>("No room with such name"))
-          }
+          message.reply(if (room != null) ComputationResult.success(room) else NO_ROOM_WITH_NAME)
         }
       }
     }
