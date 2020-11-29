@@ -1,5 +1,8 @@
 package com.jacadzaca.monopoly
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class ComputationResult<out T> private constructor(
   val value: T?,
   val message: String?,
