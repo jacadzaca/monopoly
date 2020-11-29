@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.gameroom
 
+import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gameroom.GameRoomCreationVerticle.Companion.ROOMS_NAME
 import io.vertx.core.impl.logging.*
 import io.vertx.kotlin.core.shareddata.*
@@ -9,9 +10,9 @@ import kotlinx.coroutines.*
 class GameRoomUpdateVerticle : CoroutineVerticle() {
   companion object {
     const val ADDRESS = "update-game-room"
-    internal const val SUCCESS = 0
-    internal const val NO_ROOM_WITH_NAME = 1
-    internal const val ALREADY_CHANGED = 2
+    internal val SUCCESS = ComputationResult.success(Unit)
+    internal val NO_ROOM_WITH_NAME = ComputationResult.failure<Unit>("There is no room with such name")
+    internal val ALREADY_CHANGED = ComputationResult.failure<Unit>("Changes were applied to this room during update request execution")
     private val logger = LoggerFactory.getLogger(this::class.java)
   }
 
