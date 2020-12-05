@@ -1,6 +1,6 @@
 package com.jacadzaca.monopoly
 
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 
 @Serializable
 class Computation<out T> private constructor(
@@ -30,6 +30,19 @@ class Computation<out T> private constructor(
     if (message == null) return this
     onFailure(message)
     return this
+  }
+
+  @Suppress("UNCHECKED_CAST")
+  inline fun <R, Z> combineWith(
+    combine: (value: T, value1: R) -> Computation<Z>,
+    with: (value: T) -> Computation<R>
+  ): Computation<Z> {
+    return when {
+      value != null -> with(value).flatMap { combine(value, it) }
+      message != null -> this as Computation<Z>
+      else -> throw IllegalStateException("Computation is neither a failure nor a success")
+    }
+
   }
 
   inline fun <R> flatMap(flatMap: (value: T) -> Computation<R>): Computation<R> {
