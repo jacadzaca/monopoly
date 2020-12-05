@@ -14,7 +14,8 @@ import kotlinx.coroutines.*
 class HttpServer : CoroutineVerticle() {
   private companion object {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val newGameRoom = GameRoom(GameState(persistentHashMapOf(), persistentListOf()))
+    private val tile = Tile(persistentListOf(), persistentListOf(), 1000.toBigInteger(), null)
+    private val newGameRoom = GameRoom(GameState(persistentHashMapOf(), persistentListOf(tile, tile, tile, tile, tile)))
   }
 
   override suspend fun start() {
@@ -24,6 +25,8 @@ class HttpServer : CoroutineVerticle() {
       .registerDefaultCodec(Computation::class.java, ComputationCodec())
     vertx.deployVerticleAwait(GameRoomCreationVerticle())
     vertx.deployVerticleAwait(GameRoomLookupVerticle())
+    vertx.deployVerticleAwait(GameRoomUpdateVerticle())
+    vertx.deployVerticleAwait(WebSocketGameServer())
 
     val restApi = Router.router(vertx)
     restApi
@@ -32,7 +35,7 @@ class HttpServer : CoroutineVerticle() {
         context
           .request()
           .getMaybeParam("name")
-          .flatMap { GameRoomRepository.instance(vertx).saveIfAbsent(it, newGameRoom) }
+          .map { GameRoomRepository.instance(vertx).saveIfAbsent(it, newGameRoom) }
           .onSuccess { context.reroute(HttpMethod.GET, "/rooms/${context.request().getParam("name")}") }
           .onFailure { context.fail(400, Throwable(it)) }
       }
@@ -45,7 +48,7 @@ class HttpServer : CoroutineVerticle() {
           .request()
           .getMaybeParam("name")
           .onFailure { context.fail(400, Throwable(it)) }
-          .flatMap { GameRoomRepository.instance(vertx).getById(it) }
+          .map { GameRoomRepository.instance(vertx).getById(it) }
           .onSuccess { context.response().endAwait(it.gameState.toString()) }
           .onFailure { context.fail(404, Throwable(it)) }
       }
