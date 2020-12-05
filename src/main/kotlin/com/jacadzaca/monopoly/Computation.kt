@@ -18,6 +18,7 @@ class Computation<out T> private constructor(
     fun <T> success(value: T): Computation<T> {
       return Computation(value, null)
     }
+
   }
 
   inline fun onSuccess(onSuccess: (value: T) -> Unit): Computation<T> {
@@ -26,6 +27,7 @@ class Computation<out T> private constructor(
     return this
   }
 
+
   inline fun onFailure(onFailure: (message: String) -> Unit): Computation<T> {
     if (message == null) return this
     onFailure(message)
@@ -33,22 +35,19 @@ class Computation<out T> private constructor(
   }
 
   @Suppress("UNCHECKED_CAST")
-  inline fun <R, Z> combineWith(
-    combine: (value: T, value1: R) -> Computation<Z>,
-    with: (value: T) -> Computation<R>
-  ): Computation<Z> {
+  inline fun <R> combine(with: (value: T) -> Computation<R>) : Computation<Pair<T, R>> {
     return when {
-      value != null -> with(value).flatMap { combine(value, it) }
-      message != null -> this as Computation<Z>
+      value != null -> with(value).map { success(value to it) }
+      message != null -> this as Computation<Pair<T, R>>
       else -> throw IllegalStateException("Computation is neither a failure nor a success")
     }
-
   }
 
-  inline fun <R> flatMap(flatMap: (value: T) -> Computation<R>): Computation<R> {
+  @Suppress("UNCHECKED_CAST")
+  inline fun <R> map(transform: (value: T) -> Computation<R>): Computation<R> {
     return when {
-      value != null -> flatMap(value)
-      message != null -> failure(message)
+      value != null -> transform(value)
+      message != null -> this as Computation<R>
       else -> throw IllegalStateException("Computation is neither a failure nor a success")
     }
   }
@@ -71,5 +70,7 @@ class Computation<out T> private constructor(
     return result
   }
 
-
+  override fun toString(): String {
+    return "Computation(value=$value, message=$message)"
+  }
 }

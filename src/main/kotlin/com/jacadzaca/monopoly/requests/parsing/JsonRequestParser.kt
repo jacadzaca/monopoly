@@ -9,7 +9,7 @@ import java.util.*
 class JsonRequestParser(private val requestFactory: RequestFactory) : RequestParser<String> {
   override fun parse(raw: String, playersId: UUID, gameState: GameState): Computation<Request> {
     return parseJson(raw)
-      .flatMap { json ->
+      .map { json ->
         if (!json.containsKey("type"))  return RequestParser.MISSING_TYPE
         when (json.getString("type")) {
           "move" -> Computation.success(requestFactory.playerMoveRequest(playersId, gameState))
