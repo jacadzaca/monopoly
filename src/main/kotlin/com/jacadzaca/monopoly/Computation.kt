@@ -34,8 +34,9 @@ class Computation<out T> private constructor(
     return this
   }
 
+  // Suppressing this is not wrong, because we only cast when the generic field is null (i.e, when the computation is a failure)
   @Suppress("UNCHECKED_CAST")
-  inline fun <R> combine(with: (value: T) -> Computation<R>) : Computation<Pair<T, R>> {
+  inline fun <R> combine(with: (value: T) -> Computation<R>): Computation<Pair<T, R>> {
     return when {
       value != null -> with(value).map { success(value to it) }
       message != null -> this as Computation<Pair<T, R>>
@@ -43,6 +44,7 @@ class Computation<out T> private constructor(
     }
   }
 
+  // Suppressing this is not wrong, because we only cast when the generic field is null (i.e, when the computation is a failure)
   @Suppress("UNCHECKED_CAST")
   inline fun <R> map(transform: (value: T) -> Computation<R>): Computation<R> {
     return when {
