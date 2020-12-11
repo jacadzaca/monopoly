@@ -1,6 +1,5 @@
 package com.jacadzaca.monopoly
 
-import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gameroom.*
 import io.vertx.core.http.*
 import io.vertx.core.impl.logging.*
@@ -8,14 +7,11 @@ import io.vertx.ext.web.*
 import io.vertx.kotlin.core.*
 import io.vertx.kotlin.core.http.*
 import io.vertx.kotlin.coroutines.*
-import kotlinx.collections.immutable.*
 import kotlinx.coroutines.*
 
 class HttpServer : CoroutineVerticle() {
   private companion object {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val tile = Tile(persistentListOf(), persistentListOf(), 1000.toBigInteger(), null)
-    private val newGameRoom = GameRoom(GameState(persistentHashMapOf(), persistentListOf(tile, tile, tile, tile, tile)))
   }
 
   override suspend fun start() {
@@ -35,7 +31,7 @@ class HttpServer : CoroutineVerticle() {
         context
           .request()
           .getMaybeParam("name")
-          .map { GameRoomRepository.instance(vertx).saveIfAbsent(it, newGameRoom) }
+          .map { GameRoomRepository.instance(vertx).createGameRoom(it) }
           .onSuccess { context.reroute(HttpMethod.GET, "/rooms/${context.request().getParam("name")}") }
           .onFailure { context.fail(400, Throwable(it)) }
       }
@@ -78,4 +74,3 @@ class HttpServer : CoroutineVerticle() {
     return failureHandler { launch { failureHandler(it) } }
   }
 }
-

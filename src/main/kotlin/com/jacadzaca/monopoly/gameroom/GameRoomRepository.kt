@@ -18,6 +18,6 @@ interface GameRoomRepository {
   }
 
   suspend fun getById(id: String): Computation<GameRoom>
-  suspend fun saveIfAbsent(id: String, room: GameRoom): Computation<Unit>
+  suspend fun createGameRoom(id: String): Computation<Unit>
   suspend fun update(id: String, updateWith: GameRoom): Computation<Unit>
 }

@@ -1,10 +1,14 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gamelogic.*
 import io.vertx.core.impl.logging.*
+import io.vertx.kotlin.core.eventbus.*
 import io.vertx.kotlin.core.shareddata.*
 import io.vertx.kotlin.coroutines.*
+import kotlinx.collections.immutable.*
 import kotlinx.coroutines.*
+import kotlinx.serialization.builtins.*
 
 class GameRoomCreationVerticle : CoroutineVerticle() {
   companion object {
@@ -16,18 +20,14 @@ class GameRoomCreationVerticle : CoroutineVerticle() {
   }
 
   override suspend fun start() {
-    val rooms = vertx
-      .sharedData()
-      .getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
-    val messages = vertx
-      .eventBus()
-      .consumer<GameRoom>(ADDRESS)
-      .toChannel(vertx)
+    val codec = GenericCodec(Unit.serializer())
+    vertx.eventBus().registerCodec(codec)
+    val rooms = vertx.sharedData().getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
     launch {
-      for (message in messages) {
+      for (message in vertx.eventBus().consumer<String>(ADDRESS).toChannel(vertx)) {
         launch {
-          val response = rooms.putIfAbsentAwait(message.headers()[ROOMS_NAME], message.body())
-          message.reply(if (response == null) SUCCESS else NAME_TAKEN)
+          val response = rooms.putIfAbsentAwait(message.body(), GameRoom.CLEAN_GAME_ROOM)
+          message.reply(if (response == null) SUCCESS else NAME_TAKEN, deliveryOptionsOf(codecName = codec.name()))
         }
       }
     }

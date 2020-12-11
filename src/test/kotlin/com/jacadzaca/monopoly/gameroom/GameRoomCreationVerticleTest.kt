@@ -1,7 +1,6 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.*
-import io.mockk.*
 import io.vertx.core.Vertx
 import io.vertx.core.shareddata.*
 import io.vertx.junit5.*
@@ -19,55 +18,46 @@ import kotlin.random.*
 @ExtendWith(VertxExtension::class)
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 internal class GameRoomCreationVerticleTest {
-  private val room = mockk<GameRoom>()
   private val roomsId = Random.nextString()
   private lateinit var rooms: AsyncMap<String, GameRoom>
-  private var isDeployed = false
 
   @BeforeEach
   fun setUp(vertx: Vertx) {
-    every { room.version } returns Random.nextPositive().toLong()
-    if (!isDeployed) {
-      runBlocking {
-        vertx.deployVerticleAwait(GameRoomCreationVerticle())
-        vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
-        vertx.eventBus().registerDefaultCodec(Computation::class.java, ComputationCodec())
-        rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
-        isDeployed = true
-      }
+    runBlocking {
+      vertx.deployVerticleAwait(GameRoomCreationVerticle())
+      rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
     }
     rooms.clear()
   }
 
   @Test
-  fun `verticle saves the game room under given id`(vertx: Vertx) {
+  fun `verticle creates a new game room under given id`(vertx: Vertx) {
     runBlocking {
-      saveRoom(vertx, room)
-      assertSame(room, rooms.getAwait(roomsId))
+      createRoom(vertx)
+      assertEquals(GameRoom.CLEAN_GAME_ROOM, rooms.getAwait(roomsId))
     }
   }
 
   @Test
-  fun `verticle replies with success if room was saved`(vertx: Vertx) {
+  fun `verticle replies with success if room was created`(vertx: Vertx) {
     runBlocking {
-      assertEquals(GameRoomCreationVerticle.SUCCESS, saveRoom(vertx, room))
+      assertEquals(GameRoomCreationVerticle.SUCCESS, createRoom(vertx))
     }
   }
 
   @Test
-  fun `verticle replies with failure if rooms with desired name already exists`(vertx: Vertx) {
+  fun `verticle replies with NAME_TAKEN if a room with desired name already exists`(vertx: Vertx) {
     runBlocking {
-      saveRoom(vertx, room)
-      assertEquals(GameRoomCreationVerticle.NAME_TAKEN, saveRoom(vertx, room))
+      createRoom(vertx)
+      assertEquals(GameRoomCreationVerticle.NAME_TAKEN, createRoom(vertx))
     }
   }
 
-  private suspend fun saveRoom(vertx: Vertx, room: GameRoom) =
+  private suspend fun createRoom(vertx: Vertx) =
     vertx.eventBus()
       .requestAwait<Computation<Unit>>(
         GameRoomCreationVerticle.ADDRESS,
-        room,
-        deliveryOptionsOf(headers = mapOf(GameRoomCreationVerticle.ROOMS_NAME to roomsId))
+        roomsId,
       )
       .body()
 }

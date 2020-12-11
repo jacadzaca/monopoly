@@ -6,15 +6,20 @@ import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.serializers.*
 import io.vertx.core.buffer.*
 import io.vertx.core.shareddata.impl.*
+import kotlinx.collections.immutable.*
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 
 @Serializable
 /**
- * To create an instance, use the (gameState, version) constructor
+ * To acquire an instance, use GameRoom.CLEAN_GAME_ROOM
  * The no-argument constructor is to provide compliance with the [ClusterSerializable] contract
  */
 class GameRoom() : ClusterSerializable {
+  companion object {
+    private val tile = Tile(persistentListOf(), persistentListOf(), 1000.toBigInteger(), null)
+    val CLEAN_GAME_ROOM = GameRoom(GameState(persistentHashMapOf(), persistentListOf(tile, tile, tile, tile, tile)))
+  }
   private lateinit var _gameState: GameState
   private var _version: Long = 0L
 
