@@ -4,7 +4,6 @@ import com.jacadzaca.monopoly.*
 import io.mockk.*
 import io.vertx.core.Vertx
 import io.vertx.junit5.*
-import io.vertx.junit5.Timeout
 import io.vertx.kotlin.core.*
 import io.vertx.kotlin.core.eventbus.*
 import io.vertx.kotlin.core.shareddata.*
@@ -12,40 +11,39 @@ import kotlinx.coroutines.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.*
-import java.util.concurrent.*
 import kotlin.random.*
 
 @ExtendWith(VertxExtension::class)
-@Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 internal class GameRoomLookupVerticleTest {
-  private val room = mockk<GameRoom>()
-  private val roomName = Random.nextString()
-  private var isDeployed = false
+  companion object {
+    private lateinit var vertx: Vertx
+    private val room = mockk<GameRoom>()
+    private val roomName = Random.nextString()
 
-  @BeforeEach
-  fun setUp(vertx: Vertx) {
-    if (!isDeployed) {
+    @BeforeAll
+    @JvmStatic
+    fun setUp() {
+      vertx = Vertx.vertx()
       runBlocking {
         vertx.deployVerticleAwait(GameRoomLookupVerticle())
-        vertx.eventBus().registerDefaultCodec(Computation::class.java, ComputationCodec())
+        vertx.eventBus().registerCodec(GenericCodec.computationCodec(GameRoom.serializer(), GameRoom::class))
         val rooms = vertx.sharedData().getLocalAsyncMapAwait<String, GameRoom>("game-rooms")
         rooms.putAwait(roomName, room)
       }
-      isDeployed = true
     }
   }
 
   @Test
   // repeat in order to check if the verticle responds to multiple requests
   @RepeatedTest(2)
-  fun `verticle replies with the room if there is an entry under name it exists`(vertx: Vertx) {
+  fun `verticle replies with the room if there is an entry under name it exists`() {
     runBlocking {
       assertSame(room, lookupRoom(vertx, roomName).value)
     }
   }
 
   @Test
-  fun `verticle replies with null if there is no room under given name`(vertx: Vertx) {
+  fun `verticle replies with null if there is no room under given name`() {
     runBlocking {
       assertNotNull(lookupRoom(vertx, "invalidName").message)
     }
