@@ -6,45 +6,53 @@ import io.mockk.*
 import io.vertx.core.Vertx
 import io.vertx.core.shareddata.*
 import io.vertx.junit5.*
-import io.vertx.junit5.Timeout
 import io.vertx.kotlin.core.*
 import io.vertx.kotlin.core.eventbus.*
 import io.vertx.kotlin.core.shareddata.*
 import kotlinx.coroutines.*
+import kotlinx.serialization.builtins.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.*
-import java.util.concurrent.*
 import kotlin.random.*
 
 @ExtendWith(VertxExtension::class)
-@Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 internal class GameRoomUpdateVerticleTest {
   private val room = mockk<GameRoom>()
   private val roomsId = Random.nextString()
   private val roomWithIncrementedVersion = mockk<GameRoom>()
   private lateinit var rooms: AsyncMap<String, GameRoom>
-  private var isDeployed = false
+
+  private companion object {
+    private lateinit var vertx: Vertx
+
+    @BeforeAll
+    @JvmStatic
+    fun setUp() {
+      runBlocking {
+        vertx = Vertx.vertx()
+        vertx.eventBus().registerCodec(GenericCodec.computationCodec(Unit.serializer(), Unit::class))
+        vertx.eventBus().registerCodec(GenericCodec.computationCodec(GameRoom.serializer(), GameRoom::class))
+        vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GenericCodec(GameRoom.serializer()))
+        vertx.deployVerticleAwait(GameRoomUpdateVerticle())
+        vertx.deployVerticleAwait(GameRoomLookupVerticle())
+      }
+    }
+  }
 
   @BeforeEach
-  fun setUp(vertx: Vertx) {
+  fun cleanUp() {
     every { room.version } returns Random.nextPositive().toLong()
     every { room.gameState } returns mockk()
     every { room.incrementVersion() } returns roomWithIncrementedVersion
     runBlocking {
-      if (!isDeployed) {
-        vertx.deployVerticleAwait(GameRoomUpdateVerticle())
-        vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
-        vertx.eventBus().registerDefaultCodec(Computation::class.java, ComputationCodec())
-        rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
-        isDeployed = true
-      }
+      rooms = vertx.sharedData().getLocalAsyncMapAwait("game-rooms")
       rooms.clearAwait()
     }
   }
 
   @Test
-  fun `verticle swaps game rooms' if their ids match`(vertx: Vertx) {
+  fun `verticle swaps game rooms' if their ids match`() {
     runBlocking {
       rooms.putAwait(roomsId, room)
       assertEquals(GameRoomUpdateVerticle.SUCCESS, saveRoom(vertx, room))
@@ -53,22 +61,18 @@ internal class GameRoomUpdateVerticleTest {
   }
 
   @Test
-  fun `verticle replies with failure when no game room with specified id exist`(vertx: Vertx) {
+  fun `verticle passes down failure when no game room with specified id exist`() {
     runBlocking {
-      assertEquals(GameRoomUpdateVerticle.NO_ROOM_WITH_NAME, saveRoom(vertx, room))
+      assertNull(saveRoom(vertx, room).value)
+      assertNotNull(saveRoom(vertx, room).message)
     }
   }
 
   @Test
-  fun `verticle dose nothing if user wants to update a room that was changed`(vertx: Vertx) {
+  fun `verticle dose nothing if user wants to update a room that was changed`() {
     val changedRoom = mockk<GameRoom>()
     every { changedRoom.incrementVersion() } returns mockk()
     runBlocking {
-      rooms.putAwait(roomsId, room)
-      every { changedRoom.version } returns room.version - 1L
-      assertEquals(GameRoomUpdateVerticle.ALREADY_CHANGED, saveRoom(vertx, changedRoom))
-      assertSame(room, rooms.getAwait(roomsId))
-
       rooms.putAwait(roomsId, room)
       every { changedRoom.version } returns room.version - Random.nextPositive()
       assertEquals(GameRoomUpdateVerticle.ALREADY_CHANGED, saveRoom(vertx, changedRoom))
@@ -76,13 +80,13 @@ internal class GameRoomUpdateVerticleTest {
     }
   }
 
-  private suspend fun saveRoom(vertx: Vertx, room: GameRoom) =
-    vertx.eventBus()
-      .requestAwait<Int>(
+  private suspend fun saveRoom(vertx: Vertx, room: GameRoom): Computation<Unit> =
+    vertx
+      .eventBus()
+      .requestAwait<Computation<Unit>>(
         GameRoomUpdateVerticle.ADDRESS,
         room,
-        deliveryOptionsOf()
-          .addHeader(ROOMS_NAME, roomsId)
-          .setCodecName(GameRoomCodec.name())
-      ).body()
+        deliveryOptionsOf(headers = mapOf(ROOMS_NAME to roomsId))
+      )
+      .body()
 }
