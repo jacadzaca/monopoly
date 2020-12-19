@@ -8,6 +8,7 @@ import io.vertx.kotlin.core.*
 import io.vertx.kotlin.core.http.*
 import io.vertx.kotlin.coroutines.*
 import kotlinx.coroutines.*
+import kotlinx.serialization.builtins.*
 
 class HttpServer : CoroutineVerticle() {
   private companion object {
@@ -17,11 +18,11 @@ class HttpServer : CoroutineVerticle() {
   override suspend fun start() {
     vertx
       .eventBus()
-      .registerDefaultCodec(GameRoom::class.java, GameRoomCodec)
-      .registerDefaultCodec(Computation::class.java, ComputationCodec())
+      .registerDefaultCodec(GameRoom::class.java, GenericCodec(GameRoom.serializer()))
+      .registerCodec(GenericCodec.computationCodec(GameRoom.serializer(), GameRoom::class))
+      .registerCodec(GenericCodec.computationCodec(Unit.serializer(), Unit::class))
     vertx.deployVerticleAwait(GameRoomCreationVerticle())
     vertx.deployVerticleAwait(GameRoomLookupVerticle())
-    vertx.deployVerticleAwait(GameRoomUpdateVerticle())
     vertx.deployVerticleAwait(WebSocketGameServer())
 
     val restApi = Router.router(vertx)

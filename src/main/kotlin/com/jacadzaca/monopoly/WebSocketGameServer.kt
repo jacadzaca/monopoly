@@ -5,6 +5,7 @@ import com.jacadzaca.monopoly.gameroom.*
 import com.jacadzaca.monopoly.requests.*
 import com.jacadzaca.monopoly.requests.parsing.*
 import io.vertx.core.impl.logging.*
+import io.vertx.kotlin.core.*
 import io.vertx.kotlin.core.http.*
 import io.vertx.kotlin.coroutines.*
 import kotlinx.coroutines.*
@@ -46,6 +47,7 @@ class WebSocketGameServer : CoroutineVerticle() {
         }
       }
     }
+    vertx.deployVerticleAwait(GameRoomUpdateVerticle())
     server.listenAwait(8081)
     logger.info("Started a ${this::class.qualifiedName} instance")
   }
