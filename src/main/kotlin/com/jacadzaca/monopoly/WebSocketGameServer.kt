@@ -3,7 +3,6 @@ package com.jacadzaca.monopoly
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gameroom.*
 import com.jacadzaca.monopoly.requests.*
-import com.jacadzaca.monopoly.requests.parsing.*
 import io.vertx.core.impl.logging.*
 import io.vertx.kotlin.core.*
 import io.vertx.kotlin.core.http.*
@@ -35,14 +34,14 @@ class WebSocketGameServer : CoroutineVerticle() {
             }
             .onSuccess {
               val adapter = vertx.receiveChannelHandler<String>()
-              val requests = adapter.map { jsonToRequest(playerId, roomId, it) }
+/*              val requests = adapter.map { jsonToRequest(playerId, roomId, it) }
               connection.textMessageHandler(adapter::handle)
               while (adapter.isActive) {
                 requests
                   .receive()
                   .onSuccess { connection.writeTextMessageAwait(it.gameState.toString()) }
                   .onFailure { connection.writeTextMessageAwait(it) }
-              }
+              }*/
             }
         }
       }
@@ -52,13 +51,12 @@ class WebSocketGameServer : CoroutineVerticle() {
     logger.info("Started a ${this::class.qualifiedName} instance")
   }
 
-  private suspend fun jsonToRequest(playersId: UUID, roomsId: String, message: String): Computation<GameRoom> {
+/*  private suspend fun jsonToRequest(playersId: UUID, roomsId: String, message: String): Computation<GameRoom> {
     val gameRoomRepository = GameRoomRepository.instance(vertx)
-    val requestParser = JsonRequestParser(RequestFactoryImpl)
     return gameRoomRepository
       .getById(roomsId)
       .combine { requestParser.parse(message, playersId, it.gameState).map(Request::validate) }
       .map { (gameRoom, command) -> gameRoomRepository.update(roomsId, gameRoom.updateGameState(command.apply())) }
       .map { gameRoomRepository.getById(roomsId) }
-  }
+  }*/
 }
