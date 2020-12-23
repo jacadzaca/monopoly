@@ -3,6 +3,7 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.gamelogic.*
+import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.serializers.*
 import io.vertx.core.buffer.*
 import io.vertx.core.shareddata.impl.*
@@ -48,7 +49,7 @@ class GameRoom() : ClusterSerializable {
 
   fun incrementVersion(): GameRoom = GameRoom(_gameState, _version + 1L)
 
-  fun updateGameState(gameState: GameState): GameRoom = GameRoom(gameState, _version)
+  fun updateGameState(command: Command): GameRoom = GameRoom(command.apply(), _version)
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
