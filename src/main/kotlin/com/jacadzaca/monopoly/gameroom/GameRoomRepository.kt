@@ -1,8 +1,10 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.requests.*
 import io.vertx.core.*
 import java.lang.IllegalStateException
+import java.util.*
 
 interface GameRoomRepository {
   companion object {
@@ -17,7 +19,7 @@ interface GameRoomRepository {
     }
   }
 
-  suspend fun getById(id: String): Computation<GameRoom>
-  suspend fun createGameRoom(id: String): Computation<Unit>
-  suspend fun update(id: String, updateWith: GameRoom): Computation<Unit>
+  suspend fun getById(roomsName: String): Computation<GameRoom>
+  suspend fun createGameRoom(roomsName: String): Computation<Unit>
+  suspend fun request(roomsName: String, requestersId: UUID, request: Request): Computation<Unit>
 }

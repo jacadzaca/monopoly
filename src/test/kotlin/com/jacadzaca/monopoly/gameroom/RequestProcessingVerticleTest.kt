@@ -1,7 +1,9 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.gameroom.GameRoomCreationVerticle.Companion.ROOMS_NAME
+import com.jacadzaca.monopoly.requests.*
 import io.mockk.*
 import io.vertx.core.Vertx
 import io.vertx.core.shareddata.*
@@ -14,17 +16,21 @@ import kotlinx.serialization.builtins.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.extension.*
-import kotlin.random.*
+import java.util.*
+import kotlin.random.Random
 
 @ExtendWith(VertxExtension::class)
-internal class GameRoomUpdateVerticleTest {
+internal class RequestProcessingVerticleTest {
   private val room = mockk<GameRoom>()
   private val roomsId = Random.nextString()
   private val roomWithIncrementedVersion = mockk<GameRoom>()
   private lateinit var rooms: AsyncMap<String, GameRoom>
 
-  private companion object {
+  companion object {
     private lateinit var vertx: Vertx
+    private val request = mockk<Request>()
+    private val factory = mockk<RequestValidatorFactory>()
+    private val updateCommand = mockk<Command>()
 
     @BeforeAll
     @JvmStatic
@@ -33,9 +39,13 @@ internal class GameRoomUpdateVerticleTest {
         vertx = Vertx.vertx()
         vertx.eventBus().registerCodec(GenericCodec.computationCodec(Unit.serializer(), Unit::class))
         vertx.eventBus().registerCodec(GenericCodec.computationCodec(GameRoom.serializer(), GameRoom::class))
-        vertx.eventBus().registerDefaultCodec(GameRoom::class.java, GenericCodec(GameRoom.serializer()))
-        vertx.deployVerticleAwait(GameRoomUpdateVerticle())
+        vertx.eventBus().registerDefaultCodec(Request::class.java, GenericCodec(Request.serializer()))
         vertx.deployVerticleAwait(GameRoomLookupVerticle())
+
+        every {
+          factory.validatorFor(request).validate(any(), any())
+        } returns Computation.success(updateCommand)
+        vertx.deployVerticleAwait(RequestProcessingVerticle(factory))
       }
     }
   }
@@ -52,41 +62,23 @@ internal class GameRoomUpdateVerticleTest {
   }
 
   @Test
-  fun `verticle swaps game rooms' if their ids match`() {
+  fun `verticle swaps game rooms' when their ids match`() {
+    val updatedRoom = mockk<GameRoom>()
+    every { room.updateGameState(updateCommand).incrementVersion() } returns updatedRoom
     runBlocking {
       rooms.putAwait(roomsId, room)
-      assertEquals(GameRoomUpdateVerticle.SUCCESS, saveRoom(vertx, room))
-      assertSame(roomWithIncrementedVersion, rooms.getAwait(roomsId))
+      updateRoom(vertx, request)
+      assertEquals(updatedRoom, rooms.getAwait(roomsId))
     }
   }
 
-  @Test
-  fun `verticle passes down failure when no game room with specified id exist`() {
-    runBlocking {
-      assertNull(saveRoom(vertx, room).value)
-      assertNotNull(saveRoom(vertx, room).message)
-    }
-  }
-
-  @Test
-  fun `verticle dose nothing if user wants to update a room that was changed`() {
-    val changedRoom = mockk<GameRoom>()
-    every { changedRoom.incrementVersion() } returns mockk()
-    runBlocking {
-      rooms.putAwait(roomsId, room)
-      every { changedRoom.version } returns room.version - Random.nextPositive()
-      assertEquals(GameRoomUpdateVerticle.ALREADY_CHANGED, saveRoom(vertx, changedRoom))
-      assertSame(room, rooms.getAwait(roomsId))
-    }
-  }
-
-  private suspend fun saveRoom(vertx: Vertx, room: GameRoom): Computation<Unit> =
+  private suspend fun updateRoom(vertx: Vertx, request: Request): Computation<Unit> =
     vertx
       .eventBus()
       .requestAwait<Computation<Unit>>(
-        GameRoomUpdateVerticle.ADDRESS,
-        room,
-        deliveryOptionsOf(headers = mapOf(ROOMS_NAME to roomsId))
+        RequestProcessingVerticle.ADDRESS,
+        request,
+        deliveryOptionsOf(headers = mapOf(ROOMS_NAME to roomsId, "requestersId" to UUID.randomUUID().toString()))
       )
       .body()
 }

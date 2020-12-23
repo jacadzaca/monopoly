@@ -1,39 +1,39 @@
 package com.jacadzaca.monopoly.gameroom
 
 import com.jacadzaca.monopoly.*
-import com.jacadzaca.monopoly.gameroom.GameRoomCreationVerticle.Companion.ROOMS_NAME
+import com.jacadzaca.monopoly.requests.*
 import io.vertx.core.*
 import io.vertx.kotlin.core.eventbus.*
-import kotlinx.serialization.builtins.*
+import java.util.*
 
 internal class GameRoomRepositoryImpl internal constructor(private val vertx: Vertx) : GameRoomRepository {
-  override suspend fun getById(id: String): Computation<GameRoom> {
+  override suspend fun getById(roomsName: String): Computation<GameRoom> {
     return vertx
       .eventBus()
       .requestAwait<Computation<GameRoom>>(
         GameRoomLookupVerticle.ADDRESS,
-        id,
+        roomsName,
       )
       .body()
   }
 
-  override suspend fun createGameRoom(id: String): Computation<Unit> {
+  override suspend fun createGameRoom(roomsName: String): Computation<Unit> {
     return vertx
       .eventBus()
       .requestAwait<Computation<Unit>>(
         GameRoomCreationVerticle.ADDRESS,
-        id,
+        roomsName,
       )
       .body()
   }
 
-  override suspend fun update(id: String, updateWith: GameRoom): Computation<Unit> {
+  override suspend fun request(roomsName: String, requestersId: UUID, request: Request): Computation<Unit> {
     return vertx
       .eventBus()
       .requestAwait<Computation<Unit>>(
-        GameRoomUpdateVerticle.ADDRESS,
-        updateWith,
-        deliveryOptionsOf(headers = mapOf(ROOMS_NAME to id))
+        RequestProcessingVerticle.ADDRESS,
+        request,
+        deliveryOptionsOf(headers = mapOf("roomsName" to roomsName, "requestersId" to requestersId.toString()))
       )
       .body()
   }
