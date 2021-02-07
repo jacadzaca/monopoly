@@ -18,4 +18,8 @@ sealed class Event {
   data class LiabilityPaid(val payersId: UUID, val receiversId: UUID, val liability: BigInteger) : Event()
   @Serializable
   data class EstatePurchased(val buyersId: UUID, val tileIndex: Int, val purchasedEstate: Estate) : Event()
+  @Serializable
+  data class PlayerJoined(val playersId: UUID) : Event()
+  @Serializable
+  data class PlayerLeft(val playersId: UUID) : Event()
 }
