@@ -9,9 +9,8 @@ import java.util.*
 class PlayerMovementRequest(
   private val playersId: UUID,
   private val createMove: (Player, UUID, GameState) -> MovePlayer,
-  private val context: GameState
 ) : Request {
-  override fun validate(): Computation<Command> {
+  override fun validate(context: GameState): Computation<Command> {
     val player = context.players[playersId] ?: return INVALID_PLAYER_ID
     return Computation.success(createMove(player, playersId, context))
   }

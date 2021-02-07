@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.requests
 import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
 
 interface Request {
@@ -9,5 +10,5 @@ interface Request {
       Computation.failure<Command>("Buyer dose not have enough funds to preform requested action")
   }
 
-  fun validate(): Computation<Command>
+  fun validate(context: GameState): Computation<Command>
 }
