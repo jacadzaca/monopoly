@@ -1,11 +1,13 @@
 package com.jacadzaca.monopoly.requests
+import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.gamelogic.commands.*
 
-import kotlinx.serialization.Serializable
+interface Request {
+  companion object {
+    internal val INVALID_PLAYER_ID = Computation.failure<Command>("No player with specified ID exist")
+    internal val BUYER_HAS_INSUFFICIENT_BALANCE =
+      Computation.failure<Command>("Buyer dose not have enough funds to preform requested action")
+  }
 
-@Serializable
-enum class Request {
-  PLAYER_MOVE,
-  TILE_PURCHASE,
-  HOUSE_PURCHASE,
-  HOTEL_PURCHASE
+  fun validate(): Computation<Command>
 }
