@@ -2,6 +2,7 @@ package com.jacadzaca.monopoly.requests
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
+import java.util.*
 
 interface Request {
   companion object {
@@ -11,4 +12,5 @@ interface Request {
   }
 
   fun validate(context: GameState): Computation<Command>
+  fun playersId(): UUID
 }

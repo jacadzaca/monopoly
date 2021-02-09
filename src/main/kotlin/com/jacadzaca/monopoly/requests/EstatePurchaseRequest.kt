@@ -30,4 +30,6 @@ class EstatePurchaseRequest(
       else -> Computation.success(createPurchase(buyer, buyersId, tile, buyer.position, estate, context))
     }
   }
+
+  override fun playersId(): UUID = buyersId
 }

@@ -26,4 +26,6 @@ class TilePurchaseRequest(
       else -> Computation.success(createPurchase(buyer, buyersId, tile, buyer.position, context))
     }
   }
+
+  override fun playersId(): UUID = buyersId
 }

@@ -14,4 +14,6 @@ class PlayerMovementRequest(
     val player = context.players[playersId] ?: return INVALID_PLAYER_ID
     return Computation.success(createMove(player, playersId, context))
   }
+
+  override fun playersId(): UUID = playersId
 }

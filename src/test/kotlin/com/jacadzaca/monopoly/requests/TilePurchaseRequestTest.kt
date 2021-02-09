@@ -20,7 +20,7 @@ internal class TilePurchaseRequestTest {
   private val buyersId = UUID.randomUUID()
   private val buyersPosition = Random.nextPositive()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, GameState) -> (BuyTile)>()
-  private val request = TilePurchaseRequest(buyersId, gameState, createPurchase)
+  private val request = TilePurchaseRequest(buyersId, createPurchase)
 
   @BeforeEach
   fun setUp() {
@@ -38,27 +38,27 @@ internal class TilePurchaseRequestTest {
     val purchase = mockk<BuyTile>(name = "purchase")
     every { createPurchase(buyer, buyersId, tile, buyersPosition, gameState) } returns purchase
     val success = Computation.success(purchase)
-    assertEquals(success, request.validate())
-    assertEquals(success, request.validate())
+    assertEquals(success, request.validate(gameState))
+    assertEquals(success, request.validate(gameState))
   }
 
   @Test
   fun `validate returns Failure if the the tile already has an owner`() {
     every { tile.price } returns buyer.balance - BigInteger.ONE
     every { tile.ownersId } returnsMany listOf(UUID.randomUUID(), buyersId)
-    assertEquals(TILE_ALREADY_HAS_OWNER, request.validate())
-    assertEquals(TILE_ALREADY_HAS_OWNER, request.validate())
+    assertEquals(TILE_ALREADY_HAS_OWNER, request.validate(gameState))
+    assertEquals(TILE_ALREADY_HAS_OWNER, request.validate(gameState))
   }
 
   @Test
   fun `validate returns Failure if the buyer's balance is less than the tile's price`() {
     every { tile.price } returns buyer.balance + BigInteger.ONE
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate())
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(gameState))
   }
 
   @Test
   fun `validate returns Failure if the event references an non-existing player`() {
     every { gameState.players[buyersId] } returns null
-    assertEquals(INVALID_PLAYER_ID, request.validate())
+    assertEquals(INVALID_PLAYER_ID, request.validate(gameState))
   }
 }

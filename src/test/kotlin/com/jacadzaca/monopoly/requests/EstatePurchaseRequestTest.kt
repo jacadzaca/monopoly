@@ -22,10 +22,10 @@ internal class EstatePurchaseRequestTest {
   private val createPurchase = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> BuyEstate>()
   private val house = mockk<Estate.House>(name = "house")
   private val housePurchaseRequest =
-    EstatePurchaseRequest(buyersId, house, requiredHousesForHotel, createPurchase, gameState)
+    EstatePurchaseRequest(buyersId, house, requiredHousesForHotel, createPurchase)
   private val hotel = mockk<Estate.Hotel>(name = "hotel")
   private val hotelPurchaseRequest =
-    EstatePurchaseRequest(buyersId, hotel, requiredHousesForHotel, createPurchase, gameState)
+    EstatePurchaseRequest(buyersId, hotel, requiredHousesForHotel, createPurchase)
 
   @BeforeEach
   fun setUp() {
@@ -53,8 +53,8 @@ internal class EstatePurchaseRequestTest {
       Random.nextInt(1, buyer.balance.toInt()).toBigInteger()
     )
     val success = Computation.success(createdEstatePurchase)
-    assertEquals(success, housePurchaseRequest.validate())
-    assertEquals(success, housePurchaseRequest.validate())
+    assertEquals(success, housePurchaseRequest.validate(gameState))
+    assertEquals(success, housePurchaseRequest.validate(gameState))
     verify { house.price }
     verify { tile.ownersId }
   }
@@ -72,8 +72,8 @@ internal class EstatePurchaseRequestTest {
     )
     every { tile.houseCount() } returnsMany listOf(requiredHousesForHotel, requiredHousesForHotel + 1)
     val success = Computation.success(createdEstatePurchase)
-    assertEquals(success, hotelPurchaseRequest.validate())
-    assertEquals(success, hotelPurchaseRequest.validate())
+    assertEquals(success, hotelPurchaseRequest.validate(gameState))
+    assertEquals(success, hotelPurchaseRequest.validate(gameState))
     verify { hotel.price }
     verify { tile.ownersId }
     verify { tile.houseCount() }
@@ -83,8 +83,8 @@ internal class EstatePurchaseRequestTest {
   fun `validate returns Failure if the buyer dose not own the tile`() {
     val otherOwner = UUID.randomUUID()
     every { tile.ownersId } returnsMany listOf(otherOwner, null)
-    assertEquals(TILE_NOT_OWNED_BY_BUYER, housePurchaseRequest.validate())
-    assertEquals(TILE_NOT_OWNED_BY_BUYER, hotelPurchaseRequest.validate())
+    assertEquals(TILE_NOT_OWNED_BY_BUYER, housePurchaseRequest.validate(gameState))
+    assertEquals(TILE_NOT_OWNED_BY_BUYER, hotelPurchaseRequest.validate(gameState))
   }
 
   @Test
@@ -97,10 +97,10 @@ internal class EstatePurchaseRequestTest {
       buyer.balance + BigInteger.ONE,
       buyer.balance + Random.nextPositive().toBigInteger()
     )
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, housePurchaseRequest.validate())
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, housePurchaseRequest.validate())
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, hotelPurchaseRequest.validate())
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, hotelPurchaseRequest.validate())
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, housePurchaseRequest.validate(gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, housePurchaseRequest.validate(gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, hotelPurchaseRequest.validate(gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, hotelPurchaseRequest.validate(gameState))
   }
 
   @Test
@@ -109,7 +109,7 @@ internal class EstatePurchaseRequestTest {
       requiredHousesForHotel - 1,
       Random.nextPositive(until = requiredHousesForHotel)
     )
-    assertEquals(NOT_ENOUGH_HOUSES, hotelPurchaseRequest.validate())
-    assertEquals(NOT_ENOUGH_HOUSES, hotelPurchaseRequest.validate())
+    assertEquals(NOT_ENOUGH_HOUSES, hotelPurchaseRequest.validate(gameState))
+    assertEquals(NOT_ENOUGH_HOUSES, hotelPurchaseRequest.validate(gameState))
   }
 }
