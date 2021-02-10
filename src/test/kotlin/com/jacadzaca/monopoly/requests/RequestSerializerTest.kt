@@ -29,7 +29,8 @@ internal class RequestSerializerTest {
       return Stream.of(
         Arguments.of(createRequest<PlayerMovementRequest>()),
         Arguments.of(createRequest<TilePurchaseRequest>()),
-        Arguments.of(createRequest<HousePurchaseRequest>())
+        Arguments.of(createRequest<HousePurchaseRequest>()),
+        Arguments.of(createRequest<HotelPurchaseRequest>())
       )
     }
 

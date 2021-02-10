@@ -11,6 +11,9 @@ import java.util.*
 
 object RequestSerializer : KSerializer<Request> {
   private val house = Estate.House(100.toBigInteger(), 1000.toBigInteger())
+  private val hotel = Estate.Hotel(150.toBigInteger(), 1500.toBigInteger())
+  private const val requiredHousesForHotel = 5
+
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("request") {
     element("type", PrimitiveSerialDescriptor("type", PrimitiveKind.STRING))
     element("playersId", UUIDSerializer.descriptor)
@@ -35,6 +38,7 @@ object RequestSerializer : KSerializer<Request> {
         "move" -> PlayerMovementRequest(playersId, ::createMove)
         "buy-tile" -> TilePurchaseRequest(playersId, ::BuyTile)
         "buy-house" -> HousePurchaseRequest(playersId, house, ::BuyEstate)
+        "buy-hotel" -> HotelPurchaseRequest(playersId, hotel, requiredHousesForHotel, ::BuyEstate)
         else -> throw SerializationException("Incorrect request type=$type")
       }
     }
@@ -50,6 +54,7 @@ object RequestSerializer : KSerializer<Request> {
         PlayerMovementRequest::class -> encodeStringElement(descriptor, 0, "move")
         TilePurchaseRequest::class -> encodeStringElement(descriptor, 0, "buy-tile")
         HousePurchaseRequest::class -> encodeStringElement(descriptor, 0, "buy-house")
+        HotelPurchaseRequest::class -> encodeStringElement(descriptor, 0, "buy-hotel")
         else -> throw SerializationException("Cannot serialize request of type: ${value::class}")
       }
       encodeSerializableElement(descriptor, 1, UUIDSerializer, value.playersId())
