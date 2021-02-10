@@ -9,6 +9,8 @@ interface Request {
     internal val INVALID_PLAYER_ID = Computation.failure<Command>("No player with specified ID exist")
     internal val BUYER_HAS_INSUFFICIENT_BALANCE =
       Computation.failure<Command>("Buyer dose not have enough funds to preform requested action")
+    internal val TILE_NOT_OWNED_BY_BUYER =
+      Computation.failure<Command>("Buyer dose not own the tile where he wants to buy a estate")
   }
 
   fun validate(context: GameState): Computation<Command>

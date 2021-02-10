@@ -10,6 +10,7 @@ import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import java.util.*
 
 object RequestSerializer : KSerializer<Request> {
+  private val house = Estate.House(100.toBigInteger(), 1000.toBigInteger())
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor("request") {
     element("type", PrimitiveSerialDescriptor("type", PrimitiveKind.STRING))
     element("playersId", UUIDSerializer.descriptor)
@@ -33,6 +34,7 @@ object RequestSerializer : KSerializer<Request> {
       when (type) {
         "move" -> PlayerMovementRequest(playersId, ::createMove)
         "buy-tile" -> TilePurchaseRequest(playersId, ::BuyTile)
+        "buy-house" -> HousePurchaseRequest(playersId, house, ::BuyEstate)
         else -> throw SerializationException("Incorrect request type=$type")
       }
     }
@@ -47,6 +49,7 @@ object RequestSerializer : KSerializer<Request> {
       when(value::class) {
         PlayerMovementRequest::class -> encodeStringElement(descriptor, 0, "move")
         TilePurchaseRequest::class -> encodeStringElement(descriptor, 0, "buy-tile")
+        HousePurchaseRequest::class -> encodeStringElement(descriptor, 0, "buy-house")
         else -> throw SerializationException("Cannot serialize request of type: ${value::class}")
       }
       encodeSerializableElement(descriptor, 1, UUIDSerializer, value.playersId())

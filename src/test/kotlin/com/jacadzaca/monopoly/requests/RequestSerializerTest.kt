@@ -11,7 +11,7 @@ import java.util.*
 import java.util.stream.*
 
 internal class RequestSerializerTest {
-  @ParameterizedTest
+  @ParameterizedTest(name = "decode method is the inverse of the encode method")
   @ArgumentsSource(RequestProvider::class)
   fun `decode method is the inverse of the encode method`(request: Request) {
     assertEquals(
@@ -28,7 +28,8 @@ internal class RequestSerializerTest {
     override fun provideArguments(context: ExtensionContext?): Stream<out Arguments> {
       return Stream.of(
         Arguments.of(createRequest<PlayerMovementRequest>()),
-        Arguments.of(createRequest<TilePurchaseRequest>())
+        Arguments.of(createRequest<TilePurchaseRequest>()),
+        Arguments.of(createRequest<HousePurchaseRequest>())
       )
     }
 
