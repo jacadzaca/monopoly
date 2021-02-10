@@ -8,6 +8,7 @@ import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import java.util.*
+import kotlin.reflect.*
 
 object RequestSerializer : KSerializer<Request> {
   private val house = Estate.House(100.toBigInteger(), 1000.toBigInteger())
@@ -32,7 +33,7 @@ object RequestSerializer : KSerializer<Request> {
         }
       }
       if (type == null || playersId == null) {
-        throw SerializationException("Missing required file")
+        throw SerializationException("Missing required field")
       }
       when (type) {
         "move" -> PlayerMovementRequest(playersId, ::createMove)
@@ -50,14 +51,18 @@ object RequestSerializer : KSerializer<Request> {
 
   override fun serialize(encoder: Encoder, value: Request) {
     encoder.encodeStructure(descriptor) {
-      when(value::class) {
-        PlayerMovementRequest::class -> encodeStringElement(descriptor, 0, "move")
-        TilePurchaseRequest::class -> encodeStringElement(descriptor, 0, "buy-tile")
-        HousePurchaseRequest::class -> encodeStringElement(descriptor, 0, "buy-house")
-        HotelPurchaseRequest::class -> encodeStringElement(descriptor, 0, "buy-hotel")
-        else -> throw SerializationException("Cannot serialize request of type: ${value::class}")
-      }
+      encodeStringElement(descriptor, 0, typeOf(value::class))
       encodeSerializableElement(descriptor, 1, UUIDSerializer, value.playersId())
+    }
+  }
+
+  private fun <T : Request> typeOf(clazz: KClass<T>): String {
+    return when(clazz) {
+      PlayerMovementRequest::class -> "move"
+      TilePurchaseRequest::class -> "buy-tile"
+      HousePurchaseRequest::class -> "buy-house"
+      HotelPurchaseRequest::class -> "buy-hotel"
+      else -> throw SerializationException("Cannot serialize request of type: $clazz")
     }
   }
 }
