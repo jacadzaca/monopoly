@@ -3,7 +3,7 @@ package com.jacadzaca.monopoly.requests
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
-import com.jacadzaca.monopoly.requests.EstatePurchaseRequest.Companion.NOT_ENOUGH_HOUSES
+import com.jacadzaca.monopoly.requests.HotelPurchaseRequest.Companion.NOT_ENOUGH_HOUSES
 import com.jacadzaca.monopoly.requests.Request.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
 import com.jacadzaca.monopoly.requests.Request.Companion.TILE_NOT_OWNED_BY_BUYER
 import io.mockk.*
