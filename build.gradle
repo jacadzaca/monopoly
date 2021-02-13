@@ -1,6 +1,6 @@
 plugins {
-  id 'org.jetbrains.kotlin.jvm' version '1.4.0'
-  id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.0'
+  id 'org.jetbrains.kotlin.jvm' version '1.4.10'
+  id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.10'
   id 'application'
   id 'com.github.johnrengelman.shadow' version '5.0.0'
   id "org.jmailen.kotlinter" version "3.0.2"
@@ -15,8 +15,8 @@ repositories {
 }
 
 ext {
-  kotlinVersion = '1.4.0'
-  vertxVersion = '4.0.0-milestone4'
+  kotlinVersion = '1.4.10'
+  vertxVersion = '4.0.0'
   junitJupiterEngineVersion = '5.4.0'
 }
 
@@ -32,9 +32,7 @@ sourceSets {
   }
 }
 
-def mainVerticleName = 'com.jacadzaca.monopoly.HttpServer'
-def watchForChange = 'src/**/*'
-def doOnChange = './gradlew classes'
+def mainVerticleName = 'com.jacadzaca.monopoly.WebSocketGameServer'
 
 dependencies {
   implementation "io.vertx:vertx-junit5:$vertxVersion"
@@ -54,16 +52,10 @@ dependencies {
 
 compileKotlin {
   kotlinOptions.jvmTarget = '1.8'
-  kotlinOptions {
-    freeCompilerArgs = ["-Xallow-result-return-type"]
-  }
 }
 
 compileTestKotlin {
   kotlinOptions.jvmTarget = '1.8'
-  kotlinOptions {
-    freeCompilerArgs = ["-Xallow-result-return-type"]
-  }
 }
 
 shadowJar {
@@ -84,5 +76,5 @@ test {
 }
 
 run {
-  args = ['run', mainVerticleName, "--redeploy=$watchForChange", "--launcher-class=$mainClassName", "--on-redeploy=$doOnChange"]
+  args = ['run', mainVerticleName, "--launcher-class=$mainClassName"]
 }
