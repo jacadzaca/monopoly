@@ -30,7 +30,9 @@ internal class RequestSerializerTest {
         Arguments.of(createRequest<PlayerMovementRequest>()),
         Arguments.of(createRequest<TilePurchaseRequest>()),
         Arguments.of(createRequest<HousePurchaseRequest>()),
-        Arguments.of(createRequest<HotelPurchaseRequest>())
+        Arguments.of(createRequest<HotelPurchaseRequest>()),
+        Arguments.of(createRequest<PlayerJoinRequest>()),
+        Arguments.of(createRequest<PlayerLeaveRequest>()),
       )
     }
 

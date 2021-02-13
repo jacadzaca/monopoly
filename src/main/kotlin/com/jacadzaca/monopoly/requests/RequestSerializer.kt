@@ -35,13 +35,19 @@ object RequestSerializer : KSerializer<Request> {
       if (type == null || playersId == null) {
         throw SerializationException("Missing required field")
       }
-      when (type) {
-        "move" -> PlayerMovementRequest(playersId, ::createMove)
-        "buy-tile" -> TilePurchaseRequest(playersId, ::BuyTile)
-        "buy-house" -> HousePurchaseRequest(playersId, house, ::BuyEstate)
-        "buy-hotel" -> HotelPurchaseRequest(playersId, hotel, requiredHousesForHotel, ::BuyEstate)
-        else -> throw SerializationException("Incorrect request type=$type")
-      }
+      typeToRequest(type, playersId)
+    }
+  }
+
+  internal fun typeToRequest(type: String, playersId: UUID): Request {
+    return when (type) {
+      "move" -> PlayerMovementRequest(playersId, ::createMove)
+      "buy-tile" -> TilePurchaseRequest(playersId, ::BuyTile)
+      "buy-house" -> HousePurchaseRequest(playersId, house, ::BuyEstate)
+      "buy-hotel" -> HotelPurchaseRequest(playersId, hotel, requiredHousesForHotel, ::BuyEstate)
+      "join" -> PlayerJoinRequest(playersId)
+      "leave" -> PlayerLeaveRequest(playersId)
+      else -> throw SerializationException("Incorrect request type=$type")
     }
   }
 
@@ -62,6 +68,8 @@ object RequestSerializer : KSerializer<Request> {
       TilePurchaseRequest::class -> "buy-tile"
       HousePurchaseRequest::class -> "buy-house"
       HotelPurchaseRequest::class -> "buy-hotel"
+      PlayerJoinRequest::class -> "join"
+      PlayerLeaveRequest::class -> "leave"
       else -> throw SerializationException("Cannot serialize request of type: $clazz")
     }
   }
