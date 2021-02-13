@@ -4,6 +4,6 @@ import com.jacadzaca.monopoly.gamelogic.GameState
 
 abstract class Command {
   fun apply(): GameState = execute().addEvent(asEvent())
-  protected abstract fun asEvent(): Event
+  abstract fun asEvent(): Event
   internal abstract fun execute(): GameState
 }
