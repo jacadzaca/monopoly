@@ -18,24 +18,20 @@ import java.util.*
 object GameStateSerializer : KSerializer<GameState> {
   private val playersMapSerializer = MapSerializer(UUIDSerializer, Player.serializer())
   private val tilesSerializer = ListSerializer(TileSerializer)
-  private val eventsSerializer = ListSerializer(Event.serializer())
 
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor(GameState::class.simpleName!!) {
     element("players", playersMapSerializer.descriptor)
     element("tiles", tilesSerializer.descriptor)
-    element("events", eventsSerializer.descriptor)
   }
 
   override fun deserialize(decoder: Decoder): GameState {
     return decoder.decodeStructure(descriptor) {
       val players: PersistentMap<UUID, Player>? = decodePlayers()
       val tiles: PersistentList<Tile>? = decodeTiles()
-      val events: PersistentList<Event>? = decodeEvents()
       when {
         players == null -> throw SerializationException("Players fields was not specified when decoding a GameState, decoder=$decoder")
         tiles == null -> throw SerializationException("Tile fields was not specified when decoding a GameState, decoder=$decoder")
-        events == null -> throw SerializationException("Events fields was not specified when decoding a GameState, decoder=$decoder")
-        else -> GameState(players, tiles, events)
+        else -> GameState(players, tiles)
       }
     }
   }
@@ -44,7 +40,6 @@ object GameStateSerializer : KSerializer<GameState> {
     encoder.encodeStructure(descriptor) {
       encodeSerializableElement(descriptor, 0, playersMapSerializer, value.players)
       encodeSerializableElement(descriptor, 1, tilesSerializer, value.tiles)
-      encodeSerializableElement(descriptor, 2, eventsSerializer, value.events)
     }
   }
 
@@ -54,9 +49,5 @@ object GameStateSerializer : KSerializer<GameState> {
 
   private fun CompositeDecoder.decodeTiles(): PersistentList<Tile>? {
     return decodeSerializableElement(descriptor, decodeElementIndex(descriptor), tilesSerializer).toPersistentList()
-  }
-
-  private fun CompositeDecoder.decodeEvents(): PersistentList<Event>? {
-    return decodeSerializableElement(descriptor, decodeElementIndex(descriptor), eventsSerializer).toPersistentList()
   }
 }

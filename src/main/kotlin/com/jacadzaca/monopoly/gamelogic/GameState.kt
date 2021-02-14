@@ -1,18 +1,15 @@
 package com.jacadzaca.monopoly.gamelogic
 
-import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.serializers.*
-import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.*
 import kotlinx.serialization.*
 import java.util.*
 
 @Serializable(with = GameStateSerializer::class)
 data class GameState(
+  // must be an implementation that preserves the order of insertion
   val players: PersistentMap<UUID, Player>,
   val tiles: PersistentList<Tile>,
-  val events: PersistentList<Event> = persistentListOf()
 ) {
   /**
    * @return a copy of this, where the player under @playersId is @updatedPlayer
@@ -25,6 +22,4 @@ data class GameState(
    */
 
   fun put(tileIndex: Int, updatedTile: Tile): GameState = copy(tiles = tiles.set(tileIndex, updatedTile))
-
-  fun addEvent(event: Event): GameState = copy(events = events.add(event))
 }

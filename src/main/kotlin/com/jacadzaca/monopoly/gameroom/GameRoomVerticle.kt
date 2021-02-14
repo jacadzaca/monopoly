@@ -28,7 +28,7 @@ class GameRoomVerticle(private val roomsName: String) : AbstractVerticle() {
         update
           .validate(gameState)
           .onSuccess { command ->
-            gameState = command.apply()
+            gameState = command.execute()
             vertx.eventBus().publish(roomsName + "INFO", command.asEvent(), codec)
             message.reply(null)
           }

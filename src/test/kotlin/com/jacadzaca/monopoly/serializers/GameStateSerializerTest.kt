@@ -27,7 +27,6 @@ internal class GameStateSerializerTest {
         UUID.randomUUID()
       )
     ),
-    persistentListOf(Event.PlayerMoved(UUID.randomUUID(), Random.nextPositive()))
   )
 
   @Test
@@ -49,13 +48,6 @@ internal class GameStateSerializerTest {
   fun `decode throws SerializationException if no tiles field is specified`() {
     assertThrows<SerializationException> {
       Json.decodeFromString(GameStateSerializer, "{\"players\": {}, \"events\": []}")
-    }
-  }
-
-  @Test
-  fun `decode throws SerializationException if no events field is specified`() {
-    assertThrows<SerializationException> {
-      Json.decodeFromString(GameStateSerializer, "{\"players\": {}, \"tiles\": []}")
     }
   }
 }

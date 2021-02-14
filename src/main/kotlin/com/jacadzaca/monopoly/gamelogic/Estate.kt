@@ -4,7 +4,7 @@ package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.serializers.*
 import kotlinx.serialization.*
-import java.math.BigInteger
+import java.math.*
 
 @Serializable
 sealed class Estate {

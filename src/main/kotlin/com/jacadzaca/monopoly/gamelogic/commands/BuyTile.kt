@@ -11,7 +11,7 @@ class BuyTile(
   private val tile: Tile,
   private val tileIndex: Int,
   private val target: GameState
-) : Command() {
+) : Command {
   override fun asEvent(): Event = Event.TilePurchased(buyersId, tileIndex)
 
   override fun execute(): GameState {
