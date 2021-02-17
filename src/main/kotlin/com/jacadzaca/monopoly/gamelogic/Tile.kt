@@ -32,5 +32,5 @@ data class Tile(
 
   fun houseCount(): Int = houses.size
 
-  fun changeOwner(newOwner: UUID): Tile = copy(ownersId = newOwner)
+  fun changeOwner(newOwner: UUID?): Tile = copy(ownersId = newOwner)
 }
