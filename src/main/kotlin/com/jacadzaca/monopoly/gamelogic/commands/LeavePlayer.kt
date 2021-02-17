@@ -4,12 +4,18 @@ import com.jacadzaca.monopoly.gamelogic.*
 import java.util.*
 
 data class LeavePlayer(
-  val playersId: UUID,
-  val target: GameState
+  private val playersId: UUID,
+  private val target: GameState,
+  private val changeTurn: ChangeTurn = ChangeTurn(target),
 ) : Command {
   override fun asEvent(): Event = Event.PlayerLeft(playersId)
 
   override fun execute(): GameState {
-    return target.copy(players = target.players.remove(playersId))
+    return if (target.isPlayersTurn(playersId)) {
+      changeTurn.execute()
+    } else {
+      target
+    }.remove(playersId)
+      .disownPlayer(playersId)
   }
 }

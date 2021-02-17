@@ -7,19 +7,30 @@ import java.util.*
 
 @Serializable(with = GameStateSerializer::class)
 data class GameState(
-  // must be an implementation that preserves the order of insertion
   val players: PersistentMap<UUID, Player>,
   val tiles: PersistentList<Tile>,
+  val currentTurn: Int = 0,
+  val turnOrder: PersistentList<UUID> = players.keys.toPersistentList()
 ) {
-  /**
-   * @return a copy of this, where the player under @playersId is @updatedPlayer
-   */
   fun put(playersId: UUID, updatedPlayer: Player): GameState = copy(players = players.put(playersId, updatedPlayer))
 
-  /**
-   * @throws IndexOutOfBoundsException, if no tile will be found at @tileIndex
-   * @return a copy of this, where the tile at index @tileIndex is @updatedTile
-   */
-
   fun put(tileIndex: Int, updatedTile: Tile): GameState = copy(tiles = tiles.set(tileIndex, updatedTile))
+
+  fun remove(playersId: UUID): GameState =
+    copy(players = players.remove(playersId), turnOrder = turnOrder.remove(playersId))
+
+  fun addPlayerToTurnOrder(playersId: UUID): GameState = copy(turnOrder = turnOrder.add(playersId))
+
+  fun isPlayersTurn(playersId: UUID): Boolean = turnOrder[currentTurn] == playersId
+
+  fun disownPlayer(playersId: UUID): GameState {
+    return copy(tiles = tiles.map { tile ->
+      if (tile.ownersId == playersId) {
+        tile.changeOwner(null)
+      } else {
+        tile
+      }
+    }.toPersistentList())
+  }
+
 }

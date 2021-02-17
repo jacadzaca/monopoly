@@ -7,12 +7,14 @@ class JoinPlayer(
   private val playersId: UUID,
   private val target: GameState
 ) : Command {
-  private companion object {
-    private val newPlayer = Player(position = 0, balance = 1000.toBigInteger())
+  internal companion object {
+    internal val newPlayer = Player(position = 0, balance = 1000.toBigInteger())
   }
   override fun asEvent(): Event = Event.PlayerJoined(playersId)
 
   override fun execute(): GameState {
-    return target.put(playersId, newPlayer)
+    return target
+      .put(playersId, newPlayer)
+      .addPlayerToTurnOrder(playersId)
   }
 }
