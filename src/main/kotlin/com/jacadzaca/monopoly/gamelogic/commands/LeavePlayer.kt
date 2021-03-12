@@ -6,7 +6,6 @@ import java.util.*
 data class LeavePlayer(
   private val playersId: UUID,
   private val target: GameState,
-  private val changeTurn: ChangeTurn = ChangeTurn(target),
 ) : Command {
   override fun asEvent(): Event = Event.PlayerLeft(playersId)
 

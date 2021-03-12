@@ -9,8 +9,7 @@ import java.util.*
 internal class LeavePlayerTest {
   private val gameState = mockk<GameState>()
   private val playersId = UUID.randomUUID()
-  private val changeTurn = mockk<ChangeTurn>()
-  private val command = LeavePlayer(playersId, gameState, changeTurn)
+  private val command = LeavePlayer(playersId, gameState)
 
   @BeforeEach
   fun setUp() {
@@ -23,7 +22,6 @@ internal class LeavePlayerTest {
     } returns gameState
     every { gameState.isPlayersTurn(any()) } returns false
     every { gameState.remove(any()) } returns gameState
-    every { changeTurn.execute() } returns gameState
     every { gameState.disownPlayer(any()) } returns gameState
   }
 
@@ -41,8 +39,9 @@ internal class LeavePlayerTest {
 
   @Test
   fun `execute changes turn if the leaving player did not end his turn`() {
+    mockkConstructor(ChangeTurn::class)
+    every { anyConstructed<ChangeTurn>().execute() } returns gameState
     every { gameState.isPlayersTurn(playersId) } returns true
     assertEquals(gameState, command.execute())
-    verify { changeTurn.execute() }
   }
 }
