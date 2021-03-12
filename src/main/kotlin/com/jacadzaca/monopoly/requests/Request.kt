@@ -11,6 +11,7 @@ interface Request {
       Computation.failure<Command>("Buyer dose not have enough funds to preform requested action")
     internal val TILE_NOT_OWNED_BY_BUYER =
       Computation.failure<Command>("Buyer dose not own the tile where he wants to buy a estate")
+    internal val NOT_PLAYERS_TURN = Computation.failure<Command>("It is not the player's turn")
   }
 
   fun validate(context: GameState): Computation<Command>

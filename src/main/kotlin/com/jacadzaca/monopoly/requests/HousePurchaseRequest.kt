@@ -5,6 +5,7 @@ import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.requests.Request.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
 import com.jacadzaca.monopoly.requests.Request.Companion.INVALID_PLAYER_ID
+import com.jacadzaca.monopoly.requests.Request.Companion.NOT_PLAYERS_TURN
 import com.jacadzaca.monopoly.requests.Request.Companion.TILE_NOT_OWNED_BY_BUYER
 import java.util.*
 
@@ -17,6 +18,7 @@ class HousePurchaseRequest(
     val buyer = context.players[buyersId] ?: return INVALID_PLAYER_ID
     val tile = context.tiles[buyer.position]
     return when {
+      !context.isPlayersTurn(buyersId) -> NOT_PLAYERS_TURN
       tile.ownersId != buyersId -> TILE_NOT_OWNED_BY_BUYER
       house.price > buyer.balance -> BUYER_HAS_INSUFFICIENT_BALANCE
       else -> Computation.success(createPurchase(buyer, buyersId, tile, buyer.position, house, context))

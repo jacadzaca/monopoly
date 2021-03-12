@@ -4,6 +4,7 @@ import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.requests.Request.Companion.INVALID_PLAYER_ID
+import com.jacadzaca.monopoly.requests.Request.Companion.NOT_PLAYERS_TURN
 import java.util.*
 
 class PlayerMovementRequest(
@@ -12,7 +13,11 @@ class PlayerMovementRequest(
 ) : Request {
   override fun validate(context: GameState): Computation<Command> {
     val player = context.players[playersId] ?: return INVALID_PLAYER_ID
-    return Computation.success(createMove(player, playersId, context))
+    return if (context.isPlayersTurn(playersId)) {
+      Computation.success(createMove(player, playersId, context))
+    } else {
+      NOT_PLAYERS_TURN
+    }
   }
 
   override fun playersId(): UUID = playersId

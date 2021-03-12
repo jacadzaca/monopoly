@@ -7,6 +7,7 @@ import com.jacadzaca.monopoly.gamelogic.Tile
 import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.requests.Request.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
 import com.jacadzaca.monopoly.requests.Request.Companion.INVALID_PLAYER_ID
+import com.jacadzaca.monopoly.requests.Request.Companion.NOT_PLAYERS_TURN
 import java.util.*
 
 class TilePurchaseRequest(
@@ -21,6 +22,7 @@ class TilePurchaseRequest(
     val buyer = context.players[buyersId] ?: return INVALID_PLAYER_ID
     val tile = context.tiles[buyer.position]
     return when {
+      !context.isPlayersTurn(buyersId) -> NOT_PLAYERS_TURN
       tile.ownersId != null -> TILE_ALREADY_HAS_OWNER
       tile.price > buyer.balance -> BUYER_HAS_INSUFFICIENT_BALANCE
       else -> Computation.success(createPurchase(buyer, buyersId, tile, buyer.position, context))
