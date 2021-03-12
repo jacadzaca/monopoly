@@ -5,6 +5,7 @@ import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.requests.HotelPurchaseRequest.Companion.NOT_ENOUGH_HOUSES
 import com.jacadzaca.monopoly.requests.Request.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
+import com.jacadzaca.monopoly.requests.Request.Companion.NOT_PLAYERS_TURN
 import com.jacadzaca.monopoly.requests.Request.Companion.TILE_NOT_OWNED_BY_BUYER
 import io.mockk.*
 import org.junit.jupiter.api.*
@@ -33,6 +34,7 @@ internal class HotelPurchaseRequestTest {
     every { tile.houseCount() } returns requiredHousesForHotel
     every { buyer.balance } returns Random.nextPositive().toBigInteger()
     every { hotel.price } returns buyer.balance - BigInteger.ONE
+    every { gameState.isPlayersTurn(buyersId) } returns true
   }
 
   @Test
@@ -85,4 +87,11 @@ internal class HotelPurchaseRequestTest {
     assertEquals(NOT_ENOUGH_HOUSES, request.validate(gameState))
     assertEquals(NOT_ENOUGH_HOUSES, request.validate(gameState))
   }
+
+  @Test
+  fun `validate returns Failure if it is not the buyer's turn`() {
+    every { gameState.isPlayersTurn(buyersId) } returns false
+    assertEquals(NOT_PLAYERS_TURN, request.validate(gameState))
+  }
+
 }
