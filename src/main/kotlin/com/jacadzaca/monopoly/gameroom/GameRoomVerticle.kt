@@ -28,7 +28,7 @@ class GameRoomVerticle(private val roomsName: String) : AbstractVerticle() {
         update
           .validate(gameState)
           .onSuccess { command ->
-            gameState = command.execute()
+            gameState = ChangeTurn(command.execute()).execute()
             vertx.eventBus().publish(roomsName + "INFO", command.asEvent(), codec)
             message.reply(null)
           }
@@ -36,6 +36,24 @@ class GameRoomVerticle(private val roomsName: String) : AbstractVerticle() {
             message.fail(1, error)
           }
       }
+
+    vertx
+      .eventBus()
+      .consumer<Request>("${roomsName}NO_TURN_CHANGE")
+      .handler { message ->
+        val update = message.body()
+        update
+          .validate(gameState)
+          .onSuccess { command ->
+            gameState = command.execute()
+            vertx.eventBus().publish("${roomsName}INFO", command.asEvent(), codec)
+            message.reply(null)
+          }
+          .onFailure { error ->
+            message.fail(1, error)
+          }
+      }
+
     vertx
       .eventBus()
       .consumer<Unit>("${roomsName}LOOKUP")
