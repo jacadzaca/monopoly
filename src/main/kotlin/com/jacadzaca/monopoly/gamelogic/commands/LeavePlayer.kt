@@ -11,11 +11,11 @@ data class LeavePlayer(
   override fun asEvent(): Event = Event.PlayerLeft(playersId)
 
   override fun execute(): GameState {
+    val changedTarget = target.remove(playersId).disownPlayer(playersId)
     return if (target.isPlayersTurn(playersId)) {
-      changeTurn.execute()
+      ChangeTurn(changedTarget).execute()
     } else {
-      target
-    }.remove(playersId)
-      .disownPlayer(playersId)
+      changedTarget
+    }
   }
 }
