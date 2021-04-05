@@ -20,15 +20,10 @@ class GameRoomRepositoryImpl(private val vertx: Vertx) : GameRoomRepository {
     return vertx.eventBus().consumer("${roomsName}INFO")
   }
 
-  override fun sendRequest(request: Request, roomsName: String, changeTurn: Boolean): Future<Unit> {
-    return if (changeTurn) {
-      vertx
+  override fun sendRequest(request: Request, roomsName: String): Future<Unit> {
+    return vertx
         .eventBus()
         .request<Unit>(roomsName, request, requestCodec)
-    } else {
-      vertx
-        .eventBus()
-        .request("${roomsName}NO_TURN_CHANGE", request, requestCodec)
-    }.map { }
+        .map {  }
   }
 }
