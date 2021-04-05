@@ -5,16 +5,17 @@ import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
 import com.jacadzaca.monopoly.gamelogic.commands.*
-import com.jacadzaca.monopoly.requests.Request.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
-import com.jacadzaca.monopoly.requests.Request.Companion.INVALID_PLAYER_ID
-import com.jacadzaca.monopoly.requests.Request.Companion.NOT_PLAYERS_TURN
+import com.jacadzaca.monopoly.requests.RequestValidator.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
+import com.jacadzaca.monopoly.requests.RequestValidator.Companion.INVALID_PLAYER_ID
+import com.jacadzaca.monopoly.requests.RequestValidator.Companion.NOT_PLAYERS_TURN
 import java.util.*
 
-class TilePurchaseRequest(
+class TilePurchaseRequestValidator(
   private val createPurchase: (Player, UUID, Tile, Int, GameState) -> (BuyTile)
-) : Request {
+) : RequestValidator {
   internal companion object {
-    internal val TILE_ALREADY_HAS_OWNER = Computation.failure<Command>("Tile that the player wants to buy already has an owner")
+    internal val TILE_ALREADY_HAS_OWNER =
+      Computation.failure<Command>("Tile that the player wants to buy already has an owner")
   }
 
   override fun validate(playersId: UUID, context: GameState): Computation<Command> {
@@ -27,6 +28,4 @@ class TilePurchaseRequest(
       else -> Computation.success(createPurchase(buyer, playersId, tile, buyer.position, context))
     }
   }
-
-  override fun playersId(): UUID = UUID.randomUUID()
 }

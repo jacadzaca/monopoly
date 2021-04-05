@@ -3,10 +3,10 @@ package com.jacadzaca.monopoly.requests
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
-import com.jacadzaca.monopoly.requests.HotelPurchaseRequest.Companion.NOT_ENOUGH_HOUSES
-import com.jacadzaca.monopoly.requests.Request.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
-import com.jacadzaca.monopoly.requests.Request.Companion.NOT_PLAYERS_TURN
-import com.jacadzaca.monopoly.requests.Request.Companion.TILE_NOT_OWNED_BY_BUYER
+import com.jacadzaca.monopoly.requests.HotelPurchaseRequestValidator.Companion.NOT_ENOUGH_HOUSES
+import com.jacadzaca.monopoly.requests.RequestValidator.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
+import com.jacadzaca.monopoly.requests.RequestValidator.Companion.NOT_PLAYERS_TURN
+import com.jacadzaca.monopoly.requests.RequestValidator.Companion.TILE_NOT_OWNED_BY_BUYER
 import io.mockk.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
@@ -14,7 +14,7 @@ import java.math.*
 import java.util.*
 import kotlin.random.Random
 
-internal class HotelPurchaseRequestTest {
+internal class HotelPurchaseRequestValidatorTest {
   private val tile = mockk<Tile>()
   private val buyer = mockk<Player>()
   private val buyersId = UUID.randomUUID()
@@ -23,7 +23,7 @@ internal class HotelPurchaseRequestTest {
   private val requiredHousesForHotel = Random.nextPositive()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> BuyEstate>()
   private val hotel = mockk<Estate.Hotel>(name = "hotel")
-  private val request = HotelPurchaseRequest(hotel, requiredHousesForHotel, createPurchase)
+  private val request = HotelPurchaseRequestValidator(hotel, requiredHousesForHotel, createPurchase)
 
   @BeforeEach
   fun setUp() {

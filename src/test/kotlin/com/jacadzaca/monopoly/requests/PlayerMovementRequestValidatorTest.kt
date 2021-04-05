@@ -3,21 +3,21 @@ package com.jacadzaca.monopoly.requests
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.MovePlayer
-import com.jacadzaca.monopoly.requests.Request.Companion.INVALID_PLAYER_ID
-import com.jacadzaca.monopoly.requests.Request.Companion.NOT_PLAYERS_TURN
+import com.jacadzaca.monopoly.requests.RequestValidator.Companion.INVALID_PLAYER_ID
+import com.jacadzaca.monopoly.requests.RequestValidator.Companion.NOT_PLAYERS_TURN
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.util.*
 
-internal class PlayerMovementRequestTest {
+internal class PlayerMovementRequestValidatorTest {
   private val player = mockk<Player>()
   private val playersId = UUID.randomUUID()
   private val gameState = mockk<GameState>()
   private val createdMove = mockk<MovePlayer>()
   private val createMove = mockk<(Player, UUID, GameState) -> MovePlayer>()
-  private val request = PlayerMovementRequest(createMove)
+  private val request = PlayerMovementRequestValidator(createMove)
 
   @BeforeEach
   fun setUp() {
