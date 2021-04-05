@@ -3,11 +3,11 @@ package com.jacadzaca.monopoly.gameroom
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.requests.*
+import com.jacadzaca.monopoly.requests.validators.*
 import io.vertx.core.*
 import io.vertx.core.impl.logging.*
 import io.vertx.kotlin.core.eventbus.*
 import kotlinx.collections.immutable.*
-import java.util.*
 
 class GameRoomVerticle(private val roomsName: String, private val factory: ValidatorFactory) : AbstractVerticle() {
   companion object {

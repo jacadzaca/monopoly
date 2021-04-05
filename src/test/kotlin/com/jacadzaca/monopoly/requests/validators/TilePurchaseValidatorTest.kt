@@ -1,12 +1,12 @@
-package com.jacadzaca.monopoly.requests
+package com.jacadzaca.monopoly.requests.validators
 
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
-import com.jacadzaca.monopoly.requests.RequestValidator.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
-import com.jacadzaca.monopoly.requests.RequestValidator.Companion.INVALID_PLAYER_ID
-import com.jacadzaca.monopoly.requests.RequestValidator.Companion.NOT_PLAYERS_TURN
-import com.jacadzaca.monopoly.requests.TilePurchaseRequestValidator.Companion.TILE_ALREADY_HAS_OWNER
+import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
+import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.INVALID_PLAYER_ID
+import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.NOT_PLAYERS_TURN
+import com.jacadzaca.monopoly.requests.validators.TilePurchaseValidator.Companion.TILE_ALREADY_HAS_OWNER
 import io.mockk.*
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
@@ -14,14 +14,14 @@ import java.math.*
 import java.util.*
 import kotlin.random.Random
 
-internal class TilePurchaseRequestValidatorTest {
+internal class TilePurchaseValidatorTest {
   private val tile = mockk<Tile>()
   private val buyer = mockk<Player>()
   private val gameState = mockk<GameState>()
   private val buyersId = UUID.randomUUID()
   private val buyersPosition = Random.nextPositive()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, GameState) -> (BuyTile)>()
-  private val request = TilePurchaseRequestValidator(createPurchase)
+  private val request = TilePurchaseValidator(createPurchase)
 
   @BeforeEach
   fun setUp() {

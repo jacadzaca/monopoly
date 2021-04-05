@@ -1,16 +1,16 @@
-package com.jacadzaca.monopoly.requests
+package com.jacadzaca.monopoly.requests.validators
 
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
 import com.jacadzaca.monopoly.gamelogic.Tile
 import com.jacadzaca.monopoly.gamelogic.commands.*
-import com.jacadzaca.monopoly.requests.RequestValidator.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
-import com.jacadzaca.monopoly.requests.RequestValidator.Companion.INVALID_PLAYER_ID
-import com.jacadzaca.monopoly.requests.RequestValidator.Companion.NOT_PLAYERS_TURN
+import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
+import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.INVALID_PLAYER_ID
+import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.NOT_PLAYERS_TURN
 import java.util.*
 
-class TilePurchaseRequestValidator(
+internal class TilePurchaseValidator(
   private val createPurchase: (Player, UUID, Tile, Int, GameState) -> (BuyTile)
 ) : RequestValidator {
   internal companion object {

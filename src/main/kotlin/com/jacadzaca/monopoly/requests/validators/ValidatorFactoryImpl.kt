@@ -1,18 +1,19 @@
-package com.jacadzaca.monopoly.requests
+package com.jacadzaca.monopoly.requests.validators
 
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
+import com.jacadzaca.monopoly.requests.*
 import java.util.*
 
-object ValidatorFactoryImpl : ValidatorFactory {
+internal object ValidatorFactoryImpl : ValidatorFactory {
   private val house = Estate.House(100.toBigInteger(), 1000.toBigInteger())
   private val hotel = Estate.Hotel(200.toBigInteger(), 2000.toBigInteger())
-  private val moveValidator = PlayerMovementRequestValidator(::createMove)
-  private val tilePurchaseValidator = TilePurchaseRequestValidator(::BuyTile)
-  private val housePurchaseValidator = HousePurchaseRequestValidator(house, ::BuyEstate)
-  private val hotelPurchaseValidator = HotelPurchaseRequestValidator(hotel, 5, ::BuyEstate)
-  private val playerJoinValidator = PlayerJoinRequestValidator()
-  private val playerLeaveValidator = PlayerLeaveRequestValidator()
+  private val moveValidator = PlayerMovementRequestValidator(ValidatorFactoryImpl::createMove)
+  private val tilePurchaseValidator = TilePurchaseValidator(::BuyTile)
+  private val housePurchaseValidator = HousePurchaseValidator(house, ::BuyEstate)
+  private val hotelPurchaseValidator = HotelPurchaseValidator(hotel, 5, ::BuyEstate)
+  private val playerJoinValidator = PlayerJoinValidator()
+  private val playerLeaveValidator = PlayerLeaveValidator()
 
   override fun validatorFor(action: PlayerAction): RequestValidator {
     return when (action) {

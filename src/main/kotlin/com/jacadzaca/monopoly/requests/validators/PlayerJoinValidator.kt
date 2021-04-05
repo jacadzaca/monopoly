@@ -1,11 +1,11 @@
-package com.jacadzaca.monopoly.requests
+package com.jacadzaca.monopoly.requests.validators
 
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
 import java.util.*
 
-class PlayerJoinRequestValidator : RequestValidator {
+internal class PlayerJoinValidator : RequestValidator {
   override fun validate(playersId: UUID, context: GameState): Computation<Command> {
     return Computation.success(JoinPlayer(playersId, context))
   }
