@@ -11,23 +11,22 @@ import com.jacadzaca.monopoly.requests.Request.Companion.NOT_PLAYERS_TURN
 import java.util.*
 
 class TilePurchaseRequest(
-  private val buyersId: UUID,
   private val createPurchase: (Player, UUID, Tile, Int, GameState) -> (BuyTile)
 ) : Request {
   internal companion object {
     internal val TILE_ALREADY_HAS_OWNER = Computation.failure<Command>("Tile that the player wants to buy already has an owner")
   }
 
-  override fun validate(context: GameState): Computation<Command> {
-    val buyer = context.players[buyersId] ?: return INVALID_PLAYER_ID
+  override fun validate(playersId: UUID, context: GameState): Computation<Command> {
+    val buyer = context.players[playersId] ?: return INVALID_PLAYER_ID
     val tile = context.tiles[buyer.position]
     return when {
-      !context.isPlayersTurn(buyersId) -> NOT_PLAYERS_TURN
+      !context.isPlayersTurn(playersId) -> NOT_PLAYERS_TURN
       tile.ownersId != null -> TILE_ALREADY_HAS_OWNER
       tile.price > buyer.balance -> BUYER_HAS_INSUFFICIENT_BALANCE
-      else -> Computation.success(createPurchase(buyer, buyersId, tile, buyer.position, context))
+      else -> Computation.success(createPurchase(buyer, playersId, tile, buyer.position, context))
     }
   }
 
-  override fun playersId(): UUID = buyersId
+  override fun playersId(): UUID = UUID.randomUUID()
 }

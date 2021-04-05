@@ -14,6 +14,6 @@ interface Request {
     internal val NOT_PLAYERS_TURN = Computation.failure<Command>("It is not the player's turn")
   }
 
-  fun validate(context: GameState): Computation<Command>
+  fun validate(playersId: UUID, context: GameState): Computation<Command>
   fun playersId(): UUID
 }

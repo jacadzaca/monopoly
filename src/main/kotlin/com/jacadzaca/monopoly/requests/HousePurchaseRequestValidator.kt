@@ -10,20 +10,19 @@ import com.jacadzaca.monopoly.requests.Request.Companion.TILE_NOT_OWNED_BY_BUYER
 import java.util.*
 
 class HousePurchaseRequest(
-  private val buyersId: UUID,
   private val house: Estate.House,
   private val createPurchase: (Player, UUID, Tile, Int, Estate, GameState) -> BuyEstate
 ) : Request {
-  override fun validate(context: GameState): Computation<Command> {
-    val buyer = context.players[buyersId] ?: return INVALID_PLAYER_ID
+  override fun validate(playersId: UUID, context: GameState): Computation<Command> {
+    val buyer = context.players[playersId] ?: return INVALID_PLAYER_ID
     val tile = context.tiles[buyer.position]
     return when {
-      !context.isPlayersTurn(buyersId) -> NOT_PLAYERS_TURN
-      tile.ownersId != buyersId -> TILE_NOT_OWNED_BY_BUYER
+      !context.isPlayersTurn(playersId) -> NOT_PLAYERS_TURN
+      tile.ownersId != playersId -> TILE_NOT_OWNED_BY_BUYER
       house.price > buyer.balance -> BUYER_HAS_INSUFFICIENT_BALANCE
-      else -> Computation.success(createPurchase(buyer, buyersId, tile, buyer.position, house, context))
+      else -> Computation.success(createPurchase(buyer, playersId, tile, buyer.position, house, context))
     }
   }
 
-  override fun playersId(): UUID = buyersId
+  override fun playersId(): UUID = UUID.randomUUID()
 }

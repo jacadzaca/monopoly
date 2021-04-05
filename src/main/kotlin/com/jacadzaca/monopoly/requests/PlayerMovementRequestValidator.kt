@@ -8,10 +8,9 @@ import com.jacadzaca.monopoly.requests.Request.Companion.NOT_PLAYERS_TURN
 import java.util.*
 
 class PlayerMovementRequest(
-  private val playersId: UUID,
   private val createMove: (Player, UUID, GameState) -> MovePlayer,
 ) : Request {
-  override fun validate(context: GameState): Computation<Command> {
+  override fun validate(playersId: UUID, context: GameState): Computation<Command> {
     val player = context.players[playersId] ?: return INVALID_PLAYER_ID
     return if (context.isPlayersTurn(playersId)) {
       Computation.success(createMove(player, playersId, context))
@@ -20,5 +19,5 @@ class PlayerMovementRequest(
     }
   }
 
-  override fun playersId(): UUID = playersId
+  override fun playersId(): UUID = UUID.randomUUID()
 }

@@ -6,10 +6,10 @@ import com.jacadzaca.monopoly.gamelogic.commands.*
 import kotlinx.serialization.Serializable
 import java.util.*
 
-class PlayerJoinRequest(val playersId: UUID) : Request {
-  override fun validate(context: GameState): Computation<Command> {
+class PlayerJoinRequest : Request {
+  override fun validate(playersId: UUID, context: GameState): Computation<Command> {
     return Computation.success(JoinPlayer(playersId, context))
   }
 
-  override fun playersId(): UUID = playersId
+  override fun playersId(): UUID = UUID.randomUUID()
 }

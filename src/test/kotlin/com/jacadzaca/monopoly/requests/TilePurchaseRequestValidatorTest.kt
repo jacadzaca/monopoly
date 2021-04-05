@@ -21,7 +21,7 @@ internal class TilePurchaseRequestTest {
   private val buyersId = UUID.randomUUID()
   private val buyersPosition = Random.nextPositive()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, GameState) -> (BuyTile)>()
-  private val request = TilePurchaseRequest(buyersId, createPurchase)
+  private val request = TilePurchaseRequest(createPurchase)
 
   @BeforeEach
   fun setUp() {
@@ -40,32 +40,32 @@ internal class TilePurchaseRequestTest {
     val purchase = mockk<BuyTile>(name = "purchase")
     every { createPurchase(buyer, buyersId, tile, buyersPosition, gameState) } returns purchase
     val success = Computation.success(purchase)
-    assertEquals(success, request.validate(gameState))
-    assertEquals(success, request.validate(gameState))
+    assertEquals(success, request.validate(buyersId, gameState))
+    assertEquals(success, request.validate(buyersId, gameState))
   }
 
   @Test
   fun `validate returns Failure if the the tile already has an owner`() {
     every { tile.price } returns buyer.balance - BigInteger.ONE
     every { tile.ownersId } returnsMany listOf(UUID.randomUUID(), buyersId)
-    assertEquals(TILE_ALREADY_HAS_OWNER, request.validate(gameState))
-    assertEquals(TILE_ALREADY_HAS_OWNER, request.validate(gameState))
+    assertEquals(TILE_ALREADY_HAS_OWNER, request.validate(buyersId, gameState))
+    assertEquals(TILE_ALREADY_HAS_OWNER, request.validate(buyersId, gameState))
   }
 
   @Test
   fun `validate returns Failure if the buyer's balance is less than the tile's price`() {
     every { tile.price } returns buyer.balance + BigInteger.ONE
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(buyersId, gameState))
   }
 
   @Test
   fun `validate returns Failure if the event references an non-existing player`() {
     every { gameState.players[buyersId] } returns null
-    assertEquals(INVALID_PLAYER_ID, request.validate(gameState))
+    assertEquals(INVALID_PLAYER_ID, request.validate(buyersId, gameState))
   }
 
   @Test
   fun `validate returns Failure if it is not the buyer's turn`() {
     every { gameState.isPlayersTurn(buyersId) } returns false
-    assertEquals(NOT_PLAYERS_TURN, request.validate(gameState))
+    assertEquals(NOT_PLAYERS_TURN, request.validate(buyersId, gameState))
   }  }

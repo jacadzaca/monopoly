@@ -23,7 +23,7 @@ internal class HotelPurchaseRequestTest {
   private val requiredHousesForHotel = Random.nextPositive()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> BuyEstate>()
   private val hotel = mockk<Estate.Hotel>(name = "hotel")
-  private val request = HotelPurchaseRequest(buyersId, hotel, requiredHousesForHotel, createPurchase)
+  private val request = HotelPurchaseRequest(hotel, requiredHousesForHotel, createPurchase)
 
   @BeforeEach
   fun setUp() {
@@ -53,9 +53,9 @@ internal class HotelPurchaseRequestTest {
       Random.nextPositive(from = requiredHousesForHotel)
     )
     val success = Computation.success(createdEstatePurchase)
-    assertEquals(success, request.validate(gameState))
-    assertEquals(success, request.validate(gameState))
-    assertEquals(success, request.validate(gameState))
+    assertEquals(success, request.validate(buyersId, gameState))
+    assertEquals(success, request.validate(buyersId, gameState))
+    assertEquals(success, request.validate(buyersId, gameState))
   }
 
   @Test
@@ -64,8 +64,8 @@ internal class HotelPurchaseRequestTest {
       UUID.randomUUID(),
       null
     )
-    assertEquals(TILE_NOT_OWNED_BY_BUYER, request.validate(gameState))
-    assertEquals(TILE_NOT_OWNED_BY_BUYER, request.validate(gameState))
+    assertEquals(TILE_NOT_OWNED_BY_BUYER, request.validate(buyersId, gameState))
+    assertEquals(TILE_NOT_OWNED_BY_BUYER, request.validate(buyersId, gameState))
   }
 
   @Test
@@ -74,8 +74,8 @@ internal class HotelPurchaseRequestTest {
       buyer.balance + BigInteger.ONE,
       buyer.balance + Random.nextPositive().toBigInteger()
     )
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(gameState))
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(buyersId, gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(buyersId, gameState))
   }
 
   @Test
@@ -84,14 +84,14 @@ internal class HotelPurchaseRequestTest {
       requiredHousesForHotel - 1,
       Random.nextPositive(until = requiredHousesForHotel)
     )
-    assertEquals(NOT_ENOUGH_HOUSES, request.validate(gameState))
-    assertEquals(NOT_ENOUGH_HOUSES, request.validate(gameState))
+    assertEquals(NOT_ENOUGH_HOUSES, request.validate(buyersId, gameState))
+    assertEquals(NOT_ENOUGH_HOUSES, request.validate(buyersId, gameState))
   }
 
   @Test
   fun `validate returns Failure if it is not the buyer's turn`() {
     every { gameState.isPlayersTurn(buyersId) } returns false
-    assertEquals(NOT_PLAYERS_TURN, request.validate(gameState))
+    assertEquals(NOT_PLAYERS_TURN, request.validate(buyersId, gameState))
   }
 
 }
