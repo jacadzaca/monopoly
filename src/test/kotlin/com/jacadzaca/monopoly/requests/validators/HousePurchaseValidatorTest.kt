@@ -24,7 +24,6 @@ internal class HousePurchaseValidatorTest {
   private val house = mockk<Estate.House>(name = "house")
   private val request = HousePurchaseValidator(house, createPurchase)
 
-
   @BeforeEach
   fun setUp() {
     every { tile.ownersId } returns buyersId

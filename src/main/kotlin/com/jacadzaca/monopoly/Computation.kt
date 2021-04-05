@@ -18,7 +18,6 @@ class Computation<out T> private constructor(
     fun <T> success(value: T): Computation<T> {
       return Computation(value, null)
     }
-
   }
 
   inline fun onSuccess(onSuccess: (value: T) -> Unit): Computation<T> {
@@ -26,7 +25,6 @@ class Computation<out T> private constructor(
     onSuccess(value)
     return this
   }
-
 
   inline fun onFailure(onFailure: (message: String) -> Unit): Computation<T> {
     if (message == null) return this

@@ -24,13 +24,14 @@ data class GameState(
   fun isPlayersTurn(playersId: UUID): Boolean = turnOrder[currentTurn] == playersId
 
   fun disownPlayer(playersId: UUID): GameState {
-    return copy(tiles = tiles.map { tile ->
-      if (tile.ownersId == playersId) {
-        tile.changeOwner(null)
-      } else {
-        tile
-      }
-    }.toPersistentList())
+    return copy(
+      tiles = tiles.map { tile ->
+        if (tile.ownersId == playersId) {
+          tile.changeOwner(null)
+        } else {
+          tile
+        }
+      }.toPersistentList()
+    )
   }
-
 }

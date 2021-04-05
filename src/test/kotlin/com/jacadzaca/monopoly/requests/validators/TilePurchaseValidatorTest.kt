@@ -68,4 +68,5 @@ internal class TilePurchaseValidatorTest {
   fun `validate returns Failure if it is not the buyer's turn`() {
     every { gameState.isPlayersTurn(buyersId) } returns false
     assertEquals(NOT_PLAYERS_TURN, request.validate(buyersId, gameState))
-  }  }
+  }
+}

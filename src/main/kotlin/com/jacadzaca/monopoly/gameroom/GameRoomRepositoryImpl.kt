@@ -22,8 +22,8 @@ class GameRoomRepositoryImpl(private val vertx: Vertx) : GameRoomRepository {
 
   override fun sendRequest(request: Request, roomsName: String): Future<Unit> {
     return vertx
-        .eventBus()
-        .request<Unit>(roomsName, request, requestCodec)
-        .map {  }
+      .eventBus()
+      .request<Unit>(roomsName, request, requestCodec)
+      .map { }
   }
 }

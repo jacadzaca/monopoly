@@ -93,5 +93,4 @@ internal class HotelPurchaseValidatorTest {
     every { gameState.isPlayersTurn(buyersId) } returns false
     assertEquals(NOT_PLAYERS_TURN, request.validate(buyersId, gameState))
   }
-
 }

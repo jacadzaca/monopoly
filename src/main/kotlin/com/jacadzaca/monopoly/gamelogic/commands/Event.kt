@@ -30,5 +30,5 @@ sealed class Event {
   data class PlayerLeft(val playersId: UUID) : Event()
   @Serializable
   @SerialName("turn-change")
-  object TurnChanged: Event()
+  object TurnChanged : Event()
 }
