@@ -6,7 +6,7 @@ import java.util.*
 class JoinPlayer(
   private val playersId: UUID,
   private val target: GameState
-) : Command {
+) : Command() {
   internal companion object {
     internal val newPlayer = Player(position = 0, balance = 1000.toBigInteger())
   }

@@ -2,7 +2,8 @@ package com.jacadzaca.monopoly.gamelogic.commands
 
 import com.jacadzaca.monopoly.gamelogic.GameState
 
-interface Command {
-  fun asEvent(): Event
-  fun execute(): GameState
+abstract class Command {
+  protected abstract fun asEvent(): Event
+  internal abstract fun execute(): GameState
+  fun apply(): GameState = execute().addRecentEvent(asEvent())
 }

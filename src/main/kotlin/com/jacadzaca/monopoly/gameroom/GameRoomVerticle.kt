@@ -31,11 +31,14 @@ class GameRoomVerticle(private val roomsName: String, private val factory: Valid
           .validate(request.requestersId, gameState)
           .onSuccess { command ->
             gameState = if (request.changeTurn) {
-              ChangeTurn(command.execute()).execute()
+              ChangeTurn(command.apply()).apply()
             } else {
-              command.execute()
+              command.apply()
             }
-            vertx.eventBus().publish(roomsName + "INFO", command.asEvent(), codec)
+            for (event in gameState.recentEvents) {
+              vertx.eventBus().publish(roomsName + "INFO", event, codec)
+            }
+            gameState = gameState.clearRecentEvent()
             message.reply(null)
           }
           .onFailure { error ->
