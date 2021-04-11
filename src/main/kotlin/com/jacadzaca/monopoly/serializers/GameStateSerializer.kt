@@ -24,8 +24,8 @@ object GameStateSerializer : KSerializer<GameState> {
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor(GameState::class.simpleName!!) {
     element("players", playersMapSerializer.descriptor)
     element("tiles", tilesSerializer.descriptor)
-    element("current-turn", PrimitiveSerialDescriptor("current-turn", PrimitiveKind.INT))
-    element("turn-order", turnOrderSerializer.descriptor)
+    element("currentTurn", PrimitiveSerialDescriptor("currentTurn", PrimitiveKind.INT))
+    element("turnOrder", turnOrderSerializer.descriptor)
   }
 
   override fun deserialize(decoder: Decoder): GameState {
