@@ -35,7 +35,7 @@ const handleRequest = json => {
     console.log(json);
     switch(json.type) {
         case 'player-joined':
-            gameState.players[json.playersId] = {position: 0, balance: 0};
+            gameState.players[json.playersId] = {position: 0, balance: 1000};
             gameState.turnOrder.push(json.playersId);
             window.dispatchEvent(createEvent('x-update-list', gameState.players));
             break;
