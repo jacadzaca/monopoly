@@ -23,6 +23,7 @@ socket.onmessage = event => {
     console.log(gameState);
     socket.onmessage = e => { handleRequest(JSON.parse(e.data)) };
     window.dispatchEvent(createEvent('x-update-list', gameState.players));
+    window.dispatchEvent(createEvent('x-update-tile', gameState.tiles));
 
     const myTurn = gameState.turnOrder[gameState.turnOrder.length - 1]
     window.dispatchEvent(createEvent('x-set-my-turn', myTurn))
