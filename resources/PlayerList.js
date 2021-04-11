@@ -14,7 +14,7 @@ class PlayerList extends HTMLElement {
                         <li>position: ${position}</li>
                         <li>balance: ${balance}</li>
                     </ul>`);
-        render(html`<ul>${list}</ul>`, this);
+        render(html`<ul>Players: ${list}</ul>`, this);
     }
 }
 
