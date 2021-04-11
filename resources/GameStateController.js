@@ -50,6 +50,10 @@ const handleRequest = json => {
             const currentPlayer = gameState.turnOrder[gameState.currentTurn]
             window.dispatchEvent(createEvent('x-turn-change', currentPlayer))
             break;
+        case 'moved':
+            gameState.players[json.playersId].position = json.newPosition;
+            window.dispatchEvent(createEvent('x-update-list', gameState.players));
+            break;
         default:
             break;
     }
