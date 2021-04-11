@@ -54,6 +54,14 @@ const handleRequest = json => {
             gameState.players[json.playersId].position = json.newPosition;
             window.dispatchEvent(createEvent('x-update-list', gameState.players));
             break;
+        case 'liability-paid':
+            const liability = BigInt(json.liability)
+            const payersBalance = BigInt(gameState.players[json.payersId].balance)
+            gameState.players[json.payersId].balance = payersBalance - liability;
+            const reciversBalance = BigInt(gameState.players[json.receiversId].balance)
+            gameState.players[json.receiversId].balance = reciversBalance + liability;
+            window.dispatchEvent(createEvent('x-update-list', gameState.players));
+            break;
         default:
             break;
     }
