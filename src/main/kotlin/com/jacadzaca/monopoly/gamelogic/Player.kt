@@ -12,6 +12,7 @@ data class Player(
   val balance: BigInteger
 ) {
   fun setPosition(newPosition: Int): Player = copy(position = newPosition)
+  fun setBalance(newBalance: BigInteger): Player = copy(balance =  newBalance)
   fun addFunds(toAdd: BigInteger): Player = copy(balance = balance + toAdd)
   fun detractFunds(toDetract: BigInteger): Player = copy(balance = balance - toDetract)
 }

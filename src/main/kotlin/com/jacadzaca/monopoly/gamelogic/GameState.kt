@@ -1,9 +1,11 @@
 package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.gamelogic.commands.*
+import com.jacadzaca.monopoly.gamelogic.deltas.*
 import com.jacadzaca.monopoly.serializers.*
 import kotlinx.collections.immutable.*
 import kotlinx.serialization.*
+import java.math.*
 import java.util.*
 
 @Serializable(with = GameStateSerializer::class)
@@ -12,17 +14,45 @@ data class GameState(
   val tiles: PersistentList<Tile>,
   val currentTurn: Int = 0,
   val turnOrder: PersistentList<UUID> = players.keys.toPersistentList(),
-  val recentEvents: PersistentList<Event> =  persistentListOf(),
+  val recentEvents: PersistentList<Event> = persistentListOf(),
+  val recentChanges: PersistentList<Delta> = persistentListOf(),
 ) {
   fun put(playersId: UUID, updatedPlayer: Player): GameState = copy(players = players.put(playersId, updatedPlayer))
 
   fun put(tileIndex: Int, updatedTile: Tile): GameState = copy(tiles = tiles.set(tileIndex, updatedTile))
 
+  fun updatePlayer(playersId: UUID, newPosition: Int? = null, newBalance: BigInteger? = null): GameState {
+    var player = players[playersId]!!
+    var changes = recentChanges
+    if (newPosition != null) {
+      player = player.setPosition(newPosition)
+      changes = changes.add(Delta.PositionChange(playersId, newPosition))
+    }
+    if (newBalance != null) {
+      player = player.setBalance(newBalance)
+      changes = changes.add(Delta.BalanceChange(playersId, newBalance))
+    }
+    return copy(players = players.put(playersId, player), recentChanges = changes)
+  }
+
+  fun updateTile(tileIndex: Int, newOwner: UUID? = null, newEstate: Estate? = null): GameState {
+    var tile = tiles[tileIndex]
+    var changes = recentChanges
+    if (newOwner != null) {
+      tile = tile.changeOwner(newOwner)
+      changes = changes.add(Delta.TileOwnershipChange(newOwner, tileIndex))
+    }
+    if (newEstate != null) {
+      tile = tile.addEstate(newEstate)
+      changes = changes.add(Delta.EstateAddition(tileIndex, newEstate))
+    }
+    return copy(tiles = tiles.set(tileIndex, tile), recentChanges = changes)
+  }
+
   fun remove(playersId: UUID): GameState =
     copy(players = players.remove(playersId), turnOrder = turnOrder.remove(playersId))
 
   fun addPlayerToTurnOrder(playersId: UUID): GameState = copy(turnOrder = turnOrder.add(playersId))
-
   fun isPlayersTurn(playersId: UUID): Boolean = turnOrder[currentTurn] == playersId
 
   fun addRecentEvent(event: Event): GameState = copy(recentEvents = recentEvents.add(event))
