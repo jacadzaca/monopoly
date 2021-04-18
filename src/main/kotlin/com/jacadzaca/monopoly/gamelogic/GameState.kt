@@ -55,7 +55,11 @@ data class GameState(
 
 
   fun remove(playersId: UUID): GameState =
-    copy(players = players.remove(playersId), turnOrder = turnOrder.remove(playersId))
+    copy(
+      players = players.remove(playersId),
+      turnOrder = turnOrder.remove(playersId),
+      recentChanges = recentChanges.add(Delta.PlayerLeave(playersId))
+    )
 
   fun clearRecentChanges(): GameState = copy(recentChanges = recentChanges.clear())
 
