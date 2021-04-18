@@ -30,7 +30,7 @@ sealed class Delta {
   @SerialName("tileOwnershipChange")
   data class TileOwnershipChange(val newOwner: UUID, val tilesIndex: Int): Delta() {
     override fun apply(gameState: GameState): GameState {
-      return gameState.put(tilesIndex, gameState.tiles[tilesIndex].changeOwner(newOwner))
+      return gameState.updateTile(tilesIndex, newOwner = newOwner)
     }
   }
 
@@ -38,7 +38,7 @@ sealed class Delta {
   @SerialName("estateAdded")
   data class EstateAddition(val tilesIndex: Int, val estate: Estate): Delta() {
     override fun apply(gameState: GameState): GameState {
-      return gameState.put(tilesIndex, gameState.tiles[tilesIndex].addEstate(estate))
+      return gameState.updateTile(tilesIndex, newEstate = estate)
     }
   }
 
