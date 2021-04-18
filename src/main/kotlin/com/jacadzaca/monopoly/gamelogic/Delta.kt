@@ -1,7 +1,6 @@
 @file:UseSerializers(BigIntegerSerializer::class, UUIDSerializer::class)
-package com.jacadzaca.monopoly.gamelogic.deltas
+package com.jacadzaca.monopoly.gamelogic
 
-import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.serializers.*
 import kotlinx.serialization.*
 import java.math.*

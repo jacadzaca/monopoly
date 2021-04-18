@@ -12,7 +12,7 @@ import kotlinx.collections.immutable.*
 class GameRoomVerticle(private val roomsName: String, private val factory: ValidatorFactory) : AbstractVerticle() {
   companion object {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val codec = deliveryOptionsOf(codecName = GenericCodec.computationCodecName(Event::class))
+    private val codec = deliveryOptionsOf(codecName = GenericCodec.computationCodecName(Delta::class))
     private val tile = Tile(persistentListOf(), persistentListOf(), 1000.toBigInteger(), null)
     private val newGameState = GameState(persistentHashMapOf(), persistentListOf(tile, tile, tile, tile, tile))
     private val gameStateCodec = deliveryOptionsOf(codecName = "gameStateCodec")
@@ -35,10 +35,10 @@ class GameRoomVerticle(private val roomsName: String, private val factory: Valid
             } else {
               command.execute()
             }
-            for (event in gameState.recentEvents) {
+            for (event in gameState.recentChanges) {
               vertx.eventBus().publish(roomsName + "INFO", event, codec)
             }
-            gameState = gameState.clearRecentEvent()
+            gameState = gameState.clearRecentChanges()
             message.reply(null)
           }
           .onFailure { error ->

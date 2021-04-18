@@ -1,7 +1,5 @@
 package com.jacadzaca.monopoly.gamelogic
 
-import com.jacadzaca.monopoly.gamelogic.commands.*
-import com.jacadzaca.monopoly.gamelogic.deltas.*
 import com.jacadzaca.monopoly.serializers.*
 import kotlinx.collections.immutable.*
 import kotlinx.serialization.*
@@ -14,7 +12,6 @@ data class GameState(
   val tiles: PersistentList<Tile>,
   val currentTurn: Int = 0,
   val turnOrder: PersistentList<UUID> = players.keys.toPersistentList(),
-  val recentEvents: PersistentList<Event> = persistentListOf(),
   val recentChanges: PersistentList<Delta> = persistentListOf(),
 ) {
   fun put(playersId: UUID, newPlayer: Player): GameState {
@@ -24,8 +21,6 @@ data class GameState(
       turnOrder = turnOrder.add(playersId)
     )
   }
-
-  fun put(tileIndex: Int, updatedTile: Tile): GameState = copy(tiles = tiles.set(tileIndex, updatedTile))
 
   fun updatePlayer(playersId: UUID, newPosition: Int? = null, newBalance: BigInteger? = null): GameState {
     var player = players[playersId]!!
@@ -62,11 +57,9 @@ data class GameState(
   fun remove(playersId: UUID): GameState =
     copy(players = players.remove(playersId), turnOrder = turnOrder.remove(playersId))
 
+  fun clearRecentChanges(): GameState = copy(recentChanges = recentChanges.clear())
+
   fun isPlayersTurn(playersId: UUID): Boolean = turnOrder[currentTurn] == playersId
-
-  fun addRecentEvent(event: Event): GameState = copy(recentEvents = recentEvents.add(event))
-
-  fun clearRecentEvent(): GameState = copy(recentEvents = recentEvents.clear())
 
   fun disownPlayer(playersId: UUID): GameState {
     return copy(

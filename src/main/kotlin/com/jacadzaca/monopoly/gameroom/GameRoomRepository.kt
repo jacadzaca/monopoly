@@ -8,6 +8,6 @@ import io.vertx.core.eventbus.*
 
 interface GameRoomRepository {
   fun getGameState(roomsName: String): Future<GameState>
-  fun subscribe(roomsName: String): MessageConsumer<Event>
+  fun subscribe(roomsName: String): MessageConsumer<Delta>
   fun sendRequest(request: Request, roomsName: String): Future<Unit>
 }

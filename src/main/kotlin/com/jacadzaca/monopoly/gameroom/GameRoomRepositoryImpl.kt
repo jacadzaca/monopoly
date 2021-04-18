@@ -16,7 +16,7 @@ class GameRoomRepositoryImpl(private val vertx: Vertx) : GameRoomRepository {
     return vertx.eventBus().request<GameState>("${roomsName}LOOKUP", null).map { it.body() }
   }
 
-  override fun subscribe(roomsName: String): MessageConsumer<Event> {
+  override fun subscribe(roomsName: String): MessageConsumer<Delta> {
     return vertx.eventBus().consumer("${roomsName}INFO")
   }
 
