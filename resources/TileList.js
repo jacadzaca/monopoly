@@ -1,4 +1,5 @@
 import { html, render } from 'https://unpkg.com/lit-html?module';
+import { sum } from '/static/util.js'
 
 class TileList extends HTMLElement {
     connectedCallback() {
@@ -16,6 +17,12 @@ class TileList extends HTMLElement {
         }
     }
 
+    computeRent(tile) {
+        return tile.houses.concat(tile.hotels)
+                          .map(house => BigInt(house.rent))
+                          .reduce(sum, BigInt(0));
+    }
+
     updateTiles({ detail: {payload: tiles} }) {
         const list = tiles.map((tile) => html`
                 <li>${tile.ownersId}</li>
@@ -23,6 +30,7 @@ class TileList extends HTMLElement {
                         <li>houses: ${tile.houses.map(this.renderEstate)}</li>
                         <li>hotels: ${tile.hotels.map(this.renderEstate)}</li>
                         <li>price: ${tile.price}</li>
+                        <li>rent: ${this.computeRent(tile)}</li>
                     </ul>`);
         render(html`<ul>Tiles:${list}</ul>`, this);
     }
