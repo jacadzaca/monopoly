@@ -9,7 +9,7 @@ import java.util.*
 import kotlin.random.Random
 
 internal class MovePlayerTest {
-  private val player = mockk<Player>(relaxed = true)
+  private val player = mockk<Player>()
   private val gameState = mockk<GameState>(relaxed = true)
   private val playersId = UUID.randomUUID()
   private val newPosition = Random.nextPositive()
@@ -26,7 +26,7 @@ internal class MovePlayerTest {
   @Test
   fun `transform sets player's position to newPosition`() {
     transformation.execute()
-    verify { player.setPosition(newPosition) }
+    verify { gameState.updatePlayer(playersId, newPosition) }
   }
 
   @Test
@@ -37,7 +37,7 @@ internal class MovePlayerTest {
     every { gameState.players[tileOwnedByOther.ownersId] } returns mockk(name = "tile owner")
     every { gameState.tiles[newPosition] } returns tileOwnedByOther
     val rentPayment = mockk<PayLiability>()
-    every { rentPayment.execute() } returns gameState
+    every { rentPayment.apply() } returns gameState
     every {
       createPayment(
         player,
@@ -49,6 +49,6 @@ internal class MovePlayerTest {
       )
     } returns rentPayment
     transformation.execute()
-    verify { rentPayment.execute() }
+    verify { rentPayment.apply() }
   }
 }
