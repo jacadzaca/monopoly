@@ -13,13 +13,6 @@ internal class LeavePlayerTest {
 
   @BeforeEach
   fun setUp() {
-    every {
-      gameState.copy(
-        players = any(),
-        turnOrder = any(),
-        tiles = any()
-      )
-    } returns gameState
     every { gameState.isPlayersTurn(any()) } returns false
     every { gameState.remove(any()) } returns gameState
     every { gameState.disownPlayer(any()) } returns gameState
@@ -32,7 +25,7 @@ internal class LeavePlayerTest {
   }
 
   @Test
-  fun `execute disowns player of all his holdings`() {
+  fun `execute disowns player of all their holdings`() {
     assertEquals(gameState, command.execute())
     verify { gameState.disownPlayer(playersId) }
   }
@@ -40,7 +33,7 @@ internal class LeavePlayerTest {
   @Test
   fun `execute changes turn if the leaving player did not end his turn`() {
     mockkConstructor(ChangeTurn::class)
-    every { anyConstructed<ChangeTurn>().execute() } returns gameState
+    every { anyConstructed<ChangeTurn>().apply() } returns gameState
     every { gameState.isPlayersTurn(playersId) } returns true
     assertEquals(gameState, command.execute())
   }

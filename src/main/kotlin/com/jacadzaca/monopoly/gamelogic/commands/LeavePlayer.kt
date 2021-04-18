@@ -5,16 +5,16 @@ import java.util.*
 
 data class LeavePlayer(
   private val playersId: UUID,
-  private val target: GameState,
+  private val gameState: GameState,
 ) : Command() {
   override fun asEvent(): Event = Event.PlayerLeft(playersId)
 
   override fun execute(): GameState {
-    val changedTarget = target.remove(playersId).disownPlayer(playersId)
-    return if (target.isPlayersTurn(playersId)) {
-      ChangeTurn(changedTarget).apply()
+    val changedGameState = gameState.remove(playersId).disownPlayer(playersId)
+    return if (gameState.isPlayersTurn(playersId)) {
+      ChangeTurn(changedGameState).apply()
     } else {
-      changedTarget
+      changedGameState
     }
   }
 }

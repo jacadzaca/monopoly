@@ -13,18 +13,11 @@ internal class JoinPlayerTest {
   @BeforeEach
   fun setUp() {
     every { gameState.put(playersId, JoinPlayer.newPlayer) } returns gameState
-    every { gameState.addPlayerToTurnOrder(any()) } returns gameState
   }
 
   @Test
   fun `execute adds player to the GameState`() {
     command.execute()
     verify { gameState.put(playersId, JoinPlayer.newPlayer) }
-  }
-
-  @Test
-  fun `execute adds player to the turn queue`() {
-    command.execute()
-    verify { gameState.addPlayerToTurnOrder(playersId) }
   }
 }

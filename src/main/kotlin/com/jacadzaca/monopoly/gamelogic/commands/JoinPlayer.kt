@@ -13,8 +13,6 @@ class JoinPlayer(
   override fun asEvent(): Event = Event.PlayerJoined(playersId)
 
   override fun execute(): GameState {
-    return target
-      .put(playersId, newPlayer)
-      .addPlayerToTurnOrder(playersId)
+    return target.put(playersId, newPlayer)
   }
 }

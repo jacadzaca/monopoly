@@ -17,7 +17,13 @@ data class GameState(
   val recentEvents: PersistentList<Event> = persistentListOf(),
   val recentChanges: PersistentList<Delta> = persistentListOf(),
 ) {
-  fun put(playersId: UUID, updatedPlayer: Player): GameState = copy(players = players.put(playersId, updatedPlayer))
+  fun put(playersId: UUID, newPlayer: Player): GameState {
+    return copy(
+      players = players.put(playersId, newPlayer),
+      recentChanges = recentChanges.add(Delta.PlayerJoin(playersId, newPlayer)),
+      turnOrder = turnOrder.add(playersId)
+    )
+  }
 
   fun put(tileIndex: Int, updatedTile: Tile): GameState = copy(tiles = tiles.set(tileIndex, updatedTile))
 
@@ -56,7 +62,6 @@ data class GameState(
   fun remove(playersId: UUID): GameState =
     copy(players = players.remove(playersId), turnOrder = turnOrder.remove(playersId))
 
-  fun addPlayerToTurnOrder(playersId: UUID): GameState = copy(turnOrder = turnOrder.add(playersId))
   fun isPlayersTurn(playersId: UUID): Boolean = turnOrder[currentTurn] == playersId
 
   fun addRecentEvent(event: Event): GameState = copy(recentEvents = recentEvents.add(event))
@@ -75,3 +80,4 @@ data class GameState(
     )
   }
 }
+
