@@ -11,9 +11,7 @@ class PayLiability(
   private val receiversId: UUID,
   private val liability: BigInteger,
   private val target: GameState
-) : Command() {
-  override fun asEvent(): Event = Event.LiabilityPaid(payerId, receiversId, liability)
-
+) : Command {
   override fun execute(): GameState {
     return if (liability > payer.balance) {
       target

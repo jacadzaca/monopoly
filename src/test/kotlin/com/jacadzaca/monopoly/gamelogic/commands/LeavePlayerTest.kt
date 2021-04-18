@@ -33,7 +33,7 @@ internal class LeavePlayerTest {
   @Test
   fun `execute changes turn if the leaving player did not end his turn`() {
     mockkConstructor(ChangeTurn::class)
-    every { anyConstructed<ChangeTurn>().apply() } returns gameState
+    every { anyConstructed<ChangeTurn>().execute() } returns gameState
     every { gameState.isPlayersTurn(playersId) } returns true
     assertEquals(gameState, command.execute())
   }

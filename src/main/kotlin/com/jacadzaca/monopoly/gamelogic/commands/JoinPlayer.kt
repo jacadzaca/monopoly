@@ -6,11 +6,10 @@ import java.util.*
 class JoinPlayer(
   private val playersId: UUID,
   private val target: GameState
-) : Command() {
+) : Command {
   internal companion object {
     internal val newPlayer = Player(position = 0, balance = 1000.toBigInteger())
   }
-  override fun asEvent(): Event = Event.PlayerJoined(playersId)
 
   override fun execute(): GameState {
     return target.put(playersId, newPlayer)

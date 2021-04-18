@@ -9,9 +9,7 @@ class BuyTile(
   private val tile: Tile,
   private val tileIndex: Int,
   private val target: GameState
-) : Command() {
-  override fun asEvent(): Event = Event.TilePurchased(buyersId, tileIndex)
-
+) : Command {
   override fun execute(): GameState {
     return target
       .updateTile(tileIndex, newOwner = buyersId)

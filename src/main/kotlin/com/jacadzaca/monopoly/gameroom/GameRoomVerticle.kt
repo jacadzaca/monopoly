@@ -31,9 +31,9 @@ class GameRoomVerticle(private val roomsName: String, private val factory: Valid
           .validate(request.requestersId, gameState)
           .onSuccess { command ->
             gameState = if (request.changeTurn) {
-              ChangeTurn(command.apply()).apply()
+              ChangeTurn(command.execute()).execute()
             } else {
-              command.apply()
+              command.execute()
             }
             for (event in gameState.recentEvents) {
               vertx.eventBus().publish(roomsName + "INFO", event, codec)

@@ -13,8 +13,7 @@ class BuyEstate(
   private val tileIndex: Int,
   private val estate: Estate,
   private val target: GameState
-) : Command() {
-  override fun asEvent(): Event = Event.EstatePurchased(buyersId, tileIndex, estate)
+) : Command {
 
   override fun execute(): GameState {
     return target

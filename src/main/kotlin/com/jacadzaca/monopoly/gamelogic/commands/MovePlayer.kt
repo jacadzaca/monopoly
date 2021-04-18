@@ -13,13 +13,18 @@ data class MovePlayer(
   private val newPosition: Int,
   private val target: GameState,
   private val createPayment: (Player, UUID, Player, UUID, BigInteger, GameState) -> (PayLiability)
-) : Command() {
-  override fun asEvent(): Event = Event.PlayerMoved(playersId, newPosition)
-
+) : Command {
   override fun execute(): GameState {
     val tile = target.tiles[newPosition]
     return if (tile.ownersId != null && tile.ownersId != playersId) {
-      createPayment(player, playersId, target.players[tile.ownersId]!!, tile.ownersId, tile.totalRent(), target).apply()
+      createPayment(
+        player,
+        playersId,
+        target.players[tile.ownersId]!!,
+        tile.ownersId,
+        tile.totalRent(),
+        target
+      ).execute()
     } else {
       target
     }.updatePlayer(playersId, newPosition = newPosition)
