@@ -5,13 +5,23 @@ class TileList extends HTMLElement {
         window.addEventListener('x-update-tile', e => this.updateTiles(e));
     }
 
+    renderEstate(estate) {
+        switch(estate.type) {
+            case 'house':
+                return '🏠'
+                break;
+            case 'hotel':
+                return '🏨'
+                break;
+        }
+    }
+
     updateTiles({ detail: {payload: tiles} }) {
-        const list = tiles
-            .map((tile) => html`
+        const list = tiles.map((tile) => html`
                 <li>${tile.ownersId}</li>
                     <ul>
-                        <li>houses: ${tile.houses}</li>
-                        <li>hotels: ${tile.hotels}</li>
+                        <li>houses: ${tile.houses.map(this.renderEstate)}</li>
+                        <li>hotels: ${tile.hotels.map(this.renderEstate)}</li>
                         <li>price: ${tile.price}</li>
                     </ul>`);
         render(html`<ul>Tiles:${list}</ul>`, this);
