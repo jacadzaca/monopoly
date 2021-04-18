@@ -1,8 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic.commands
 
-import com.jacadzaca.monopoly.gamelogic.GameState
-import com.jacadzaca.monopoly.gamelogic.Player
-import com.jacadzaca.monopoly.gamelogic.Tile
+import com.jacadzaca.monopoly.gamelogic.*
 import java.util.*
 
 class BuyTile(
@@ -16,7 +14,7 @@ class BuyTile(
 
   override fun execute(): GameState {
     return target
-      .put(tileIndex, tile.changeOwner(buyersId))
-      .put(buyersId, buyer.detractFunds(tile.price))
+      .updateTile(tileIndex, newOwner = buyersId)
+      .updatePlayer(buyersId, newBalance = buyer.balance - tile.price)
   }
 }

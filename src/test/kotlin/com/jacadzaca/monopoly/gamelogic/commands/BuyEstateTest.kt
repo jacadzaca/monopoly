@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic.commands
 
+import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.Estate
 import com.jacadzaca.monopoly.gamelogic.GameState
 import com.jacadzaca.monopoly.gamelogic.Player
@@ -17,34 +18,29 @@ internal class BuyEstateTest {
   private val tileIndex = Random.nextInt()
   private val buyersId = UUID.randomUUID()
   private val gameState = mockk<GameState>()
-  private val tile = mockk<Tile>(relaxed = true)
-  private val buyer = mockk<Player>(relaxed = true)
-  private val estate = mockk<Estate>(name = "estate")
+  private val tile = mockk<Tile>()
+  private val buyer = mockk<Player>()
+  private val estate = mockk<Estate>()
   private val purchase = BuyEstate(buyer, buyersId, tile, tileIndex, estate, gameState)
 
   @BeforeEach
   fun setUp() {
     clearAllMocks()
-    every { estate.price } returns mockk()
-    every { gameState.put(buyersId, any()) } returns gameState
-    every { gameState.put(tileIndex, any()) } returns gameState
+    every { buyer.balance - estate.price } returns Random.nextPositive().toBigInteger()
+    every { gameState.updatePlayer(buyersId, newBalance = any()) } returns gameState
+    every { gameState.updateTile(tileIndex, newEstate = any()) } returns gameState
   }
 
   @Test
   fun `transform adds a estate to the tile`() {
-    val tileWithAddedHouse = mockk<Tile>(name = "tile with added estate")
-    every { tile.addEstate(estate) } returns tileWithAddedHouse
     purchase.execute()
-    verify { gameState.put(tileIndex, tileWithAddedHouse) }
+    verify { gameState.updateTile(tileIndex, newEstate = estate) }
   }
 
   @Test
   fun `transform detracts from the buyer's balance`() {
-    val estatePrice = Random.nextInt().toBigInteger()
-    val playerAfterPurchase = mockk<Player>(name = "playerAfterPurchase")
-    every { estate.price } returns estatePrice
-    every { buyer.detractFunds(estatePrice) } returns playerAfterPurchase
+    val newBalance = buyer.balance - estate.price
     purchase.execute()
-    verify { gameState.put(buyersId, playerAfterPurchase) }
+    verify { gameState.updatePlayer(buyersId, newBalance = newBalance) }
   }
 }
