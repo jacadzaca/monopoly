@@ -1,27 +1,10 @@
+import { removeElement, createEvent } from '/static/util.js';
+
 const socket = new WebSocket('ws://localhost:8081/');
-let gameState = undefined;
+let gameState = null;
 
-const removeElement = (array, element) => {
-    const index = array.indexOf(element);
-    if (index > -1) {
-        array.splice(index, 1);
-    }
-    return array;
-}
-
-const createEvent = (name, payload) => {
-    return new CustomEvent(name, {
-        detail: {
-            payload: payload
-        },
-        bubbles: true
-    });
-}
-
-socket.onmessage = event => {
-    gameState = JSON.parse(event.data);
-    console.log(gameState);
-    socket.onmessage = e => { handleRequest(JSON.parse(e.data)) };
+socket.onmessage = (e) => {
+    gameState = JSON.parse(e.data);
     window.dispatchEvent(createEvent('x-update-list', gameState.players));
     window.dispatchEvent(createEvent('x-update-tile', gameState.tiles));
 
@@ -30,10 +13,10 @@ socket.onmessage = event => {
 
     const currentPlayer = gameState.turnOrder[gameState.currentTurn]
     window.dispatchEvent(createEvent('x-turn-change', currentPlayer))
+    socket.onmessage = (request) => { handleRequest(JSON.parse(request.data)) };
 }
 
-const handleRequest = json => {
-    console.log(json);
+const handleRequest = (json) => {
     switch(json.type) {
         case 'playerJoin':
             gameState.players[json.playersId] = json.newPlayer;
