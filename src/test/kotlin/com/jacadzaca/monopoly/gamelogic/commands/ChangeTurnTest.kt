@@ -15,7 +15,7 @@ internal class ChangeTurnTest {
   @BeforeEach
   fun setUp() {
     every { gameState.turnOrder.size } returns Random.nextPositive(from = 1)
-    every { gameState.copy(currentTurn = capture(newTurn)) } returns gameState
+    every { gameState.updateTurn(capture(newTurn)) } returns gameState
   }
 
   @Test

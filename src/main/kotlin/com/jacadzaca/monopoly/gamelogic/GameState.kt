@@ -49,6 +49,10 @@ data class GameState(
     return copy(tiles = tiles.set(tileIndex, tile), recentChanges = changes)
   }
 
+  fun updateTurn(newTurn: Int): GameState =
+    copy(currentTurn = newTurn, recentChanges = recentChanges.add(Delta.TurnChange(newTurn)))
+
+
   fun remove(playersId: UUID): GameState =
     copy(players = players.remove(playersId), turnOrder = turnOrder.remove(playersId))
 
