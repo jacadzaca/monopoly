@@ -66,6 +66,8 @@ data class GameState(
 
   fun isPlayersTurn(playersId: UUID): Boolean = turnOrder[currentTurn] == playersId
 
+  fun executeCommand(command: Command): GameState = command.execute()
+
   fun disownPlayer(playersId: UUID): GameState {
     return copy(
       tiles = tiles.map { tile ->

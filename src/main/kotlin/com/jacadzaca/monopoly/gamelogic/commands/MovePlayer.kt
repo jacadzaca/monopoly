@@ -12,7 +12,8 @@ data class MovePlayer(
   private val playersId: UUID,
   private val newPosition: Int,
   private val target: GameState,
-  private val createPayment: (Player, UUID, Player, UUID, BigInteger, GameState) -> (PayLiability)
+  private val createPayment: (Player, UUID, Player, UUID, BigInteger, Command, GameState) -> (PayLiability),
+  private val onBankrupcy: Command = LeavePlayer(playersId, "player bankrupted", target),
 ) : Command {
   override fun execute(): GameState {
     val tile = target.tiles[newPosition]
@@ -23,7 +24,8 @@ data class MovePlayer(
         target.players[tile.ownersId]!!,
         tile.ownersId,
         tile.totalRent(),
-        target
+        onBankrupcy,
+        target,
       ).execute()
     } else {
       target

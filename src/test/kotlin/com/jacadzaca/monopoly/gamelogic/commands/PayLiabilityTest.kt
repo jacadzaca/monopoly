@@ -16,7 +16,8 @@ internal class PayLiabilityTest {
   private val gameState = mockk<GameState>()
   private val payersBalance = Random.nextPositive().toBigInteger()
   private val liability = payersBalance - BigInteger.ONE
-  private val command = PayLiability(payer, payersId, receiver, receiversId, liability, gameState)
+  private val onBankrupcy = mockk<Command>()
+  private val command = PayLiability(payer, payersId, receiver, receiversId, liability, onBankrupcy, gameState)
 
   @BeforeEach
   fun setUp() {
@@ -25,6 +26,7 @@ internal class PayLiabilityTest {
     every { receiver.balance } returns Random.nextPositive().toBigInteger()
     every { gameState.updatePlayer(payersId, newBalance = any()) } returns gameState
     every { gameState.updatePlayer(receiversId, newBalance = any()) } returns gameState
+    every { gameState.executeCommand(onBankrupcy) } returns gameState
   }
 
   @Test
@@ -43,12 +45,18 @@ internal class PayLiabilityTest {
 
   @Test
   fun `transform only transfers what the payer has`() {
-    val liability = payer.balance + BigInteger.ONE
-    val command = PayLiability(payer, payersId, receiver, receiversId, liability, gameState)
+    val command = PayLiability(payer, payersId, receiver, receiversId, payer.balance + BigInteger.ONE, onBankrupcy, gameState)
     val receiversBalance = receiver.balance + payersBalance
-    val payersBalance = payersBalance - liability
     command.execute()
     verify { gameState.updatePlayer(receiversId, newBalance = receiversBalance) }
-    verify { gameState.updatePlayer(payersId, newBalance = payersBalance) }
+    verify { gameState.updatePlayer(payersId, newBalance = BigInteger.ZERO) }
+  }
+
+  @Test
+  fun `execute executes onBankrupcy when liability cannot be fully paid`() {
+    val command = PayLiability(payer, payersId, receiver, receiversId, payer.balance + BigInteger.ONE, onBankrupcy, gameState)
+    command.execute()
+    verify { gameState.executeCommand(onBankrupcy) }
   }
 }
+

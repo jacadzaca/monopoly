@@ -13,8 +13,9 @@ internal class MovePlayerTest {
   private val gameState = mockk<GameState>(relaxed = true)
   private val playersId = UUID.randomUUID()
   private val newPosition = Random.nextPositive()
-  private val createPayment = mockk<(Player, UUID, Player, UUID, BigInteger, GameState) -> (PayLiability)>()
-  private val transformation = MovePlayer(player, playersId, newPosition, gameState, createPayment)
+  private val onBankrupcy = mockk<Command>()
+  private val createPayment = mockk<(Player, UUID, Player, UUID, BigInteger, Command, GameState) -> (PayLiability)>()
+  private val command = MovePlayer(player, playersId, newPosition, gameState, createPayment, onBankrupcy)
 
   @BeforeEach
   fun setUp() {
@@ -25,7 +26,7 @@ internal class MovePlayerTest {
 
   @Test
   fun `transform sets player's position to newPosition`() {
-    transformation.execute()
+    command.execute()
     verify { gameState.updatePlayer(playersId, newPosition) }
   }
 
@@ -45,10 +46,12 @@ internal class MovePlayerTest {
         gameState.players[tileOwnedByOther.ownersId]!!,
         tileOwnedByOther.ownersId!!,
         tileOwnedByOther.totalRent(),
-        gameState
+        onBankrupcy,
+        gameState,
       )
     } returns rentPayment
-    transformation.execute()
+    command.execute()
     verify { rentPayment.execute() }
   }
 }
+
