@@ -9,19 +9,20 @@ import java.util.*
 internal class LeavePlayerTest {
   private val gameState = mockk<GameState>()
   private val playersId = UUID.randomUUID()
-  private val command = LeavePlayer(playersId, gameState)
+  private val leaveReason = "reason"
+  private val command = LeavePlayer(playersId, leaveReason, gameState)
 
   @BeforeEach
   fun setUp() {
     every { gameState.isPlayersTurn(any()) } returns false
-    every { gameState.remove(any()) } returns gameState
+    every { gameState.remove(any(), any()) } returns gameState
     every { gameState.disownPlayer(any()) } returns gameState
   }
 
   @Test
   fun `execute removes player from the player's list`() {
     assertEquals(gameState, command.execute())
-    verify { gameState.remove(playersId) }
+    verify { gameState.remove(playersId, leaveReason) }
   }
 
   @Test

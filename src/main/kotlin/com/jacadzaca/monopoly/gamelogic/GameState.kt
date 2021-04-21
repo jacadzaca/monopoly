@@ -1,5 +1,6 @@
 package com.jacadzaca.monopoly.gamelogic
 
+import com.jacadzaca.monopoly.gamelogic.commands.*
 import com.jacadzaca.monopoly.serializers.*
 import kotlinx.collections.immutable.*
 import kotlinx.serialization.*
@@ -54,11 +55,11 @@ data class GameState(
     copy(currentTurn = newTurn, recentChanges = recentChanges.add(Delta.TurnChange(newTurn)))
 
 
-  fun remove(playersId: UUID): GameState =
+  fun remove(playersId: UUID, reason: String): GameState =
     copy(
       players = players.remove(playersId),
       turnOrder = turnOrder.remove(playersId),
-      recentChanges = recentChanges.add(Delta.PlayerLeave(playersId))
+      recentChanges = recentChanges.add(Delta.PlayerLeave(playersId, reason))
     )
 
   fun clearRecentChanges(): GameState = copy(recentChanges = recentChanges.clear())

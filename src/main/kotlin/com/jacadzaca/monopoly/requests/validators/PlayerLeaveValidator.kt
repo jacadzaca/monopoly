@@ -7,6 +7,6 @@ import java.util.*
 
 internal class PlayerLeaveValidator : RequestValidator {
   override fun validate(playersId: UUID, context: GameState): Computation<Command> {
-    return Computation.success(LeavePlayer(playersId, context))
+    return Computation.success(LeavePlayer(playersId, "player left", context))
   }
 }

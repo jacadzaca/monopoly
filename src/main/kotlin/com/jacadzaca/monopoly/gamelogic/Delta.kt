@@ -51,9 +51,9 @@ sealed class Delta {
 
   @Serializable
   @SerialName("playerLeave")
-  data class PlayerLeave(val playersId: UUID): Delta() {
+  data class PlayerLeave(val playersId: UUID, val reason: String): Delta() {
     override fun apply(gameState: GameState): GameState {
-      return gameState.remove(playersId)
+      return gameState.remove(playersId, reason)
     }
   }
 
