@@ -32,7 +32,7 @@ sourceSets {
   }
 }
 
-def mainVerticleName = 'com.jacadzaca.monopoly.WebSocketGameServer'
+def mainVerticleName = 'com.jacadzaca.monopoly.HttpServer'
 
 dependencies {
   implementation "io.vertx:vertx-junit5:$vertxVersion"
