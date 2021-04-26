@@ -31,7 +31,7 @@ class WebSocketGameServer : AbstractVerticle() {
     server.webSocketHandler { connection ->
       val playersId = UUID.randomUUID()
       gameRoomRepository
-        .sendRequest(Request(PlayerAction.JOIN, playersId, false), ROOMS_NAME)
+        .sendRequest(Request(PlayerAction.JoinAction, playersId, false), ROOMS_NAME)
         .flatMap { gameRoomRepository.getGameState(ROOMS_NAME) }
         .onSuccess { gameState ->
           val listener = gameRoomRepository
@@ -56,7 +56,7 @@ class WebSocketGameServer : AbstractVerticle() {
 
           connection.endHandler {
             listener.unregister()
-            gameRoomRepository.sendRequest(Request(PlayerAction.LEAVE, playersId, false), ROOMS_NAME)
+            gameRoomRepository.sendRequest(Request(PlayerAction.LeaveAction, playersId, false), ROOMS_NAME)
           }
         }
         .onFailure { error ->
@@ -66,7 +66,7 @@ class WebSocketGameServer : AbstractVerticle() {
     }
 
     vertx
-      .deployVerticle(GameRoomVerticle(ROOMS_NAME, ValidatorFactoryImpl))
+      .deployVerticle(GameRoomVerticle(ROOMS_NAME, ValidatorProxyImpl))
       .compose { server.listen(8081) }
       .onSuccess {
         startPromise.complete()
@@ -76,11 +76,11 @@ class WebSocketGameServer : AbstractVerticle() {
 
   private fun parseAction(json: String): Computation<PlayerAction> {
     return try {
-      val action = Json.decodeFromString<PlayerAction>(json)
-      if (action == PlayerAction.JOIN || action == PlayerAction.LEAVE) {
-        throw SerializationException("User's cannot send a join/leave requests")
+      when (val action = Json.decodeFromString<PlayerAction>(json)) {
+        is PlayerAction.JoinAction -> throw SerializationException("Users cannot send a join requests")
+        is PlayerAction.LeaveAction -> throw SerializationException("Users cannot send a leave requests")
+        else -> Computation.success(action)
       }
-      Computation.success(action)
     } catch (e: SerializationException) {
       Computation.failure("${e.message}")
     }

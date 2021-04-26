@@ -9,7 +9,7 @@ import io.vertx.core.impl.logging.*
 import io.vertx.kotlin.core.eventbus.*
 import kotlinx.collections.immutable.*
 
-class GameRoomVerticle(private val roomsName: String, private val factory: ValidatorFactory) : AbstractVerticle() {
+class GameRoomVerticle(private val roomsName: String, private val validator: ValidatorProxy) : AbstractVerticle() {
   companion object {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val codec = deliveryOptionsOf(codecName = GenericCodec.computationCodecName(Delta::class))
@@ -26,9 +26,8 @@ class GameRoomVerticle(private val roomsName: String, private val factory: Valid
       .consumer<Request>(roomsName)
       .handler { message ->
         val request = message.body()
-        factory
-          .validatorFor(request.action)
-          .validate(request.requestersId, gameState)
+        validator
+          .validate(request, gameState)
           .onSuccess { command ->
             gameState = if (request.changeTurn) {
               ChangeTurn(command.execute()).execute()
