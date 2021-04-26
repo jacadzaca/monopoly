@@ -3,17 +3,24 @@ package com.jacadzaca.monopoly.requests
 import kotlinx.serialization.*
 
 @Serializable
-enum class PlayerAction {
+sealed class PlayerAction {
+  @Serializable
   @SerialName("move")
-  MOVE,
+  object MoveAction: PlayerAction()
+  @Serializable
   @SerialName("buy-tile")
-  BUY_TILE,
+  object BuyTileAction: PlayerAction()
+  @Serializable
   @SerialName("buy-house")
-  BUY_HOUSE,
+  object BuyHouseAction: PlayerAction()
+  @Serializable
   @SerialName("buy-hotel")
-  BUY_HOTEL,
+  object BuyHotelAction: PlayerAction()
+  @Serializable
   @SerialName("join")
-  JOIN,
+  object JoinAction: PlayerAction()
+  @Serializable
   @SerialName("leave")
-  LEAVE,
+  object LeaveAction: PlayerAction()
 }
+

@@ -17,6 +17,7 @@ socket.onmessage = (e) => {
 }
 
 const handleRequest = (json) => {
+    console.log(json);
     switch(json.type) {
         case 'playerJoin':
             gameState.players[json.playersId] = json.newPlayer;
@@ -61,7 +62,7 @@ const handleRequest = (json) => {
 }
 
 const request = type => {
-    socket.send(`"${type}"`);
+    socket.send(`{"type": "${type}"}`);
 }
 
 export { request };
