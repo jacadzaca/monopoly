@@ -18,7 +18,8 @@ internal class PlayerMovementRequestValidatorTest {
   private val gameState = mockk<GameState>()
   private val createdMove = mockk<MovePlayer>()
   private val createMove = mockk<(Player, UUID, GameState) -> MovePlayer>()
-  private val request = PlayerMovementRequestValidator(createMove)
+  private val action = mockk<PlayerAction.MoveAction>()
+  private val validator = PlayerMovementRequestValidator(createMove)
 
   @BeforeEach
   fun setUp() {
@@ -29,18 +30,18 @@ internal class PlayerMovementRequestValidatorTest {
   @Test
   fun `validate returns verifiedEvent if the player with given id exists`() {
     every { createMove(player, playersId, gameState) } returns createdMove
-    assertEquals(Computation.success(createdMove), request.validate(playersId, gameState))
+    assertEquals(Computation.success(createdMove), validator.validate(playersId, action, gameState))
   }
 
   @Test
   fun `validate returns Failure if the event references a non-existing player`() {
     every { gameState.players[playersId] } returns null
-    assertEquals(INVALID_PLAYER_ID, request.validate(playersId, gameState))
+    assertEquals(INVALID_PLAYER_ID, validator.validate(playersId, action, gameState))
   }
 
   @Test
   fun `validate returns Failure if it is not the player's turn`() {
     every { gameState.isPlayersTurn(playersId) } returns false
-    assertEquals(NOT_PLAYERS_TURN, request.validate(playersId, gameState))
+    assertEquals(NOT_PLAYERS_TURN, validator.validate(playersId, action, gameState))
   }
 }

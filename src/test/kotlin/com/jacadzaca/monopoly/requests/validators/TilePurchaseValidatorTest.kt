@@ -3,6 +3,8 @@ package com.jacadzaca.monopoly.requests.validators
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
+import com.jacadzaca.monopoly.requests.validators.*
+import com.jacadzaca.monopoly.requests.*
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.INVALID_PLAYER_ID
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.NOT_PLAYERS_TURN
@@ -21,7 +23,8 @@ internal class TilePurchaseValidatorTest {
   private val buyersId = UUID.randomUUID()
   private val buyersPosition = Random.nextPositive()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, GameState) -> (BuyTile)>()
-  private val request = TilePurchaseValidator(createPurchase)
+  private val action = mockk<PlayerAction.BuyTileAction>()
+  private val validator = TilePurchaseValidator(createPurchase)
 
   @BeforeEach
   fun setUp() {
@@ -40,33 +43,34 @@ internal class TilePurchaseValidatorTest {
     val purchase = mockk<BuyTile>(name = "purchase")
     every { createPurchase(buyer, buyersId, tile, buyersPosition, gameState) } returns purchase
     val success = Computation.success(purchase)
-    assertEquals(success, request.validate(buyersId, gameState))
-    assertEquals(success, request.validate(buyersId, gameState))
+    assertEquals(success, validator.validate(buyersId, action, gameState))
+    assertEquals(success, validator.validate(buyersId, action, gameState))
   }
 
   @Test
   fun `validate returns Failure if the the tile already has an owner`() {
     every { tile.price } returns buyer.balance - BigInteger.ONE
     every { tile.ownersId } returnsMany listOf(UUID.randomUUID(), buyersId)
-    assertEquals(TILE_ALREADY_HAS_OWNER, request.validate(buyersId, gameState))
-    assertEquals(TILE_ALREADY_HAS_OWNER, request.validate(buyersId, gameState))
+    assertEquals(TILE_ALREADY_HAS_OWNER, validator.validate(buyersId, action, gameState))
+    assertEquals(TILE_ALREADY_HAS_OWNER, validator.validate(buyersId, action, gameState))
   }
 
   @Test
   fun `validate returns Failure if the buyer's balance is less than the tile's price`() {
     every { tile.price } returns buyer.balance + BigInteger.ONE
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(buyersId, gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, validator.validate(buyersId, action, gameState))
   }
 
   @Test
   fun `validate returns Failure if the event references an non-existing player`() {
     every { gameState.players[buyersId] } returns null
-    assertEquals(INVALID_PLAYER_ID, request.validate(buyersId, gameState))
+    assertEquals(INVALID_PLAYER_ID, validator.validate(buyersId, action, gameState))
   }
 
   @Test
   fun `validate returns Failure if it is not the buyer's turn`() {
     every { gameState.isPlayersTurn(buyersId) } returns false
-    assertEquals(NOT_PLAYERS_TURN, request.validate(buyersId, gameState))
+    assertEquals(NOT_PLAYERS_TURN, validator.validate(buyersId, action, gameState))
   }
 }
+

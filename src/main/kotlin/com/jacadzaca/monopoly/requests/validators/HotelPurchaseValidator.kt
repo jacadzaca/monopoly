@@ -3,6 +3,7 @@ package com.jacadzaca.monopoly.requests.validators
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
+import com.jacadzaca.monopoly.requests.*
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.INVALID_PLAYER_ID
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.NOT_PLAYERS_TURN
@@ -13,13 +14,13 @@ internal class HotelPurchaseValidator(
   private val estate: Estate,
   private val requiredHousesForHotel: Int,
   private val createPurchase: (Player, UUID, Tile, Int, Estate, GameState) -> BuyEstate,
-) : RequestValidator {
+) : RequestValidator<PlayerAction.BuyHotelAction> {
   internal companion object {
     internal val NOT_ENOUGH_HOUSES =
       Computation.failure<Command>("There are not enough houses on the tile where a hotel is to be placed")
   }
 
-  override fun validate(playersId: UUID, context: GameState): Computation<Command> {
+  override fun validate(playersId: UUID, action: PlayerAction.BuyHotelAction ,context: GameState): Computation<Command> {
     val buyer = context.players[playersId] ?: return INVALID_PLAYER_ID
     val tile = context.tiles[buyer.position]
     return when {
@@ -31,3 +32,4 @@ internal class HotelPurchaseValidator(
     }
   }
 }
+

@@ -3,6 +3,7 @@ package com.jacadzaca.monopoly.requests.validators
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
+import com.jacadzaca.monopoly.requests.*
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.INVALID_PLAYER_ID
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.NOT_PLAYERS_TURN
@@ -22,7 +23,8 @@ internal class HousePurchaseValidatorTest {
   private val gameState = mockk<GameState>()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> BuyEstate>()
   private val house = mockk<Estate.House>(name = "house")
-  private val request = HousePurchaseValidator(house, createPurchase)
+  private val action = mockk<PlayerAction.BuyHouseAction>()
+  private val validator = HousePurchaseValidator(house, createPurchase)
 
   @BeforeEach
   fun setUp() {
@@ -46,9 +48,9 @@ internal class HousePurchaseValidatorTest {
       buyer.balance.toInt().toBigInteger()
     )
     val success = Computation.success(createdEstatePurchase)
-    assertEquals(success, request.validate(buyersId, gameState))
-    assertEquals(success, request.validate(buyersId, gameState))
-    assertEquals(success, request.validate(buyersId, gameState))
+    assertEquals(success, validator.validate(buyersId, action, gameState))
+    assertEquals(success, validator.validate(buyersId, action, gameState))
+    assertEquals(success, validator.validate(buyersId, action, gameState))
   }
 
   @Test
@@ -57,8 +59,8 @@ internal class HousePurchaseValidatorTest {
       null,
       UUID.randomUUID()
     )
-    assertEquals(TILE_NOT_OWNED_BY_BUYER, request.validate(buyersId, gameState))
-    assertEquals(TILE_NOT_OWNED_BY_BUYER, request.validate(buyersId, gameState))
+    assertEquals(TILE_NOT_OWNED_BY_BUYER, validator.validate(buyersId, action, gameState))
+    assertEquals(TILE_NOT_OWNED_BY_BUYER, validator.validate(buyersId, action, gameState))
   }
 
   @Test
@@ -67,19 +69,20 @@ internal class HousePurchaseValidatorTest {
       buyer.balance + BigInteger.ONE,
       buyer.balance + Random.nextPositive().toBigInteger()
     )
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(buyersId, gameState))
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(buyersId, gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, validator.validate(buyersId, action, gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, validator.validate(buyersId, action, gameState))
   }
 
   @Test
   fun `validate returns Failure if the event references an non-existing player`() {
     every { gameState.players[buyersId] } returns null
-    assertEquals(INVALID_PLAYER_ID, request.validate(buyersId, gameState))
+    assertEquals(INVALID_PLAYER_ID, validator.validate(buyersId, action, gameState))
   }
 
   @Test
   fun `validate returns Failure if it is not the player's turn`() {
     every { gameState.isPlayersTurn(buyersId) } returns false
-    assertEquals(NOT_PLAYERS_TURN, request.validate(buyersId, gameState))
+    assertEquals(NOT_PLAYERS_TURN, validator.validate(buyersId, action, gameState))
   }
 }
+

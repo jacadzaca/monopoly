@@ -1,10 +1,11 @@
 package com.jacadzaca.monopoly.requests.validators
 import com.jacadzaca.monopoly.*
+import com.jacadzaca.monopoly.requests.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
 import java.util.*
 
-interface RequestValidator {
+interface RequestValidator<T : PlayerAction> {
   companion object {
     internal val INVALID_PLAYER_ID = Computation.failure<Command>("No player with specified ID exist")
     internal val BUYER_HAS_INSUFFICIENT_BALANCE =
@@ -14,5 +15,5 @@ interface RequestValidator {
     internal val NOT_PLAYERS_TURN = Computation.failure<Command>("It is not the player's turn")
   }
 
-  fun validate(playersId: UUID, context: GameState): Computation<Command>
+  fun validate(playersId: UUID, action: T, context: GameState): Computation<Command>
 }

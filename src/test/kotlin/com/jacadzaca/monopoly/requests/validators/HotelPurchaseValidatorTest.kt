@@ -3,6 +3,8 @@ package com.jacadzaca.monopoly.requests.validators
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
+import com.jacadzaca.monopoly.requests.*
+import com.jacadzaca.monopoly.requests.validators.*
 import com.jacadzaca.monopoly.requests.validators.HotelPurchaseValidator.Companion.NOT_ENOUGH_HOUSES
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.BUYER_HAS_INSUFFICIENT_BALANCE
 import com.jacadzaca.monopoly.requests.validators.RequestValidator.Companion.NOT_PLAYERS_TURN
@@ -23,6 +25,7 @@ internal class HotelPurchaseValidatorTest {
   private val requiredHousesForHotel = Random.nextPositive()
   private val createPurchase = mockk<(Player, UUID, Tile, Int, Estate, GameState) -> BuyEstate>()
   private val hotel = mockk<Estate.Hotel>(name = "hotel")
+  private val action = mockk<PlayerAction.BuyHotelAction>()
   private val request = HotelPurchaseValidator(hotel, requiredHousesForHotel, createPurchase)
 
   @BeforeEach
@@ -53,9 +56,9 @@ internal class HotelPurchaseValidatorTest {
       Random.nextPositive(from = requiredHousesForHotel)
     )
     val success = Computation.success(createdEstatePurchase)
-    assertEquals(success, request.validate(buyersId, gameState))
-    assertEquals(success, request.validate(buyersId, gameState))
-    assertEquals(success, request.validate(buyersId, gameState))
+    assertEquals(success, request.validate(buyersId, action, gameState))
+    assertEquals(success, request.validate(buyersId, action, gameState))
+    assertEquals(success, request.validate(buyersId, action, gameState))
   }
 
   @Test
@@ -64,8 +67,8 @@ internal class HotelPurchaseValidatorTest {
       UUID.randomUUID(),
       null
     )
-    assertEquals(TILE_NOT_OWNED_BY_BUYER, request.validate(buyersId, gameState))
-    assertEquals(TILE_NOT_OWNED_BY_BUYER, request.validate(buyersId, gameState))
+    assertEquals(TILE_NOT_OWNED_BY_BUYER, request.validate(buyersId, action, gameState))
+    assertEquals(TILE_NOT_OWNED_BY_BUYER, request.validate(buyersId, action, gameState))
   }
 
   @Test
@@ -74,8 +77,8 @@ internal class HotelPurchaseValidatorTest {
       buyer.balance + BigInteger.ONE,
       buyer.balance + Random.nextPositive().toBigInteger()
     )
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(buyersId, gameState))
-    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(buyersId, gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(buyersId, action, gameState))
+    assertEquals(BUYER_HAS_INSUFFICIENT_BALANCE, request.validate(buyersId, action, gameState))
   }
 
   @Test
@@ -84,13 +87,14 @@ internal class HotelPurchaseValidatorTest {
       requiredHousesForHotel - 1,
       Random.nextPositive(until = requiredHousesForHotel)
     )
-    assertEquals(NOT_ENOUGH_HOUSES, request.validate(buyersId, gameState))
-    assertEquals(NOT_ENOUGH_HOUSES, request.validate(buyersId, gameState))
+    assertEquals(NOT_ENOUGH_HOUSES, request.validate(buyersId, action, gameState))
+    assertEquals(NOT_ENOUGH_HOUSES, request.validate(buyersId, action, gameState))
   }
 
   @Test
   fun `validate returns Failure if it is not the buyer's turn`() {
     every { gameState.isPlayersTurn(buyersId) } returns false
-    assertEquals(NOT_PLAYERS_TURN, request.validate(buyersId, gameState))
+    assertEquals(NOT_PLAYERS_TURN, request.validate(buyersId, action, gameState))
   }
 }
+

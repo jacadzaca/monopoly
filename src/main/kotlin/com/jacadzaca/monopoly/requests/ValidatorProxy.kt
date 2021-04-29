@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.requests.validators
+package com.jacadzaca.monopoly.requests
 
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.requests.*
