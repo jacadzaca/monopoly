@@ -76,5 +76,5 @@ test {
 }
 
 run {
-  args = ['run', mainVerticleName, "--launcher-class=$mainClassName"]
+  args = ['run', mainVerticleName, "--launcher-class=$mainClassName", "-Dstarting_balance=2000"]
 }
