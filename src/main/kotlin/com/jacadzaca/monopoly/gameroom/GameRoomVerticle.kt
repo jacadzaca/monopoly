@@ -12,7 +12,7 @@ class GameRoomVerticle(private val roomsName: String, private val validator: Val
   companion object {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val codec = deliveryOptionsOf(codecName = GenericCodec.computationCodecName(Delta::class))
-    private val tile = Tile(persistentListOf(), persistentListOf(), 1000.toBigInteger(), null)
+    private val tile = Tile(persistentListOf(), persistentListOf(), 1000.toBigInteger(), null, 100.toBigInteger())
     private val newGameState = GameState(persistentHashMapOf(), persistentListOf(tile, tile, tile, tile, tile))
     private val gameStateCodec = deliveryOptionsOf(codecName = "gameStateCodec")
   }

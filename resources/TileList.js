@@ -18,7 +18,7 @@ class TileList extends HTMLElement {
     }
 
     computeRent(tile) {
-        return tile.houses.concat(tile.hotels)
+        return BigInt(tile.baseRent) + tile.houses.concat(tile.hotels)
                           .map(house => BigInt(house.rent))
                           .reduce(sum, BigInt(0));
     }

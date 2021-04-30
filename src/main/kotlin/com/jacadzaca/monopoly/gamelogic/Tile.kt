@@ -11,7 +11,8 @@ data class Tile(
   val houses: PersistentList<Estate>,
   val hotels: PersistentList<Estate>,
   val price: BigInteger,
-  val ownersId: UUID?
+  val ownersId: UUID?,
+  val baseRent: BigInteger = BigInteger.ZERO,
 ) {
   fun addEstate(newEstate: Estate): Tile {
     return when (newEstate) {
@@ -20,7 +21,7 @@ data class Tile(
     }
   }
 
-  fun totalRent(): BigInteger = rentFor(houses) + rentFor(hotels)
+  fun totalRent(): BigInteger = baseRent + rentFor(houses) + rentFor(hotels)
 
   private fun rentFor(estates: List<Estate>): BigInteger {
     return estates

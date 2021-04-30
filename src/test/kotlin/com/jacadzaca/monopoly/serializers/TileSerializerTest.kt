@@ -39,18 +39,22 @@ internal class TileSerializerTest {
         Arguments.of(typicalTile()),
         Arguments.of(tileWithNoOwner()),
         Arguments.of(tileWithNoHouses()),
-        Arguments.of(tileWithNoHotels())
+        Arguments.of(tileWithNoHotels()),
+        Arguments.of(tileWithNoBaseRent())
       )
     }
 
-    private fun typicalTile() = Tile(houses, hotels, Random.nextPositive().toBigInteger(), UUID.randomUUID())
+    private fun typicalTile() = Tile(houses, hotels, Random.nextPositive().toBigInteger(), UUID.randomUUID(), Random.nextPositive().toBigInteger())
 
-    private fun tileWithNoOwner() = Tile(houses, hotels, Random.nextPositive().toBigInteger(), null)
+    private fun tileWithNoOwner() = Tile(houses, hotels, Random.nextPositive().toBigInteger(), null, Random.nextPositive().toBigInteger())
 
     private fun tileWithNoHouses() =
-      Tile(persistentListOf(), hotels, Random.nextPositive().toBigInteger(), UUID.randomUUID())
+      Tile(persistentListOf(), hotels, Random.nextPositive().toBigInteger(), UUID.randomUUID(), Random.nextPositive().toBigInteger())
 
     private fun tileWithNoHotels() =
-      Tile(houses, persistentListOf(), Random.nextPositive().toBigInteger(), UUID.randomUUID())
+      Tile(houses, persistentListOf(), Random.nextPositive().toBigInteger(), UUID.randomUUID(), Random.nextPositive().toBigInteger())
+
+    private fun tileWithNoBaseRent() = Tile(houses, hotels, Random.nextPositive().toBigInteger(), UUID.randomUUID())
   }
 }
+

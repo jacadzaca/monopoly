@@ -12,12 +12,6 @@ import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import java.math.*
 import java.util.*
 
-/**
- * DISCLAIMER:
- * DO NOT USE [kotlinx.serialization] IN ORDER DO DESERIALIZE UNTRUSTED INPUT!
- * [deserialize] methods throw Java's [IllegalStateException]
- * when the JSON string dose not comfort to the [descriptor] scheme
- */
 object TileSerializer : KSerializer<Tile> {
   private val estateListSerializer = ListSerializer(Estate.serializer())
 
@@ -26,6 +20,7 @@ object TileSerializer : KSerializer<Tile> {
     element("hotels", estateListSerializer.descriptor)
     element("price", BigIntegerSerializer.descriptor)
     element("ownersId", UUIDSerializer.descriptor, isOptional = true)
+    element("baseRent", BigIntegerSerializer.descriptor, isOptional = true)
   }
 
   override fun deserialize(decoder: Decoder): Tile {
@@ -34,17 +29,19 @@ object TileSerializer : KSerializer<Tile> {
       var hotels = persistentListOf<Estate>()
       var price = BigInteger.ZERO
       var ownersId: UUID? = null
+      var baseRent: BigInteger = BigInteger.ZERO
       while (true) {
         when (val index = decodeElementIndex(descriptor)) {
           0 -> houses = decodeEstateList(index).toPersistentList()
           1 -> hotels = decodeEstateList(index).toPersistentList()
           2 -> price = decodeSerializableElement(descriptor, index, BigIntegerSerializer)
           3 -> ownersId = decodeSerializableElement(descriptor, index, UUIDSerializer)
+          4 -> baseRent = decodeSerializableElement(descriptor, index, BigIntegerSerializer)
           DECODE_DONE -> break
           else -> throw SerializationException("No value for index=$index")
         }
       }
-      Tile(houses, hotels, price, ownersId)
+      Tile(houses, hotels, price, ownersId, baseRent)
     }
   }
 
@@ -55,6 +52,9 @@ object TileSerializer : KSerializer<Tile> {
       encodeSerializableElement(descriptor, 2, BigIntegerSerializer, value.price)
       if (value.ownersId != null) {
         encodeSerializableElement(descriptor, 3, UUIDSerializer, value.ownersId)
+      }
+      if (value.baseRent != BigInteger.ZERO) {
+        encodeSerializableElement(descriptor, 4, BigIntegerSerializer, value.baseRent)
       }
     }
   }
