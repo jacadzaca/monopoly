@@ -8,16 +8,21 @@ socket.onmessage = (e) => {
     window.dispatchEvent(createEvent('x-update-list', gameState.players));
     window.dispatchEvent(createEvent('x-update-tile', gameState.tiles));
 
-    const myTurn = gameState.turnOrder[gameState.turnOrder.length - 1]
-    window.dispatchEvent(createEvent('x-set-my-turn', myTurn))
+    const myTurn = new URL(window.location.href).searchParams.get('name');
+    socket.send(`{"type": "change-name", "newName": "${myTurn}"}`);
+    window.dispatchEvent(createEvent('x-set-my-turn', myTurn));
 
-    const currentPlayer = gameState.turnOrder[gameState.currentTurn]
-    window.dispatchEvent(createEvent('x-turn-change', currentPlayer))
+    const playersId = gameState.turnOrder[gameState.currentTurn];
+    const currentPlayer = gameState.players[playersId].name;
+    if (currentPlayer !== null) {
+        window.dispatchEvent(createEvent('x-turn-change', currentPlayer));
+    } else {
+        window.dispatchEvent(createEvent('x-turn-change', myTurn));
+    }
     socket.onmessage = (request) => { handleRequest(JSON.parse(request.data)) };
 }
 
 const handleRequest = (json) => {
-    console.log(json);
     switch(json.type) {
         case 'playerJoin':
             gameState.players[json.playersId] = json.newPlayer;
@@ -30,7 +35,8 @@ const handleRequest = (json) => {
             window.dispatchEvent(createEvent('x-update-list', gameState.players));
             break;
         case 'turnChange':
-            const currentPlayer = gameState.turnOrder[json.turn];
+            const playersId = gameState.turnOrder[json.turn];
+            const currentPlayer = gameState.players[playersId].name;
             window.dispatchEvent(createEvent('x-turn-change', currentPlayer));
             break;
         case 'positionChange':
@@ -55,6 +61,10 @@ const handleRequest = (json) => {
                     break;
             }
             window.dispatchEvent(createEvent('x-update-tile', gameState.tiles));
+            break;
+        case 'nameChange':
+            gameState.players[json.playersId].name = json.name;
+            window.dispatchEvent(createEvent('x-update-list', gameState.players));
             break;
         default:
             break;

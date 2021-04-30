@@ -22,5 +22,8 @@ sealed class PlayerAction {
   @Serializable
   @SerialName("leave")
   object LeaveAction: PlayerAction()
+  @Serializable
+  @SerialName("change-name")
+  data class NameChangeAction(val newName: String): PlayerAction()
 }
 

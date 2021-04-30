@@ -38,7 +38,12 @@ class WebSocketGameServer : AbstractVerticle() {
 
           connection.textMessageHandler { message ->
             parseAction(message)
-              .map { Computation.success(Request(it, playersId)) }
+              .map { action ->
+                  when(action) {
+                    is PlayerAction.NameChangeAction -> Computation.success(Request(action, playersId, changeTurn = false))
+                    else -> Computation.success(Request(action, playersId))
+                  }
+              }
               .onSuccess { request ->
                 gameRoomRepository
                   .sendRequest(request, ROOMS_NAME)

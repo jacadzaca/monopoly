@@ -4,11 +4,7 @@ package com.jacadzaca.monopoly.requests
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
 import com.jacadzaca.monopoly.gamelogic.commands.*
-import com.jacadzaca.monopoly.requests.validators.HotelPurchaseValidator
-import com.jacadzaca.monopoly.requests.validators.HousePurchaseValidator
-import com.jacadzaca.monopoly.requests.validators.PlayerJoinValidator
-import com.jacadzaca.monopoly.requests.validators.PlayerLeaveValidator
-import com.jacadzaca.monopoly.requests.validators.TilePurchaseValidator
+import com.jacadzaca.monopoly.requests.validators.*
 import java.util.*
 
 internal object ValidatorProxyImpl: ValidatorProxy {
@@ -20,6 +16,7 @@ internal object ValidatorProxyImpl: ValidatorProxy {
   private val hotelPurchaseValidator = HotelPurchaseValidator(hotel, 5, ::BuyEstate)
   private val playerJoinValidator = PlayerJoinValidator()
   private val playerLeaveValidator = PlayerLeaveValidator()
+  private val nameChangeValidator = NameChangeValidator(::ChangeName)
 
   override fun validate(request: Request, context: GameState): Computation<Command> {
     return when (request.action) {
@@ -29,6 +26,7 @@ internal object ValidatorProxyImpl: ValidatorProxy {
       is PlayerAction.BuyHotelAction-> hotelPurchaseValidator.validate(request.requestersId, request.action, context)
       is PlayerAction.JoinAction -> playerJoinValidator.validate(request.requestersId, request.action, context)
       is PlayerAction.LeaveAction -> playerLeaveValidator.validate(request.requestersId, request.action, context)
+      is PlayerAction.NameChangeAction -> nameChangeValidator.validate(request.requestersId, request.action, context)
     }
   }
 

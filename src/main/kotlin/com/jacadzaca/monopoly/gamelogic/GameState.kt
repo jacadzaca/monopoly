@@ -23,7 +23,7 @@ data class GameState(
     )
   }
 
-  fun updatePlayer(playersId: UUID, newPosition: Int? = null, newBalance: BigInteger? = null): GameState {
+  fun updatePlayer(playersId: UUID, newPosition: Int? = null, newBalance: BigInteger? = null, newName: String? = null): GameState {
     var player = players[playersId]!!
     var changes = recentChanges
     if (newPosition != null) {
@@ -33,6 +33,10 @@ data class GameState(
     if (newBalance != null) {
       player = player.setBalance(newBalance)
       changes = changes.add(Delta.BalanceChange(playersId, newBalance))
+    }
+    if (newName != null) {
+      player = player.setName(newName)
+      changes = changes.add(Delta.NameChange(playersId, newName))
     }
     return copy(players = players.put(playersId, player), recentChanges = changes)
   }

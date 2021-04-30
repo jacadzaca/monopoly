@@ -8,8 +8,8 @@ class PlayerList extends HTMLElement {
     updateList({ detail: {payload: players} }) {
         const list = Object
             .entries(players)
-            .map(([id, {position, balance}]) => html`
-                <li>${id}</li>
+            .map(([id, {position, balance, name}]) => html`
+                <li>${name}</li>
                     <ul>
                         <li>position: ${position}</li>
                         <li>balance: ${balance}</li>

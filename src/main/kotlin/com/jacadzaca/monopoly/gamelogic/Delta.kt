@@ -64,4 +64,13 @@ sealed class Delta {
       return gameState.copy(currentTurn = turn)
     }
   }
+
+  @Serializable
+  @SerialName("nameChange")
+  data class NameChange(val playersId: UUID, val name: String): Delta() {
+      override fun apply(gameState: GameState): GameState {
+        return gameState.updatePlayer(playersId, newName = name)
+      }
+  }
 }
+
