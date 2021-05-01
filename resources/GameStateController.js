@@ -6,9 +6,12 @@ let gameState = null;
 socket.onmessage = (e) => {
     gameState = JSON.parse(e.data);
     window.dispatchEvent(createEvent('x-update-list', gameState.players));
-    window.dispatchEvent(createEvent('x-update-tile', gameState.tiles));
+    window.dispatchEvent(createEvent('x-update-tile', gameState));
 
-    const myTurn = new URL(window.location.href).searchParams.get('name');
+    let myTurn = new URL(window.location.href).searchParams.get('name');
+    if (myTurn === null) {
+        myTurn = gameState.turnOrder[gameState.turnOrder.length - 1];
+    }
     socket.send(`{"type": "change-name", "newName": "${myTurn}"}`);
     window.dispatchEvent(createEvent('x-set-my-turn', myTurn));
 
@@ -49,7 +52,7 @@ const handleRequest = (json) => {
             break;
         case 'tileOwnershipChange':
             gameState.tiles[json.tilesIndex].ownersId = json.newOwner;
-            window.dispatchEvent(createEvent('x-update-tile', gameState.tiles));
+            window.dispatchEvent(createEvent('x-update-tile', gameState));
             break;
         case 'estateAdded':
             switch(json.estate.type) {
@@ -60,7 +63,7 @@ const handleRequest = (json) => {
                     gameState.tiles[json.tilesIndex].hotels.push(json.estate);
                     break;
             }
-            window.dispatchEvent(createEvent('x-update-tile', gameState.tiles));
+            window.dispatchEvent(createEvent('x-update-tile', gameState));
             break;
         case 'nameChange':
             gameState.players[json.playersId].name = json.name;

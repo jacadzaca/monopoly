@@ -23,9 +23,18 @@ class TileList extends HTMLElement {
                           .reduce(sum, BigInt(0));
     }
 
-    updateTiles({ detail: {payload: tiles} }) {
-        const list = tiles.map((tile) => html`
-                <li>${tile.ownersId}</li>
+    getTilesOwnerName(tile, gameState) {
+        const owner = gameState.players[tile.ownersId];
+        if (owner !== undefined) {
+            return owner.name;
+        } else {
+            return '';
+        }
+    }
+
+    updateTiles({ detail: {payload: gameState} }) {
+        const list = gameState.tiles.map((tile) => html`
+                <li>${this.getTilesOwnerName(tile, gameState)}</li>
                     <ul>
                         <li>houses: ${tile.houses.map(this.renderEstate)}</li>
                         <li>hotels: ${tile.hotels.map(this.renderEstate)}</li>
