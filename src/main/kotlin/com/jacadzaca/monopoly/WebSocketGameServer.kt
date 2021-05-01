@@ -9,6 +9,8 @@ import io.vertx.core.impl.logging.*
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.*
 import kotlinx.serialization.json.*
+import kotlinx.collections.immutable.*
+import java.math.*
 import java.util.*
 
 class WebSocketGameServer : AbstractVerticle() {
@@ -68,7 +70,7 @@ class WebSocketGameServer : AbstractVerticle() {
     }
 
     vertx
-      .deployVerticle(GameRoomVerticle(ROOMS_NAME, ValidatorProxyImpl))
+      .deployVerticle(GameRoomVerticle(ROOMS_NAME, createGameState(), ValidatorProxyImpl))
       .compose { server.listen(8081) }
       .onSuccess {
         startPromise.complete()
@@ -86,6 +88,16 @@ class WebSocketGameServer : AbstractVerticle() {
     } catch (e: SerializationException) {
       Computation.failure("${e.message}")
     }
+  }
+
+  private fun createGameState(): GameState {
+    var basePrice = 60.toBigInteger()
+    var tiles = mutableListOf<Tile>()
+    for (i in 1..22) {
+      val tilesPrice = basePrice + ((i / 3) * 40).toBigInteger()
+      tiles.add(Tile(persistentListOf(), persistentListOf(), tilesPrice, null, (tilesPrice / BigInteger.TEN)))
+    }
+    return GameState(persistentHashMapOf(), tiles.toPersistentList())
   }
 }
 

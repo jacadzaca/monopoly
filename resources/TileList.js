@@ -32,7 +32,7 @@ class TileList extends HTMLElement {
                         <li>price: ${tile.price}</li>
                         <li>rent: ${this.computeRent(tile)}</li>
                     </ul>`);
-        render(html`<ul>Tiles:${list}</ul>`, this);
+        render(html`<ol start="0">Tiles:${list}</ol>`, this);
     }
 }
 

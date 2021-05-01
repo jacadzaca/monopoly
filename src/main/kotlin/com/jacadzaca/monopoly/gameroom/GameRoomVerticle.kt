@@ -6,20 +6,16 @@ import com.jacadzaca.monopoly.requests.*
 import io.vertx.core.*
 import io.vertx.core.impl.logging.*
 import io.vertx.kotlin.core.eventbus.*
-import kotlinx.collections.immutable.*
 
-class GameRoomVerticle(private val roomsName: String, private val validator: ValidatorProxy) : AbstractVerticle() {
+class GameRoomVerticle(private val roomsName: String, private var gameState: GameState, private val validator: ValidatorProxy) : AbstractVerticle() {
   companion object {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val codec = deliveryOptionsOf(codecName = GenericCodec.computationCodecName(Delta::class))
-    private val tile = Tile(persistentListOf(), persistentListOf(), 1000.toBigInteger(), null, 100.toBigInteger())
-    private val newGameState = GameState(persistentHashMapOf(), persistentListOf(tile, tile, tile, tile, tile))
     private val gameStateCodec = deliveryOptionsOf(codecName = "gameStateCodec")
   }
 
   // TODO: add a lock to gameState accesses?
   override fun start(startPromise: Promise<Void>) {
-    var gameState = newGameState
     vertx
       .eventBus()
       .consumer<Request>(roomsName)
