@@ -36,7 +36,6 @@ internal object ValidatorProxyImpl: ValidatorProxy {
       playersId,
       PositionCalculator.instance.calculate(player.position, gameState.tiles.size),
       gameState,
-      ::PayLiability
     )
   }
 }

@@ -72,6 +72,14 @@ data class GameState(
 
   fun executeCommand(command: Command): GameState = command.execute()
 
+  fun executeCommandIf(predicate: Boolean, command: Lazy<Command>): GameState {
+    return if (predicate) {
+        executeCommand(command.value)
+    } else {
+        this
+    }
+  }
+
   fun disownPlayer(playersId: UUID): GameState {
     return copy(
       tiles = tiles.map { tile ->

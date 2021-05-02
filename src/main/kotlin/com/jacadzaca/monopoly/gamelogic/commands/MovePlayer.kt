@@ -12,23 +12,16 @@ data class MovePlayer(
   private val playersId: UUID,
   private val newPosition: Int,
   private val target: GameState,
-  private val createPayment: (Player, UUID, Player, UUID, BigInteger, Command, GameState) -> (PayLiability),
-  private val onBankrupcy: Command = LeavePlayer(playersId, "player bankrupted", target),
+  private val onEnterForeignTile: Lazy<Command> = lazy {
+      val tile = target.tiles[newPosition]
+      PayLiability(player, playersId, target.players[tile.ownersId]!!, tile.ownersId!!, tile.totalRent(), LeavePlayer(playersId, "player bankrupted", target), target)
+  },
 ) : Command {
   override fun execute(): GameState {
     val tile = target.tiles[newPosition]
-    return if (tile.ownersId != null && tile.ownersId != playersId) {
-      createPayment(
-        player,
-        playersId,
-        target.players[tile.ownersId]!!,
-        tile.ownersId,
-        tile.totalRent(),
-        onBankrupcy,
-        target,
-      ).execute()
-    } else {
-      target
-    }.updatePlayer(playersId, newPosition = newPosition)
+    return target
+        .executeCommandIf(tile.ownersId != null && tile.ownersId != playersId, onEnterForeignTile)
+        .updatePlayer(playersId, newPosition = newPosition)
   }
 }
+

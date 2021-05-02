@@ -13,15 +13,16 @@ internal class MovePlayerTest {
   private val gameState = mockk<GameState>(relaxed = true)
   private val playersId = UUID.randomUUID()
   private val newPosition = Random.nextPositive()
-  private val onBankrupcy = mockk<Command>()
-  private val createPayment = mockk<(Player, UUID, Player, UUID, BigInteger, Command, GameState) -> (PayLiability)>()
-  private val command = MovePlayer(player, playersId, newPosition, gameState, createPayment, onBankrupcy)
+  private val onEnterForeignTile = mockk<Lazy<Command>>()
+  private val command = MovePlayer(player, playersId, newPosition, gameState, onEnterForeignTile)
 
   @BeforeEach
   fun setUp() {
     val tileWithoutOwner = mockk<Tile>()
     every { gameState.tiles[newPosition] } returns tileWithoutOwner
     every { tileWithoutOwner.ownersId } returns null
+    every { gameState.executeCommandIf(false, any()) } returns gameState
+    every { onEnterForeignTile.value } returns mockk<Command>("some command")
   }
 
   @Test
@@ -37,21 +38,8 @@ internal class MovePlayerTest {
     every { tileOwnedByOther.ownersId } returns UUID.randomUUID()
     every { gameState.players[tileOwnedByOther.ownersId] } returns mockk(name = "tile owner")
     every { gameState.tiles[newPosition] } returns tileOwnedByOther
-    val rentPayment = mockk<PayLiability>()
-    every { rentPayment.execute() } returns gameState
-    every {
-      createPayment(
-        player,
-        playersId,
-        gameState.players[tileOwnedByOther.ownersId]!!,
-        tileOwnedByOther.ownersId!!,
-        tileOwnedByOther.totalRent(),
-        onBankrupcy,
-        gameState,
-      )
-    } returns rentPayment
     command.execute()
-    verify { rentPayment.execute() }
+    verify { gameState.executeCommandIf(true, onEnterForeignTile) }
   }
 }
 
