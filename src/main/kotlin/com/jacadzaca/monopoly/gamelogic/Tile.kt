@@ -1,12 +1,14 @@
+@file:UseSerializers(BigIntegerSerializer::class, UUIDSerializer::class, EstateListSerializer::class)
 package com.jacadzaca.monopoly.gamelogic
 
 import com.jacadzaca.monopoly.serializers.*
 import kotlinx.collections.immutable.*
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
+import kotlinx.serialization.builtins.*
 import java.math.*
 import java.util.*
 
-@Serializable(with = TileSerializer::class)
+@Serializable
 data class Tile(
   val houses: PersistentList<Estate>,
   val hotels: PersistentList<Estate>,

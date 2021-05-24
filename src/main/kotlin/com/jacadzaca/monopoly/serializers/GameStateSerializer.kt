@@ -10,15 +10,9 @@ import kotlinx.serialization.encoding.*
 import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import java.util.*
 
-/**
- * DISCLAIMER:
- * DO NOT USE [kotlinx.serialization] IN ORDER DO DESERIALIZE UNTRUSTED INPUT!
- * [deserialize] methods throw Java's [IllegalStateException]
- * when the JSON string dose not comfort to the [descriptor] scheme
- */
 object GameStateSerializer : KSerializer<GameState> {
   private val playersMapSerializer = MapSerializer(UUIDSerializer, Player.serializer())
-  private val tilesSerializer = ListSerializer(TileSerializer)
+  private val tilesSerializer = ListSerializer(Tile.serializer())
   private val turnOrderSerializer = ListSerializer(UUIDSerializer)
 
   override val descriptor: SerialDescriptor = buildClassSerialDescriptor(GameState::class.simpleName!!) {
@@ -61,13 +55,5 @@ object GameStateSerializer : KSerializer<GameState> {
       encodeIntElement(descriptor, 2, value.currentTurn)
       encodeSerializableElement(descriptor, 3, turnOrderSerializer, value.turnOrder)
     }
-  }
-
-  private fun CompositeDecoder.decodePlayers(): PersistentMap<UUID, Player>? {
-    return decodeSerializableElement(descriptor, decodeElementIndex(descriptor), playersMapSerializer).toPersistentMap()
-  }
-
-  private fun CompositeDecoder.decodeTiles(): PersistentList<Tile>? {
-    return decodeSerializableElement(descriptor, decodeElementIndex(descriptor), tilesSerializer).toPersistentList()
   }
 }
