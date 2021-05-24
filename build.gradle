@@ -1,80 +1,71 @@
 plugins {
-  id 'org.jetbrains.kotlin.jvm' version '1.4.10'
-  id 'org.jetbrains.kotlin.plugin.serialization' version '1.4.10'
-  id 'application'
-  id 'com.github.johnrengelman.shadow' version '5.0.0'
-  id "org.jmailen.kotlinter" version "3.0.2"
+    id 'org.jetbrains.kotlin.jvm' version '1.5.10'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.10'
+    id 'application'
+    id "org.jmailen.kotlinter" version "3.4.0"
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 group = 'com.jacadzaca'
-version = '1.0.0-SNAPSHOT'
+version = '1.0.0'
 
 repositories {
-  mavenCentral()
-  jcenter()
+    mavenCentral()
 }
 
 ext {
-  kotlinVersion = '1.4.10'
-  vertxVersion = '4.0.0'
-  junitJupiterEngineVersion = '5.4.0'
+    kotlinVersion = '1.5.10'
+    vertxVersion = '4.0.0'
+    junitJupiterEngineVersion = '5.4.0'
 }
 
 application {
-  mainClassName = 'io.vertx.core.Launcher'
-}
-
-sourceSets {
-  main {
-    resources {
-      srcDirs "src/main/resources"
-    }
-  }
+    mainClassName = 'io.vertx.core.Launcher'
 }
 
 def mainVerticleName = 'com.jacadzaca.monopoly.HttpServer'
 
 dependencies {
-  implementation "io.vertx:vertx-junit5:$vertxVersion"
-  implementation "io.vertx:vertx-web:$vertxVersion"
-  implementation "io.vertx:vertx-pg-client:$vertxVersion"
-  implementation "io.vertx:vertx-lang-kotlin:$vertxVersion"
-  implementation "io.vertx:vertx-lang-kotlin-coroutines:$vertxVersion"
-  implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.2"
-  implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC"
+    implementation "io.vertx:vertx-junit5:$vertxVersion"
+    implementation "io.vertx:vertx-web:$vertxVersion"
+    implementation "io.vertx:vertx-pg-client:$vertxVersion"
+    implementation "io.vertx:vertx-lang-kotlin:$vertxVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-collections-immutable-jvm:0.3.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0-RC"
+    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: '1.5.0'
 
-  testImplementation "io.vertx:vertx-junit5:$vertxVersion"
-  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion"
-  testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterEngineVersion"
-  testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterEngineVersion"
-  testImplementation "io.mockk:mockk:1.9.3"
-}
-
-compileKotlin {
-  kotlinOptions.jvmTarget = '1.8'
-}
-
-compileTestKotlin {
-  kotlinOptions.jvmTarget = '1.8'
+    testImplementation "io.vertx:vertx-junit5:$vertxVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterEngineVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterEngineVersion"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$junitJupiterEngineVersion"
+    testImplementation "io.mockk:mockk:1.9.3"
 }
 
 shadowJar {
-  classifier = 'fat'
   manifest {
     attributes 'Main-Verticle': mainVerticleName
+    attributes 'Main-Command': "run"
   }
   mergeServiceFiles {
     include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
   }
 }
 
+compileKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '1.8'
+}
+
 test {
-  useJUnitPlatform()
-  testLogging {
-    events 'PASSED', 'FAILED', 'SKIPPED'
-  }
+    useJUnitPlatform()
+    testLogging {
+        events 'PASSED', 'FAILED', 'SKIPPED'
+    }
 }
 
 run {
-  args = ['run', mainVerticleName, "--launcher-class=$mainClassName", "-Dstarting_balance=2000"]
+    args = ['run', mainVerticleName, "--launcher-class=$mainClassName", "-Dstarting_balance=2000"]
 }
