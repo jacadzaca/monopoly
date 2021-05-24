@@ -1,11 +1,9 @@
 package com.jacadzaca.monopoly.requests
 
-import com.jacadzaca.monopoly.*
-import com.jacadzaca.monopoly.requests.*
-import com.jacadzaca.monopoly.gamelogic.*
-import com.jacadzaca.monopoly.gamelogic.commands.*
+import com.jacadzaca.monopoly.Computation
+import com.jacadzaca.monopoly.gamelogic.GameState
+import com.jacadzaca.monopoly.gamelogic.commands.Command
 
 interface ValidatorProxy {
-  fun validate(request: Request, context: GameState): Computation<Command>
+    fun validate(request: Request, context: GameState): Computation<Command>
 }
-

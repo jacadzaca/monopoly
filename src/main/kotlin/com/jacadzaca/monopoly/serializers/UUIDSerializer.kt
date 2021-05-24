@@ -1,22 +1,17 @@
 package com.jacadzaca.monopoly.serializers
 
-import com.jacadzaca.monopoly.serializers.UUIDSerializer.descriptor
-import com.jacadzaca.monopoly.serializers.UUIDSerializer.deserialize
-import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.*
-import kotlinx.serialization.encoding.*
-import java.util.*
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import java.util.UUID
 
-/**
- * DISCLAIMER:
- * DO NOT USE [kotlinx.serialization] IN ORDER DO DESERIALIZE UNTRUSTED INPUT!
- * [deserialize] methods throw Java's [IllegalStateException]
- * when the JSON string dose not comfort to the [descriptor] scheme
- */
 object UUIDSerializer : KSerializer<UUID> {
-  override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(UUID::class.simpleName!!, PrimitiveKind.STRING)
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor(UUID::class.simpleName!!, PrimitiveKind.STRING)
 
-  override fun deserialize(decoder: Decoder): UUID = UUID.fromString(decoder.decodeString())
+    override fun deserialize(decoder: Decoder): UUID = UUID.fromString(decoder.decodeString())
 
-  override fun serialize(encoder: Encoder, value: UUID) = encoder.encodeString(value.toString())
+    override fun serialize(encoder: Encoder, value: UUID) = encoder.encodeString(value.toString())
 }
