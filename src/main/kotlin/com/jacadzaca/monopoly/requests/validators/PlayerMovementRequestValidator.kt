@@ -1,4 +1,4 @@
-package com.jacadzaca.monopoly.requests
+package com.jacadzaca.monopoly.requests.validators
 
 import com.jacadzaca.monopoly.*
 import com.jacadzaca.monopoly.gamelogic.*
