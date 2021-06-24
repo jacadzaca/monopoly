@@ -1,20 +1,33 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" href="style.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="PlayerList.js" type="module"></script>
-        <script src="TileList.js" type="module"></script>
-        <script src="ActionButtons.js" type="module"></script>
-        <script src="TurnCounter.js" type="module"></script>
-    </head>
-    <body>
-        <action-buttons>This page requires JavaScript</action-buttons>
-        <turn-counter></turn-counter>
-        <div style="display: flex;">
-            <player-list></player-list>
-            <tile-list></tile-list>
-        </div>
-    </body>
-</html>
+<head>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <script src="./GameScene.js"></script>
+    <script src="./GameStateController.js"></script>
+</head>
+<body>
+    <script>
+        connect().then( (socket) => {
+            getMessage(socket).then( (e) => {
+                const gameState = JSON.parse(e.data);
+                gameState.request = (type) => { request(socket, type) };
+                console.log(gameState);
+                const config = {
+                    type: Phaser.AUTO,
+                    width:  600,
+                    height: 700,
+                    scale: {
+                        mode: Phaser.Scale.FIT,
+                        autoCenter: Phaser.Scale.CENTER_BOTH,
+                    },
+                    scene: new GameScene(gameState, 600, 700, 100, 100),
+                };
+
+                socket.onmessage = (request) => { handleRequest(gameState, JSON.parse(request.data)) };
+                const game = new Phaser.Game(config);
+            });
+        });
+    </script>
+</body>
 

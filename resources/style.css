@@ -1,21 +1,12 @@
+html, body {
+    height: 100%;
+}
+
 body {
-    background: black;
-}
-
-@-webkit-keyframes pulse
-{
-  0% {color: red;}
- 25% {color: tomato;}
- 50% {color: orange;}
- 75% {color: yellow;}
- 100% {color: moccasin;}
-}
-
-.pulse {
-    -webkit-animation: pulse 0.5s infinite alternate;
-}
-
-hr {
-    border: 0.01em solid #ccc;
+  margin: 0;
+  padding: 0;
+  background: #222;
+  color: #eee;
+  font: caption;
 }
 
